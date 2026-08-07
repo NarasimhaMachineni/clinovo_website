@@ -78,16 +78,16 @@
     });
 
     const particles = [];
-    const maxParticles = 40;
+    const maxParticles = 45;
 
     for (let i = 0; i < maxParticles; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 3 + 1.5,
-        alpha: Math.random() * 0.4 + 0.1,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
+        radius: Math.random() * 3.5 + 1.5,
+        alpha: Math.random() * 0.45 + 0.1,
         color: Math.random() > 0.5 ? 'rgba(45, 212, 191,' : 'rgba(59, 130, 246,'
       });
     }
@@ -127,21 +127,18 @@
       dashApp.fetchSites();
     },
 
-    showPharmaLoader(message, callback) {
+    showPharmaLoader(callback) {
       const overlay = document.getElementById('pharmaLoaderOverlay');
-      const msgEl = document.getElementById('loaderStatusMsg');
-      if (msgEl && message) msgEl.textContent = message;
-
       if (overlay) overlay.classList.add('active');
 
       setTimeout(() => {
         if (overlay) overlay.classList.remove('active');
         if (typeof callback === 'function') callback();
-      }, 1200);
+      }, 1000);
     },
 
     navigateTo(viewId) {
-      this.showPharmaLoader(`Syncing Protocol Workspace & SQLite 3 Database...`, () => {
+      this.showPharmaLoader(() => {
         state.currentView = viewId;
 
         if (viewId === 'landing') {
@@ -183,25 +180,25 @@
       event.preventDefault();
       const usernameVal = (document.getElementById('usernameInput')?.value || '').toLowerCase();
 
-      this.showPharmaLoader('Authenticating Clinical Credentials & Protocol Access...', () => {
+      this.showPharmaLoader(() => {
         if (usernameVal.includes('admin')) {
           state.userRole = 'admin';
           state.userEmail = usernameVal || 'name@admin.in';
           this.updateUserNav();
-          showToast('Signed in as Admin! Loading Feasibility Dashboard...');
+          showToast('Signed in as Admin!');
           this.navigateTo('dashboard');
         } else {
           state.userRole = 'client';
           state.userEmail = usernameVal || 'name@client.in';
           this.updateUserNav();
-          showToast('Signed in as Client! Loading Feasibility Questionnaire...');
+          showToast('Signed in as Client!');
           this.navigateTo('questionnaire');
         }
       });
     },
 
     logout() {
-      this.showPharmaLoader('Signing Out & Terminating Session...', () => {
+      this.showPharmaLoader(() => {
         state.userRole = null;
         state.userEmail = '';
         this.updateUserNav();
@@ -218,13 +215,13 @@
         container.innerHTML = '';
       } else {
         container.innerHTML = `
-          <div style="display:flex; align-items:center; gap:8px; background:rgba(15,23,42,0.06); border:1px solid #e2e8f0; padding:4px 12px; border-radius:20px; font-size:12px; color:#0f172a;">
-            <span style="width:22px; height:22px; border-radius:50%; background:var(--brand-blue); display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff;">
-              ${state.userRole === 'client' ? 'C' : 'A'}
-            </span>
+          <div class="user-badge-pill">
+            <span class="user-avatar">${state.userRole === 'client' ? 'C' : 'A'}</span>
             <span>${state.userEmail}</span>
           </div>
-          <button class="btn btn-sm btn-secondary" onclick="app.logout()">Logout</button>
+          <button class="btn-logout-exact" onclick="app.logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
         `;
       }
     },
@@ -468,12 +465,6 @@
       try {
         localStorage.setItem(this.storageKey, JSON.stringify(this.answers));
       } catch (e) {}
-      this.setStatus('Draft auto-saved · ' + new Date().toLocaleTimeString());
-    },
-
-    setStatus(txt) {
-      const el = document.getElementById('questStatusLine');
-      if (el) el.textContent = txt;
     },
 
     isAnswered(field, val) {
@@ -730,7 +721,7 @@
     },
 
     async submitToAdmin() {
-      app.showPharmaLoader('Submitting Feasibility Questionnaire & Calculating SQLite 3 Scores...', async () => {
+      app.showPharmaLoader(async () => {
         try {
           const res = await fetch('/api/questionnaire/submit', {
             method: 'POST',
@@ -1214,7 +1205,7 @@
       });
 
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
+      const blob = new Blob([csv], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

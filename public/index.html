@@ -14,7 +14,7 @@
 </head>
 <body class="landing-active">
 
-  <!-- PHARMA DOMAIN ANIMATED LOADING OVERLAY -->
+  <!-- PHARMA DOMAIN PURE ANIMATION LOADING OVERLAY (NO TEXT) -->
   <div id="pharmaLoaderOverlay" class="pharma-loader-overlay">
     <div class="pharma-loader-card">
       <div class="dna-spinner">
@@ -22,9 +22,8 @@
         <div class="dna-node node-2"></div>
         <div class="dna-node node-3"></div>
         <div class="dna-node node-4"></div>
+        <div class="dna-node node-5"></div>
       </div>
-      <div class="loader-title">Clinovo Protocol Engine</div>
-      <div id="loaderStatusMsg" class="loader-subtitle">Authenticating & Syncing SQLite 3 Feasibility Database...</div>
       <div class="loader-bar-container">
         <div class="loader-bar-fill"></div>
       </div>
@@ -59,7 +58,7 @@
       <div class="brand-name">Clinovo</div>
     </div>
 
-    <div class="flex items-center gap-3" id="userNavActions">
+    <div class="header-user-right" id="userNavActions">
       <!-- Populated dynamically by JS when logged in -->
     </div>
   </header>
@@ -73,6 +72,7 @@
       <!-- Glowing Ambient Background Orbs -->
       <div class="ambient-glow-orb orb-1"></div>
       <div class="ambient-glow-orb orb-2"></div>
+      <div class="ambient-glow-orb orb-3"></div>
 
       <!-- MAIN TRANSLUCENT GLASSMORPHIC LOGIN WINDOW -->
       <div class="clinovo-login-window">
@@ -221,11 +221,6 @@
         <!-- Rendered dynamically by JS -->
       </main>
 
-    </div>
-
-    <!-- Sticky Status Bar -->
-    <div class="sfq-statusbar">
-      <span id="questStatusLine">Draft auto-saved · All changes synced to local browser state</span>
     </div>
 
   </section>
