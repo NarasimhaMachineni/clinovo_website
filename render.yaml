@@ -2,7 +2,7 @@ services:
   - type: web
     name: clinovo-site-feasibility
     env: node
-    buildCommand: npm install && npm rebuild
+    buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: PORT
