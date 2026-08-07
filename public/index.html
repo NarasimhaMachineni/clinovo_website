@@ -72,7 +72,6 @@
       <!-- Glowing Ambient Background Orbs -->
       <div class="ambient-glow-orb orb-1"></div>
       <div class="ambient-glow-orb orb-2"></div>
-      <div class="ambient-glow-orb orb-3"></div>
 
       <!-- MAIN TRANSLUCENT GLASSMORPHIC LOGIN WINDOW -->
       <div class="clinovo-login-window">
@@ -161,65 +160,43 @@
 
 
   <!-- ========================================================================== -->
-  <!-- VIEW 2: CLIENT SITE FEASIBILITY QUESTIONNAIRE (EXACT 12 HEADINGS)          -->
+  <!-- VIEW 2: CLIENT SITE FEASIBILITY QUESTIONNAIRE (WIDE FULL-WIDTH LAYOUT)     -->
   <!-- ========================================================================== -->
   <section id="view-questionnaire" class="view-section">
     
     <!-- Top Bar -->
     <div class="sfq-topbar">
       <div class="sfq-brand">
-        <button class="sfq-mobile-toggle" onclick="app.toggleQuestSidebar()" aria-label="Toggle navigation menu">
-          <i class="fa-solid fa-bars"></i>
-        </button>
         <span class="sfq-chip">SITE FEASIBILITY QUESTIONNAIRE</span>
         <span class="sfq-title">Oncology — Phase III Registration Trial</span>
       </div>
-      <div class="sfq-actions">
+      <div class="sfq-actions-right">
+        <button class="btn btn-secondary btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / PDF</button>
+        <button class="btn btn-secondary btn-sm" onclick="questApp.exportSummary()"><i class="fa-solid fa-file-export"></i> Export .txt</button>
+        <button class="btn btn-secondary btn-sm danger" onclick="questApp.resetAnswers()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
       </div>
     </div>
 
-    <!-- Main Workspace Layout -->
-    <div class="sfq-workspace">
-      
-      <!-- Left Sidebar Navigation -->
-      <aside class="sfq-sidebar" id="questSidebar">
-        
-        <!-- Overall Progress Box -->
-        <div class="overall-box">
-          <div class="ring-wrap" id="overallRing">
-            <!-- Dynamic SVG Ring -->
-          </div>
-          <div class="overall-info">
-            <div class="lbl">OVERALL COMPLETION</div>
-            <div class="pct" id="overallPct">0%</div>
-            <div class="cnt" id="overallCnt">0 / 0 answered</div>
-          </div>
+    <!-- Wide Top Horizontal Role Stepper Navigation Bar -->
+    <div class="sfq-horizontal-stepper-wrap">
+      <div class="sfq-overall-progress-chip">
+        <div class="ring-wrap" id="overallRing"></div>
+        <div class="overall-info">
+          <div class="lbl">COMPLETION</div>
+          <div class="pct" id="overallPct">0%</div>
         </div>
+      </div>
 
-        <!-- Section Navigation List -->
-        <ul class="quest-nav-list" id="questNavList">
-          <!-- Populated by JS -->
-        </ul>
+      <div class="sfq-stepper-scroll" id="questRoleTabs">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
 
-        <!-- Bottom Actions -->
-        <div class="sidebar-foot-actions">
-          <button class="btn-side-action" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> Print / Save as PDF
-          </button>
-          <button class="btn-side-action" onclick="questApp.exportSummary()">
-            <i class="fa-solid fa-file-export"></i> Export summary (.txt)
-          </button>
-          <button class="btn-side-action danger" onclick="questApp.resetAnswers()">
-            <i class="fa-solid fa-rotate-left"></i> Reset all answers
-          </button>
-        </div>
-      </aside>
-
-      <!-- Main Content Area -->
-      <main class="sfq-content-area" id="questContent">
+    <!-- Main Wide Content Workspace -->
+    <div class="sfq-wide-workspace">
+      <main class="sfq-wide-content" id="questContent">
         <!-- Rendered dynamically by JS -->
       </main>
-
     </div>
 
   </section>

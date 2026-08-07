@@ -60,10 +60,10 @@
     if (!t) return;
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
+    setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // ENHANCED LUMINOUS MOUSE CURSOR TRAIL & CONSTELLATION CANVAS ENGINE
+  // SUBTLE PARTICLES CANVAS ENGINE
   function initPharmaCanvas() {
     const canvas = document.getElementById('smokeCanvas');
     if (!canvas) return;
@@ -77,46 +77,27 @@
       height = canvas.height = window.innerHeight;
     });
 
-    const ambientParticles = [];
-    const cursorParticles = [];
-    const maxAmbient = 50;
+    const particles = [];
+    const maxParticles = 40;
 
-    for (let i = 0; i < maxAmbient; i++) {
-      ambientParticles.push({
+    for (let i = 0; i < maxParticles; i++) {
+      particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.4,
         vy: (Math.random() - 0.5) * 0.4,
         radius: Math.random() * 3 + 1.2,
-        alpha: Math.random() * 0.5 + 0.1,
+        alpha: Math.random() * 0.4 + 0.1,
         color: Math.random() > 0.5 ? '45, 212, 191' : '59, 130, 246'
       });
     }
-
-    // Interactive Mouse Cursor Particle Emitter
-    window.addEventListener('mousemove', (e) => {
-      if (state.currentView !== 'landing') return;
-      for (let i = 0; i < 2; i++) {
-        cursorParticles.push({
-          x: e.clientX,
-          y: e.clientY,
-          vx: (Math.random() - 0.5) * 1.5,
-          vy: (Math.random() - 0.5) * 1.5 - 0.5,
-          radius: Math.random() * 4 + 2,
-          alpha: 0.8,
-          color: Math.random() > 0.5 ? '45, 212, 191' : '2, 132, 199',
-          life: 1.0
-        });
-      }
-    });
 
     function render() {
       ctx.clearRect(0, 0, width, height);
 
       if (state.currentView === 'landing') {
-        // Render Ambient Constellation Particles
-        for (let i = 0; i < ambientParticles.length; i++) {
-          const p = ambientParticles[i];
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
           p.x += p.vx;
           p.y += p.vy;
 
@@ -127,45 +108,6 @@
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fill();
-
-          // Connect nearby particles with subtle lines
-          for (let j = i + 1; j < ambientParticles.length; j++) {
-            const p2 = ambientParticles[j];
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < 110) {
-              ctx.strokeStyle = `rgba(${p.color}, ${(1 - dist / 110) * 0.15})`;
-              ctx.lineWidth = 0.8;
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p2.x, p2.y);
-              ctx.stroke();
-            }
-          }
-        }
-
-        // Render Interactive Mouse Cursor Trail Particles
-        for (let i = cursorParticles.length - 1; i >= 0; i--) {
-          const cp = cursorParticles[i];
-          cp.x += cp.vx;
-          cp.y += cp.vy;
-          cp.life -= 0.025;
-          cp.radius *= 0.96;
-
-          if (cp.life <= 0 || cp.radius < 0.5) {
-            cursorParticles.splice(i, 1);
-            continue;
-          }
-
-          ctx.fillStyle = `rgba(${cp.color}, ${cp.life * 0.7})`;
-          ctx.shadowBlur = 12;
-          ctx.shadowColor = `rgba(${cp.color}, 0.8)`;
-          ctx.beginPath();
-          ctx.arc(cp.x, cp.y, cp.radius, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
         }
       }
 
@@ -178,11 +120,35 @@
   // Application Controller
   window.app = {
     init() {
-      document.body.classList.add('landing-active');
-      this.updateUserNav();
+      // READ PERSISTED SESSION STATE ON PAGE RELOAD / REFRESH
+      const savedRole = sessionStorage.getItem('clinovo_session_role');
+      const savedView = sessionStorage.getItem('clinovo_current_view');
+      const savedEmail = sessionStorage.getItem('clinovo_session_email');
+
+      if (savedRole && savedView && savedView !== 'landing') {
+        state.userRole = savedRole;
+        state.userEmail = savedEmail || (savedRole === 'admin' ? 'name@admin.in' : 'name@client.in');
+        state.currentView = savedView;
+        document.body.classList.remove('landing-active');
+        
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-view'));
+        const targetView = document.getElementById(`view-${savedView}`);
+        if (targetView) targetView.classList.add('active-view');
+
+        this.updateUserNav();
+        if (savedView === 'dashboard') {
+          dashApp.fetchSites();
+        } else if (savedView === 'questionnaire') {
+          questApp.renderAll();
+        }
+      } else {
+        document.body.classList.add('landing-active');
+        this.updateUserNav();
+        dashApp.fetchSites();
+      }
+
       this.startDotCarousel();
       initPharmaCanvas();
-      dashApp.fetchSites();
     },
 
     showPharmaLoader(callback) {
@@ -192,12 +158,13 @@
       setTimeout(() => {
         if (overlay) overlay.classList.remove('active');
         if (typeof callback === 'function') callback();
-      }, 900);
+      }, 700);
     },
 
     navigateTo(viewId) {
       this.showPharmaLoader(() => {
         state.currentView = viewId;
+        sessionStorage.setItem('clinovo_current_view', viewId);
 
         if (viewId === 'landing') {
           document.body.classList.add('landing-active');
@@ -242,12 +209,20 @@
         if (usernameVal.includes('admin')) {
           state.userRole = 'admin';
           state.userEmail = usernameVal || 'name@admin.in';
+          sessionStorage.setItem('clinovo_session_role', 'admin');
+          sessionStorage.setItem('clinovo_session_email', state.userEmail);
+          sessionStorage.setItem('clinovo_current_view', 'dashboard');
+
           this.updateUserNav();
           showToast('Signed in as Admin!');
           this.navigateTo('dashboard');
         } else {
           state.userRole = 'client';
           state.userEmail = usernameVal || 'name@client.in';
+          sessionStorage.setItem('clinovo_session_role', 'client');
+          sessionStorage.setItem('clinovo_session_email', state.userEmail);
+          sessionStorage.setItem('clinovo_current_view', 'questionnaire');
+
           this.updateUserNav();
           showToast('Signed in as Client!');
           this.navigateTo('questionnaire');
@@ -259,6 +234,10 @@
       this.showPharmaLoader(() => {
         state.userRole = null;
         state.userEmail = '';
+        sessionStorage.removeItem('clinovo_session_role');
+        sessionStorage.removeItem('clinovo_session_email');
+        sessionStorage.removeItem('clinovo_current_view');
+
         this.updateUserNav();
         showToast('Signed out');
         this.navigateTo('landing');
@@ -294,11 +273,6 @@
         if (i === idx) dot.classList.add('active');
         else dot.classList.remove('active');
       });
-    },
-
-    toggleQuestSidebar() {
-      const sidebar = document.getElementById('questSidebar');
-      if (sidebar) sidebar.classList.toggle('sidebar-open');
     }
   };
 
@@ -562,27 +536,25 @@
     renderOverall() {
       const p = this.overallProgress();
       const ring = document.getElementById('overallRing');
-      if (ring) ring.innerHTML = this.ringSVG(p.pct, 44, 5, '#e2e8f0', '#0d9488');
+      if (ring) ring.innerHTML = this.ringSVG(p.pct, 40, 4, '#e2e8f0', '#0d9488');
       const pct = document.getElementById('overallPct');
       if (pct) pct.textContent = p.pct + '%';
-      const cnt = document.getElementById('overallCnt');
-      if (cnt) cnt.textContent = `${p.done} / ${p.total} answered`;
     },
 
     renderNav() {
-      const nav = document.getElementById('questNavList');
+      const nav = document.getElementById('questRoleTabs');
       if (!nav) return;
       nav.innerHTML = SECTIONS.map((s, i) => {
         const p = this.sectionProgress(s);
         const isActive = i === this.activeSection;
         return `
-          <li class="quest-navitem ${isActive ? 'active' : ''}" onclick="questApp.switchSection(${i})">
-            <span class="num">${s.num}</span>
-            <span class="ttl">${s.title}</span>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-              ${this.ringSVG(p.pct, 20, 3, '#e2e8f0', p.pct === 100 ? '#0d9488' : '#d97706')}
+          <div class="sfq-role-tab ${isActive ? 'active' : ''}" onclick="questApp.switchSection(${i})">
+            <span class="r-num">${s.num}</span>
+            <span class="r-ttl">${s.title}</span>
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              ${this.ringSVG(p.pct, 16, 2.5, '#e2e8f0', p.pct === 100 ? '#0d9488' : '#d97706')}
             </svg>
-          </li>
+          </div>
         `;
       }).join('');
     },
@@ -591,9 +563,6 @@
       this.activeSection = index;
       this.renderNav();
       this.renderContent();
-
-      const sidebar = document.getElementById('questSidebar');
-      if (sidebar) sidebar.classList.remove('sidebar-open');
     },
 
     renderContent() {
@@ -1000,7 +969,7 @@
 
         s += `<text x="${left}" y="${y + 14}" font-size="12" font-weight="600" fill="#0f172a">${r.s.name.length > 24 ? r.s.name.slice(0, 22) + '…' : r.s.name}</text>`;
         s += `<rect x="${left}" y="${y + 20}" width="${chartW}" height="10" rx="5" fill="#e2e8f0"/>`;
-        s += `<rect x="${left}" y="${y + 20}" width="${Math.max(6, w)}" height="10" rx="5" fill="${color}" style="transition: width 0.6s ease;"/>`;
+        s += `<rect x="${left}" y="${y + 20}" width="${Math.max(6, w)}" height="10" rx="5" fill="${color}"/>`;
         s += `<text x="${left + chartW + 12}" y="${y + 29}" font-size="12" font-family="JetBrains Mono, monospace" font-weight="700" fill="#0d9488">${r.o}</text>`;
       });
 
@@ -1053,7 +1022,7 @@
         const color = STATUS_COLOR[site.status] || '#94a3b8';
 
         s += `
-          <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.35" stroke="${color}" stroke-width="2.5" style="cursor:pointer; transition: transform 0.2s ease;">
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.35" stroke="${color}" stroke-width="2.5" style="cursor:pointer;">
             <title>${site.name} — Overall Score: ${o}, ${site.rate} pts/mo, ${site.total} total</title>
           </circle>
           <text x="${cx}" y="${cy + 3}" font-size="9.5" text-anchor="middle" fill="#0f172a" font-weight="600" pointer-events="none">${site.name.split(' ')[0]}</text>
