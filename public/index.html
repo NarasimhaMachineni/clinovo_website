@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clinovo · Site Feasibility Portal</title>
-  <meta name="description" content="Clinovo Enterprise Site Feasibility Portal & Analytics Dashboard for Phase III Clinical Trials.">
+  <title>Clinovo · Site Assignment Portal</title>
+  <meta name="description" content="Clinovo Enterprise Site Assignment Portal & Analytics Dashboard for Phase III Clinical Trials.">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -55,7 +55,7 @@
   <header class="header-nav" id="mainHeader">
     <div class="brand-logo" onclick="app.navigateTo('landing')">
       <div class="brand-icon-square">C</div>
-      <div class="brand-name">Clinovo</div>
+      <div class="brand-name">Clinovo <span class="text-xs font-mono text-blue-400 font-bold uppercase tracking-widest pl-1">Site Assignment</span></div>
     </div>
 
     <div class="header-user-right" id="userNavActions">
@@ -82,8 +82,8 @@
             <img src="images/illustration.jpg" alt="Clinovo Analytics Team Illustration" class="illustration-img">
           </div>
 
-          <h2 class="portal-left-heading">Clinovo Analytics Portal</h2>
-          <p class="portal-left-sub">Accelerating Clinical Development & Site Assessment Preparedness.</p>
+          <h2 class="portal-left-heading">Clinovo Site Assignment Portal</h2>
+          <p class="portal-left-sub">Accelerating Clinical Development & Site Assignment Preparedness.</p>
 
           <div class="carousel-dots" id="carouselDots">
             <div class="dot-item active" onclick="app.setDot(0)"></div>
@@ -100,7 +100,7 @@
             <div class="brand-text-big">Clinovo</div>
           </div>
 
-          <div class="portal-access-label">Site Feasibility Portal Access</div>
+          <div class="portal-access-label">Clinovo Site Assignment Portal Access</div>
 
           <!-- Credentials empty by default for manual user entry -->
           <form class="login-form-content" onsubmit="app.handleSignIn(event)">
