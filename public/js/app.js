@@ -215,10 +215,6 @@
         container.innerHTML = '';
       } else {
         container.innerHTML = `
-          <div class="user-badge-pill">
-            <span class="user-avatar">${state.userRole === 'client' ? 'C' : 'A'}</span>
-            <span>${state.userEmail}</span>
-          </div>
           <button class="btn-logout-exact" onclick="app.logout()">
             <i class="fa-solid fa-right-from-bracket"></i> Logout
           </button>
@@ -1205,7 +1201,7 @@
       });
 
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
-      const blob = new Blob([csv], { type: 'text/plain' });
+      const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
