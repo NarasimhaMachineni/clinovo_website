@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinovo · Site Feasibility Portal</title>
+  <meta name="description" content="Clinovo Enterprise Site Feasibility Portal & Analytics Dashboard for Phase III Clinical Trials.">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="landing-active">
+
+  <!-- PHARMA DOMAIN PURE ANIMATION LOADING OVERLAY (NO TEXT) -->
+  <div id="pharmaLoaderOverlay" class="pharma-loader-overlay">
+    <div class="pharma-loader-card">
+      <div class="dna-spinner">
+        <div class="dna-node node-1"></div>
+        <div class="dna-node node-2"></div>
+        <div class="dna-node node-3"></div>
+        <div class="dna-node node-4"></div>
+        <div class="dna-node node-5"></div>
+      </div>
+      <div class="loader-bar-container">
+        <div class="loader-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE MOUSE PARTICLES CANVAS -->
+  <canvas id="smokeCanvas"></canvas>
+
+  <!-- AUTOPLAYING FULL-BLEED HTML5 VIDEO BACKGROUND -->
+  <div class="bg-video-container">
+    <video 
+      id="bgVideo"
+      class="bg-video-element" 
+      autoplay 
+      loop 
+      muted 
+      playsinline 
+      poster="images/lab_bg.jpg"
+    >
+      <source src="videos/bg_lab.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- Dark Radial Overlay -->
+  <div class="video-dark-overlay"></div>
+
+  <!-- Shared Top Navigation Header -->
+  <header class="header-nav" id="mainHeader">
+    <div class="brand-logo" onclick="app.navigateTo('landing')">
+      <div class="brand-icon-square">C</div>
+      <div class="brand-name">Clinovo</div>
+    </div>
+
+    <div class="header-user-right" id="userNavActions">
+      <!-- Populated dynamically by JS when logged in -->
+    </div>
+  </header>
+
+  <!-- ========================================================================== -->
+  <!-- VIEW 1: LANDING & TRANSLUCENT GLASSMORPHIC LOGIN CARD                       -->
+  <!-- ========================================================================== -->
+  <section id="view-landing" class="view-section active-view">
+    <div class="login-viewport-container">
+      
+      <!-- Glowing Ambient Background Orbs -->
+      <div class="ambient-glow-orb orb-1"></div>
+      <div class="ambient-glow-orb orb-2"></div>
+
+      <!-- MAIN TRANSLUCENT GLASSMORPHIC LOGIN WINDOW -->
+      <div class="clinovo-login-window">
+        
+        <!-- LEFT PANEL -->
+        <div class="login-left-panel">
+          <div class="illustration-card-frame">
+            <img src="images/illustration.jpg" alt="Clinovo Analytics Team Illustration" class="illustration-img">
+          </div>
+
+          <h2 class="portal-left-heading">Clinovo Analytics Portal</h2>
+          <p class="portal-left-sub">Accelerating Clinical Development & Site Assessment Preparedness.</p>
+
+          <div class="carousel-dots" id="carouselDots">
+            <div class="dot-item active" onclick="app.setDot(0)"></div>
+            <div class="dot-item" onclick="app.setDot(1)"></div>
+            <div class="dot-item" onclick="app.setDot(2)"></div>
+            <div class="dot-item" onclick="app.setDot(3)"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="login-right-panel">
+          <div class="brand-right-header">
+            <div class="brand-icon-big">C</div>
+            <div class="brand-text-big">Clinovo</div>
+          </div>
+
+          <div class="portal-access-label">Site Feasibility Portal Access</div>
+
+          <!-- Credentials empty by default for manual user entry -->
+          <form class="login-form-content" onsubmit="app.handleSignIn(event)">
+            
+            <div class="form-group-field">
+              <label for="usernameInput">Username or email</label>
+              <input 
+                type="text" 
+                id="usernameInput" 
+                class="form-input-exact" 
+                placeholder="name@client.in or name@admin.in" 
+                value="" 
+                required
+              >
+            </div>
+
+            <div class="form-group-field">
+              <label for="passwordInput">Password</label>
+              <div class="input-password-wrapper">
+                <input 
+                  type="password" 
+                  id="passwordInput" 
+                  class="form-input-exact" 
+                  placeholder="Enter password" 
+                  value="" 
+                  required
+                >
+                <i 
+                  id="togglePasswordBtn"
+                  class="fa-solid fa-eye password-eye-icon" 
+                  onclick="app.togglePasswordVisibility()"
+                  title="Toggle Password Visibility"
+                ></i>
+              </div>
+            </div>
+
+            <div class="form-options-row">
+              <label class="remember-me-checkbox">
+                <input type="checkbox">
+                <span>Remember me</span>
+              </label>
+              <a href="#" class="forgot-password-link" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="sign-in-btn-exact">
+              Sign In
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================== -->
+  <!-- VIEW 2: CLIENT SITE FEASIBILITY QUESTIONNAIRE (WIDE FULL-WIDTH LAYOUT)     -->
+  <!-- ========================================================================== -->
+  <section id="view-questionnaire" class="view-section">
+    
+    <!-- Top Bar -->
+    <div class="sfq-topbar">
+      <div class="sfq-brand">
+        <span class="sfq-chip">SITE FEASIBILITY QUESTIONNAIRE</span>
+        <span class="sfq-title">Oncology — Phase III Registration Trial</span>
+      </div>
+      <div class="sfq-actions-right">
+        <button class="btn btn-secondary btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / PDF</button>
+        <button class="btn btn-secondary btn-sm" onclick="questApp.exportSummary()"><i class="fa-solid fa-file-export"></i> Export .txt</button>
+        <button class="btn btn-secondary btn-sm danger" onclick="questApp.resetAnswers()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+      </div>
+    </div>
+
+    <!-- Wide Top Horizontal Role Stepper Navigation Bar -->
+    <div class="sfq-horizontal-stepper-wrap">
+      <div class="sfq-overall-progress-chip">
+        <div class="ring-wrap" id="overallRing"></div>
+        <div class="overall-info">
+          <div class="lbl">COMPLETION</div>
+          <div class="pct" id="overallPct">0%</div>
+        </div>
+      </div>
+
+      <div class="sfq-stepper-scroll" id="questRoleTabs">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+    <!-- Main Wide Content Workspace -->
+    <div class="sfq-wide-workspace">
+      <main class="sfq-wide-content" id="questContent">
+        <!-- Rendered dynamically by JS -->
+      </main>
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================================== -->
+  <!-- VIEW 3: ADMIN FEASIBILITY DASHBOARD & ANALYTICS                            -->
+  <!-- ========================================================================== -->
+  <section id="view-dashboard" class="view-section">
+    <div class="dash-container">
+      
+      <!-- Top Title Bar -->
+      <div class="dash-title-bar">
+        <div>
+          <div class="dash-kicker">FEASIBILITY ANALYTICS & SCORING ENGINE</div>
+          <h1>Site Comparison Dashboard</h1>
+          <p class="dash-sub">Oncology Phase III — Comparative evaluation of candidate trial sites side-by-side</p>
+        </div>
+        <div class="dash-top-btns">
+          <button class="btn btn-secondary" onclick="dashApp.exportCSV()"><i class="fa-solid fa-download"></i> Export CSV</button>
+          <button class="btn btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+          <button class="btn btn-primary" onclick="dashApp.openModal()"><i class="fa-solid fa-plus"></i> + Add Site</button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-row" id="kpiRow">
+        <!-- Populated dynamically by JS -->
+      </div>
+
+      <!-- Main Charts Row -->
+      <div class="dash-grid-2">
+        <!-- Left: Category Radar Chart -->
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <div>
+              <h3>Category Comparison (Radar)</h3>
+              <p>Overlay candidate site profiles across all nine feasibility categories.</p>
+            </div>
+          </div>
+          <div class="radar-chips" id="radarChips"></div>
+          <div class="chart-box">
+            <svg id="radarSvg"></svg>
+          </div>
+        </div>
+
+        <!-- Right: Overall Ranking Bar Chart -->
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <div>
+              <h3>Overall Ranking</h3>
+              <p>Weighted feasibility score ranking (0–100 scale).</p>
+            </div>
+          </div>
+          <div class="chart-box">
+            <svg id="rankSvg"></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accrual potential vs. feasibility Bubble Chart -->
+      <div class="dash-card mt-6">
+        <div class="dash-card-head">
+          <div>
+            <h3>Accrual potential vs. feasibility</h3>
+            <p>Bubble size = total projected enrollment. Hover a bubble for site detail.</p>
+          </div>
+          <div class="bubble-legend" id="bubbleLegend"></div>
+        </div>
+        <div class="chart-box">
+          <svg id="bubbleSvg"></svg>
+        </div>
+      </div>
+
+      <!-- Full comparison matrix Table -->
+      <div class="dash-card mt-6">
+        <div class="dash-card-head">
+          <div>
+            <h3>Full comparison matrix</h3>
+            <p>Click a site name to edit. Click a column header to sort.</p>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="heat-table" id="heatTable">
+            <!-- Populated dynamically by JS -->
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EDIT / ADD SITE MODAL -->
+  <div class="modal-overlay" id="siteModalOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Clinical Site</h3>
+        <button class="modal-close-btn" onclick="dashApp.closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-group-field">
+            <label>Site Name *</label>
+            <input type="text" id="f_name" class="form-input-exact" placeholder="e.g. Memorial Oncology Institute">
+          </div>
+          <div class="form-group-field">
+            <label>Site Number</label>
+            <input type="text" id="f_number" class="form-input-exact" placeholder="e.g. 014">
+          </div>
+          <div class="form-group-field">
+            <label>Country</label>
+            <input type="text" id="f_country" class="form-input-exact" placeholder="e.g. United States">
+          </div>
+          <div class="form-group-field">
+            <label>Principal Investigator (PI)</label>
+            <input type="text" id="f_pi" class="form-input-exact" placeholder="e.g. Dr. R. Chen">
+          </div>
+          <div class="form-group-field">
+            <label>Status</label>
+            <select id="f_status" class="form-input-exact">
+              <option value="approved">Approved</option>
+              <option value="conditional">Conditional</option>
+              <option value="pending">Pending Review</option>
+              <option value="not_approved">Not Approved</option>
+            </select>
+          </div>
+          <div class="form-group-field">
+            <label>Monthly Accrual Rate (pts/mo)</label>
+            <input type="number" step="0.1" id="f_rate" class="form-input-exact" value="3.0">
+          </div>
+          <div class="form-group-field">
+            <label>Total Projected Enrollment</label>
+            <input type="number" id="f_total" class="form-input-exact" value="30">
+          </div>
+        </div>
+
+        <div class="section-subtitle mt-4">Domain Category Scores (0–100)</div>
+        <div id="f_scores" class="sliders-score-grid">
+          <!-- Dynamic Category Score Sliders -->
+        </div>
+
+        <div class="form-group-field mt-4">
+          <label>Notes / Comments</label>
+          <textarea id="f_notes" class="q-textarea" rows="3" placeholder="Operational notes..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="dashApp.closeModal()">Cancel</button>
+        <button class="btn btn-danger" id="deleteBtn" style="display:none;" onclick="dashApp.deleteSite()">Delete Site</button>
+        <button class="btn btn-primary" onclick="dashApp.saveModal()">Save Site Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastMsg" class="toast-popup"></div>
+
+  <!-- Application Logic JavaScript -->
+  <script src="js/app.js"></script>
+</body>
+</html>
