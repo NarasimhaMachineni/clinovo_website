@@ -60,10 +60,10 @@
     if (!t) return;
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  // MINIMAL SUBTLE PARTICLES CANVAS ENGINE
+  // ENHANCED LUMINOUS MOUSE CURSOR TRAIL & CONSTELLATION CANVAS ENGINE
   function initPharmaCanvas() {
     const canvas = document.getElementById('smokeCanvas');
     if (!canvas) return;
@@ -77,37 +77,95 @@
       height = canvas.height = window.innerHeight;
     });
 
-    const particles = [];
-    const maxParticles = 45;
+    const ambientParticles = [];
+    const cursorParticles = [];
+    const maxAmbient = 50;
 
-    for (let i = 0; i < maxParticles; i++) {
-      particles.push({
+    for (let i = 0; i < maxAmbient; i++) {
+      ambientParticles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.45,
-        radius: Math.random() * 3.5 + 1.5,
-        alpha: Math.random() * 0.45 + 0.1,
-        color: Math.random() > 0.5 ? 'rgba(45, 212, 191,' : 'rgba(59, 130, 246,'
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 3 + 1.2,
+        alpha: Math.random() * 0.5 + 0.1,
+        color: Math.random() > 0.5 ? '45, 212, 191' : '59, 130, 246'
       });
     }
+
+    // Interactive Mouse Cursor Particle Emitter
+    window.addEventListener('mousemove', (e) => {
+      if (state.currentView !== 'landing') return;
+      for (let i = 0; i < 2; i++) {
+        cursorParticles.push({
+          x: e.clientX,
+          y: e.clientY,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5 - 0.5,
+          radius: Math.random() * 4 + 2,
+          alpha: 0.8,
+          color: Math.random() > 0.5 ? '45, 212, 191' : '2, 132, 199',
+          life: 1.0
+        });
+      }
+    });
 
     function render() {
       ctx.clearRect(0, 0, width, height);
 
       if (state.currentView === 'landing') {
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
+        // Render Ambient Constellation Particles
+        for (let i = 0; i < ambientParticles.length; i++) {
+          const p = ambientParticles[i];
           p.x += p.vx;
           p.y += p.vy;
 
           if (p.x < 0 || p.x > width) p.vx *= -1;
           if (p.y < 0 || p.y > height) p.vy *= -1;
 
-          ctx.fillStyle = `${p.color} ${p.alpha})`;
+          ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fill();
+
+          // Connect nearby particles with subtle lines
+          for (let j = i + 1; j < ambientParticles.length; j++) {
+            const p2 = ambientParticles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 110) {
+              ctx.strokeStyle = `rgba(${p.color}, ${(1 - dist / 110) * 0.15})`;
+              ctx.lineWidth = 0.8;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Render Interactive Mouse Cursor Trail Particles
+        for (let i = cursorParticles.length - 1; i >= 0; i--) {
+          const cp = cursorParticles[i];
+          cp.x += cp.vx;
+          cp.y += cp.vy;
+          cp.life -= 0.025;
+          cp.radius *= 0.96;
+
+          if (cp.life <= 0 || cp.radius < 0.5) {
+            cursorParticles.splice(i, 1);
+            continue;
+          }
+
+          ctx.fillStyle = `rgba(${cp.color}, ${cp.life * 0.7})`;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = `rgba(${cp.color}, 0.8)`;
+          ctx.beginPath();
+          ctx.arc(cp.x, cp.y, cp.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
         }
       }
 
@@ -134,7 +192,7 @@
       setTimeout(() => {
         if (overlay) overlay.classList.remove('active');
         if (typeof callback === 'function') callback();
-      }, 1000);
+      }, 900);
     },
 
     navigateTo(viewId) {
@@ -498,7 +556,7 @@
       return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${trackColor}" stroke-width="${stroke}"/>
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${fillColor}" stroke-width="${stroke}"
           stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"
-          transform="rotate(-90 ${cx} ${cy})" style="transition:stroke-dashoffset .3s ease"/>`;
+          transform="rotate(-90 ${cx} ${cy})" style="transition:stroke-dashoffset .4s ease"/>`;
     },
 
     renderOverall() {
@@ -913,7 +971,7 @@
           pts.push(this.polar(cx, cy, R * v, a));
         });
         s += `<polygon points="${pts.map(p => p.join(',')).join(' ')}" fill="${color}" fill-opacity="0.25" stroke="${color}" stroke-width="2.5"/>`;
-        pts.forEach(p => { s += `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${color}"/>`; });
+        pts.forEach(p => { s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="${color}"/>`; });
       });
 
       svg.setAttribute('viewBox', '0 0 440 400');
@@ -942,7 +1000,7 @@
 
         s += `<text x="${left}" y="${y + 14}" font-size="12" font-weight="600" fill="#0f172a">${r.s.name.length > 24 ? r.s.name.slice(0, 22) + '…' : r.s.name}</text>`;
         s += `<rect x="${left}" y="${y + 20}" width="${chartW}" height="10" rx="5" fill="#e2e8f0"/>`;
-        s += `<rect x="${left}" y="${y + 20}" width="${Math.max(6, w)}" height="10" rx="5" fill="${color}"/>`;
+        s += `<rect x="${left}" y="${y + 20}" width="${Math.max(6, w)}" height="10" rx="5" fill="${color}" style="transition: width 0.6s ease;"/>`;
         s += `<text x="${left + chartW + 12}" y="${y + 29}" font-size="12" font-family="JetBrains Mono, monospace" font-weight="700" fill="#0d9488">${r.o}</text>`;
       });
 
@@ -995,7 +1053,7 @@
         const color = STATUS_COLOR[site.status] || '#94a3b8';
 
         s += `
-          <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.3" stroke="${color}" stroke-width="2" style="cursor:pointer;">
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.35" stroke="${color}" stroke-width="2.5" style="cursor:pointer; transition: transform 0.2s ease;">
             <title>${site.name} — Overall Score: ${o}, ${site.rate} pts/mo, ${site.total} total</title>
           </circle>
           <text x="${cx}" y="${cy + 3}" font-size="9.5" text-anchor="middle" fill="#0f172a" font-weight="600" pointer-events="none">${site.name.split(' ')[0]}</text>
