@@ -1,0 +1,13 @@
+[build]
+  publish = "public"
+  command = "echo 'Static build complete for Netlify'"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
