@@ -236,7 +236,7 @@ const QUESTIONNAIRE_MODULES_SCHEMA = [
   }
 ];
 
-// Initialize SQLite Database Tables & Seed Baseline Sites
+// Initialize SQLite Database Tables (ONLY REAL CLIENT DATA)
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS sites (
@@ -254,6 +254,9 @@ db.serialize(() => {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // PURGE OLD MOCK SITES IF PRESENT
+  db.run("DELETE FROM sites WHERE id IN ('s01', 's02', 's03')");
 
   db.run(`
     CREATE TABLE IF NOT EXISTS questionnaires (
@@ -297,61 +300,6 @@ db.serialize(() => {
     });
     stmt.finalize();
     console.log('Successfully updated all 12 questionnaire modules & questions in SQLite 3 database.');
-  });
-
-  // SEED INITIAL BASELINE SITES IF DATABASE IS EMPTY
-  db.get("SELECT COUNT(*) AS count FROM sites", (err, row) => {
-    if (!err && row && row.count === 0) {
-      const seedSites = [
-        {
-          id: 's01',
-          name: 'Memorial Cancer Institute',
-          number: '014',
-          country: 'United States',
-          pi: 'Dr. Robert Vance',
-          status: 'approved',
-          rate: 4.2,
-          total: 45,
-          weeks: 12,
-          scores_json: JSON.stringify({ invSite: 92, patientPop: 88, facilities: 95, pharmacy: 90, labBiomarker: 85, safety: 94, regulatory: 88, dataTech: 92, budget: 85 }),
-          notes: 'Top tier Phase III academic oncology site.'
-        },
-        {
-          id: 's02',
-          name: 'St. Jude Research Hospital',
-          number: '028',
-          country: 'United States',
-          pi: 'Dr. Elena Rostova',
-          status: 'approved',
-          rate: 3.8,
-          total: 38,
-          weeks: 12,
-          scores_json: JSON.stringify({ invSite: 88, patientPop: 85, facilities: 90, pharmacy: 88, labBiomarker: 92, safety: 90, regulatory: 86, dataTech: 90, budget: 82 }),
-          notes: 'High accrual potential for biomarker-selected patients.'
-        },
-        {
-          id: 's03',
-          name: 'Kyoto University Medical Center',
-          number: '105',
-          country: 'Japan',
-          pi: 'Dr. Hiroshi Tanaka',
-          status: 'conditional',
-          rate: 2.9,
-          total: 25,
-          weeks: 12,
-          scores_json: JSON.stringify({ invSite: 78, patientPop: 72, facilities: 82, pharmacy: 75, labBiomarker: 80, safety: 85, regulatory: 70, dataTech: 78, budget: 74 }),
-          notes: 'Requires central lab certification update.'
-        }
-      ];
-
-      const stmt = db.prepare(`
-        INSERT INTO sites (id, name, number, country, pi, status, rate, total, weeks, scores_json, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
-      seedSites.forEach(s => stmt.run(s.id, s.name, s.number, s.country, s.pi, s.status, s.rate, s.total, s.weeks, s.scores_json, s.notes));
-      stmt.finalize();
-      console.log('Seeded baseline clinical sites in SQLite 3 database.');
-    }
   });
 });
 
@@ -421,7 +369,7 @@ app.get('/api/questionnaire/modules', (req, res) => {
 });
 
 app.get('/api/sites', (req, res) => {
-  db.all('SELECT * FROM sites ORDER BY created_at DESC', [], (err, rows) => {
+  db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err, rows) => {
     if (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
@@ -470,7 +418,7 @@ app.post('/api/sites', (req, res) => {
       return res.status(500).json({ success: false, message: err.message });
     }
 
-    db.all('SELECT * FROM sites ORDER BY created_at DESC', [], (err2, rows) => {
+    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err2, rows) => {
       const sites = rows ? rows.map(r => ({
         id: r.id, name: r.name, number: r.number, country: r.country, pi: r.pi,
         status: r.status, rate: r.rate, total: r.total, weeks: r.weeks,
@@ -487,7 +435,7 @@ app.delete('/api/sites/:id', (req, res) => {
     if (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
-    db.all('SELECT * FROM sites ORDER BY created_at DESC', [], (err2, rows) => {
+    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err2, rows) => {
       const sites = rows ? rows.map(r => ({
         id: r.id, name: r.name, number: r.number, country: r.country, pi: r.pi,
         status: r.status, rate: r.rate, total: r.total, weeks: r.weeks,
@@ -539,7 +487,7 @@ app.post('/api/questionnaire/submit', (req, res) => {
         return res.status(500).json({ success: false, message: err.message });
       }
 
-      db.all('SELECT * FROM sites ORDER BY created_at DESC', [], (err2, rows) => {
+      db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err2, rows) => {
         const sites = rows ? rows.map(r => ({
           id: r.id, name: r.name, number: r.number, country: r.country, pi: r.pi,
           status: r.status, rate: r.rate, total: r.total, weeks: r.weeks,

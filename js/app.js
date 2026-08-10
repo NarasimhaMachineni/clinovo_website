@@ -859,10 +859,11 @@
 
       showToast(`Submitted Successfully! Overall Score: ${overallScore}/100`);
 
-      // PERSIST SUBMITTED SITES SO DASHBOARD ALWAYS REFLECTS 100% RELIABLY!
-      if (Array.isArray(returnedSites) && returnedSites.length > 0) {
-        state.sites = returnedSites;
-        localStorage.setItem('clinovo_sites_fallback', JSON.stringify(returnedSites));
+      // PERSIST ONLY REAL CLIENT SUBMITTED SITES
+      if (Array.isArray(returnedSites)) {
+        const cleanSites = returnedSites.filter(s => !['s01', 's02', 's03'].includes(s.id));
+        state.sites = cleanSites;
+        localStorage.setItem('clinovo_sites_fallback', JSON.stringify(cleanSites));
       }
 
       setTimeout(() => {
@@ -914,6 +915,7 @@
         existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
       } catch (e) {}
 
+      existing = existing.filter(s => !['s01', 's02', 's03'].includes(s.id));
       existing.unshift(newSite);
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(existing));
 
@@ -932,7 +934,7 @@
   };
 
   // -------------------------------------------------------------------------
-  // 3. ADMIN FEASIBILITY DASHBOARD MODULE
+  // 3. ADMIN FEASIBILITY DASHBOARD MODULE (ONLY REAL CLIENT DATA)
   // -------------------------------------------------------------------------
   const dashApp = {
     radarSelected: new Set(),
@@ -958,51 +960,12 @@
         if (saved) localSites = JSON.parse(saved);
       } catch (e) {}
 
-      // DEFAULT BASELINE DEMO SITES
-      const defaultBaseline = [
-        {
-          id: 's01',
-          name: 'Memorial Cancer Institute',
-          number: '014',
-          country: 'United States',
-          pi: 'Dr. Robert Vance',
-          status: 'approved',
-          rate: 4.2,
-          total: 45,
-          weeks: 12,
-          scores: { invSite: 92, patientPop: 88, facilities: 95, pharmacy: 90, labBiomarker: 85, safety: 94, regulatory: 88, dataTech: 92, budget: 85 },
-          notes: 'Top tier Phase III academic oncology site.'
-        },
-        {
-          id: 's02',
-          name: 'St. Jude Research Hospital',
-          number: '028',
-          country: 'United States',
-          pi: 'Dr. Elena Rostova',
-          status: 'approved',
-          rate: 3.8,
-          total: 38,
-          weeks: 12,
-          scores: { invSite: 88, patientPop: 85, facilities: 90, pharmacy: 88, labBiomarker: 92, safety: 90, regulatory: 86, dataTech: 90, budget: 82 },
-          notes: 'High accrual potential for biomarker-selected patients.'
-        },
-        {
-          id: 's03',
-          name: 'Kyoto University Medical Center',
-          number: '105',
-          country: 'Japan',
-          pi: 'Dr. Hiroshi Tanaka',
-          status: 'conditional',
-          rate: 2.9,
-          total: 25,
-          weeks: 12,
-          scores: { invSite: 78, patientPop: 72, facilities: 82, pharmacy: 75, labBiomarker: 80, safety: 85, regulatory: 70, dataTech: 78, budget: 74 },
-          notes: 'Requires central lab certification update.'
-        }
-      ];
+      // EXCLUSIVELY SHOW REAL CLIENT SUBMITTED QUESTIONNAIRES (NO MOCK DATA)
+      const mockIds = new Set(['s01', 's02', 's03']);
+      apiSites = apiSites.filter(s => !mockIds.has(s.id));
+      localSites = localSites.filter(s => !mockIds.has(s.id));
 
       const mergedMap = new Map();
-      defaultBaseline.forEach(s => mergedMap.set(s.id, s));
       apiSites.forEach(s => mergedMap.set(s.id, s));
       localSites.forEach(s => mergedMap.set(s.id, s));
 
@@ -1011,6 +974,8 @@
 
       if (state.sites.length > 0) {
         this.radarSelected = new Set(state.sites.slice(0, Math.min(3, state.sites.length)).map(s => s.id));
+      } else {
+        this.radarSelected.clear();
       }
       this.renderAll();
     },
@@ -1040,9 +1005,9 @@
       if (!el) return;
       if (!state.sites.length) {
         el.innerHTML = `
-          <div class="kpi-card" style="grid-column: 1 / -1; text-align: center; padding: 28px;">
-            <div class="kpi-label" style="font-size: 14px; color: #0f172a; font-weight: 700;">No Candidate Sites Submitted Yet</div>
-            <div class="kpi-sub" style="font-size: 12px; margin-top: 6px;">Client questionnaire responses will appear here live when submitted.</div>
+          <div class="kpi-card" style="grid-column: 1 / -1; text-align: center; padding: 32px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 16px;">
+            <div style="font-size: 16px; color: #0f172a; font-weight: 700; margin-bottom: 6px;">No Questionnaire Data Submitted Yet</div>
+            <div style="font-size: 13px; color: #64748b;">Log in as a <strong>Client</strong> and fill out the Site Feasibility Questionnaire to submit your real clinical site data. Once submitted, your record will reflect here live.</div>
           </div>
         `;
         return;
@@ -1104,7 +1069,7 @@
       const el = document.getElementById('radarChips');
       if (!el) return;
       if (!state.sites.length) {
-        el.innerHTML = `<span style="font-size:12px; color:#64748b;">No candidate sites to display in radar overlay</span>`;
+        el.innerHTML = `<span style="font-size:12px; color:#64748b;">No client submitted sites to display in radar overlay</span>`;
         return;
       }
       el.innerHTML = state.sites.map((s, i) => {
@@ -1117,6 +1082,16 @@
           </div>
         `;
       }).join('');
+    },
+
+    toggleRadarChip(id) {
+      if (this.radarSelected.has(id)) {
+        this.radarSelected.delete(id);
+      } else {
+        this.radarSelected.add(id);
+      }
+      this.renderRadarChips();
+      this.renderRadar();
     },
 
     polar(cx, cy, r, angle) {
@@ -1176,7 +1151,7 @@
 
       if (!state.sites.length) {
         svg.setAttribute('viewBox', '0 0 320 100');
-        svg.innerHTML = `<text x="160" y="50" font-size="12" fill="#64748b" text-anchor="middle">No candidate sites to rank</text>`;
+        svg.innerHTML = `<text x="160" y="50" font-size="12" fill="#64748b" text-anchor="middle">No client submitted sites to rank</text>`;
         return;
       }
 
@@ -1209,7 +1184,7 @@
 
       if (!state.sites.length) {
         svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-        svg.innerHTML = `<text x="${W/2}" y="${H/2}" font-size="13" fill="#64748b" text-anchor="middle">No site enrollment data submitted</text>`;
+        svg.innerHTML = `<text x="${W/2}" y="${H/2}" font-size="13" fill="#64748b" text-anchor="middle">No client site data submitted yet</text>`;
         return;
       }
 
@@ -1286,8 +1261,10 @@
         table.innerHTML = `
           <tbody>
             <tr>
-              <td colspan="12" style="padding: 32px; text-align: center; color: #64748b;">
-                No candidate site data submitted yet. Fill out the <strong>Client Site Feasibility Questionnaire</strong> to populate live site scores here.
+              <td colspan="12" style="padding: 36px; text-align: center; color: #64748b;">
+                <i class="fa-solid fa-folder-open" style="font-size: 24px; color: #94a3b8; margin-bottom: 8px; display: block;"></i>
+                No candidate sites submitted by clients yet.<br>
+                <span style="font-size: 12px; color: #94a3b8;">Client filled questionnaires will automatically populate this dashboard table when submitted.</span>
               </td>
             </tr>
           </tbody>
@@ -1477,10 +1454,11 @@
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'clinovo-site-feasibility-matrix.csv';
-      a.click();
+      const a = document.getElementById('exportCsvBtn');
+      const hiddenA = document.createElement('a');
+      hiddenA.href = url;
+      hiddenA.download = 'clinovo-site-feasibility-matrix.csv';
+      hiddenA.click();
       URL.revokeObjectURL(url);
       showToast('CSV exported');
     }
