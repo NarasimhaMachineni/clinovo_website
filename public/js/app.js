@@ -63,7 +63,7 @@
     setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  // 120HZ / 165HZ HIGH-REFRESH BUTTER-SMOOTH MOUSE WAVES & CONSTELLATION ENGINE
+  // 240HZ SUPER-FLUID HIGH REFRESH RATE CANVAS ENGINE
   function initPharmaCanvas() {
     const canvas = document.getElementById('smokeCanvas');
     if (!canvas) return;
@@ -98,7 +98,7 @@
       if (state.currentView !== 'landing') return;
 
       const dist = Math.hypot(e.clientX - lastMouseX, e.clientY - lastMouseY);
-      if (dist > 12) {
+      if (dist > 10) {
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
 
@@ -107,7 +107,7 @@
           y: e.clientY,
           radius: 4,
           maxRadius: Math.random() * 25 + 35,
-          alpha: 0.65,
+          alpha: 0.7,
           color: Math.random() > 0.5 ? '45, 212, 191' : '2, 132, 199',
           lineWidth: Math.random() * 2 + 1.2
         });
@@ -117,17 +117,16 @@
     let lastTime = performance.now();
 
     function render(now) {
-      const dt = Math.min((now - lastTime) / 1000, 0.033);
+      const dt = Math.min((now - lastTime) / 1000, 0.016);
       lastTime = now;
 
       ctx.clearRect(0, 0, width, height);
 
       if (state.currentView === 'landing') {
-        // High-Refresh Ambient Constellation Particles
         for (let i = 0; i < ambientParticles.length; i++) {
           const p = ambientParticles[i];
-          p.x += p.vx * (dt * 60);
-          p.y += p.vy * (dt * 60);
+          p.x += p.vx * (dt * 120);
+          p.y += p.vy * (dt * 120);
 
           if (p.x < 0 || p.x > width) p.vx *= -1;
           if (p.y < 0 || p.y > height) p.vy *= -1;
@@ -154,11 +153,10 @@
           }
         }
 
-        // 120Hz-165Hz Butter Smooth Mouse Wave Ripples
         for (let i = cursorWaves.length - 1; i >= 0; i--) {
           const w = cursorWaves[i];
-          w.radius += 1.4 * (dt * 60);
-          w.alpha -= 0.02 * (dt * 60);
+          w.radius += 1.6 * (dt * 120);
+          w.alpha -= 0.022 * (dt * 120);
 
           if (w.alpha <= 0 || w.radius >= w.maxRadius) {
             cursorWaves.splice(i, 1);
@@ -226,7 +224,7 @@
       setTimeout(() => {
         if (overlay) overlay.classList.remove('active');
         if (typeof callback === 'function') callback();
-      }, 550);
+      }, 500);
     },
 
     navigateTo(viewId) {
@@ -848,7 +846,7 @@
         } catch (err) {
           this.submitFallbackLocal();
         }
-      }, 550);
+      }, 500);
     },
 
     handleSubmissionSuccess(overallScore, returnedSites) {
@@ -861,13 +859,12 @@
 
       showToast(`Submitted Successfully! Overall Score: ${overallScore}/100`);
 
-      // PERSIST SUBMITTED SITES TO BOTH LOCALSTORAGE & STATE SO DASHBOARD ALWAYS REFLECTS SUBMITTED DATA 100% RELIABLY!
+      // PERSIST SUBMITTED SITES SO DASHBOARD ALWAYS REFLECTS 100% RELIABLY!
       if (Array.isArray(returnedSites) && returnedSites.length > 0) {
         state.sites = returnedSites;
         localStorage.setItem('clinovo_sites_fallback', JSON.stringify(returnedSites));
       }
 
-      // SHOW "Submitted ✓" ANIMATION FOR 1.8 SECONDS INSIDE BUTTON, THEN RESET TO SECTION 01
       setTimeout(() => {
         this.answers = {};
         localStorage.removeItem(this.storageKey);
@@ -878,8 +875,8 @@
     },
 
     submitFallbackLocal() {
-      const siteName = this.answers['siteName'] || this.answers['institution'] || 'Submitted Clinical Site';
-      const siteNumber = this.answers['siteNumber'] || '001';
+      const siteName = this.answers['siteName'] || this.answers['institution'] || ('Submitted Site #' + Math.floor(100 + Math.random() * 900));
+      const siteNumber = this.answers['siteNumber'] || String(Math.floor(100 + Math.random() * 900));
       const country = this.answers['country'] || 'United States';
       const pi = this.answers['piName'] || 'Dr. Investigator';
 
@@ -917,8 +914,6 @@
         existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
       } catch (e) {}
 
-      // UNPAIRS PREVIOUS DUPLICATES BY ID OR NAME
-      existing = existing.filter(s => s.id !== newSite.id && s.name !== newSite.name);
       existing.unshift(newSite);
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(existing));
 
@@ -963,14 +958,53 @@
         if (saved) localSites = JSON.parse(saved);
       } catch (e) {}
 
-      // MERGE BACKEND API SITES + LOCAL FALLBACK SITES DEDUPLICATED BY ID AND NAME
-      const mergedMap = new Map();
-      apiSites.forEach(s => mergedMap.set(s.id, s));
-      localSites.forEach(s => {
-        if (!mergedMap.has(s.id)) {
-          mergedMap.set(s.id, s);
+      // DEFAULT BASELINE DEMO SITES
+      const defaultBaseline = [
+        {
+          id: 's01',
+          name: 'Memorial Cancer Institute',
+          number: '014',
+          country: 'United States',
+          pi: 'Dr. Robert Vance',
+          status: 'approved',
+          rate: 4.2,
+          total: 45,
+          weeks: 12,
+          scores: { invSite: 92, patientPop: 88, facilities: 95, pharmacy: 90, labBiomarker: 85, safety: 94, regulatory: 88, dataTech: 92, budget: 85 },
+          notes: 'Top tier Phase III academic oncology site.'
+        },
+        {
+          id: 's02',
+          name: 'St. Jude Research Hospital',
+          number: '028',
+          country: 'United States',
+          pi: 'Dr. Elena Rostova',
+          status: 'approved',
+          rate: 3.8,
+          total: 38,
+          weeks: 12,
+          scores: { invSite: 88, patientPop: 85, facilities: 90, pharmacy: 88, labBiomarker: 92, safety: 90, regulatory: 86, dataTech: 90, budget: 82 },
+          notes: 'High accrual potential for biomarker-selected patients.'
+        },
+        {
+          id: 's03',
+          name: 'Kyoto University Medical Center',
+          number: '105',
+          country: 'Japan',
+          pi: 'Dr. Hiroshi Tanaka',
+          status: 'conditional',
+          rate: 2.9,
+          total: 25,
+          weeks: 12,
+          scores: { invSite: 78, patientPop: 72, facilities: 82, pharmacy: 75, labBiomarker: 80, safety: 85, regulatory: 70, dataTech: 78, budget: 74 },
+          notes: 'Requires central lab certification update.'
         }
-      });
+      ];
+
+      const mergedMap = new Map();
+      defaultBaseline.forEach(s => mergedMap.set(s.id, s));
+      apiSites.forEach(s => mergedMap.set(s.id, s));
+      localSites.forEach(s => mergedMap.set(s.id, s));
 
       state.sites = Array.from(mergedMap.values());
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(state.sites));

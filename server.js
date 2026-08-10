@@ -1,32 +1,26 @@
 const express = require('express');
-const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 const PORT = process.env.PORT || 3005;
 
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Create DB Directory if missing
-const dbDir = path.join(__dirname, 'db');
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
-}
-
-const dbPath = path.join(dbDir, 'feasibility.db');
+// SQLite 3 Database File Connection
+const dbPath = path.join(__dirname, 'db', 'feasibility.db');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    console.error('Error connecting to SQLite database:', err.message);
+    console.error('Error opening SQLite 3 database:', err.message);
   } else {
-    console.log('Connected to SQLite 3 database at:', dbPath);
+    console.log(`Connected to SQLite 3 database at: ${dbPath}`);
   }
 });
 
-// FULL 12-MODULE QUESTIONNAIRE DEFINITION ARRAY FOR SQLITE 3 DATABASE
+// FULL 12 QUESTIONNAIRE MODULES SCHEMA
 const QUESTIONNAIRE_MODULES_SCHEMA = [
   {
     module_number: '01',
@@ -242,7 +236,7 @@ const QUESTIONNAIRE_MODULES_SCHEMA = [
   }
 ];
 
-// Initialize SQLite Database Tables
+// Initialize SQLite Database Tables & Seed Baseline Sites
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS sites (
@@ -303,6 +297,61 @@ db.serialize(() => {
     });
     stmt.finalize();
     console.log('Successfully updated all 12 questionnaire modules & questions in SQLite 3 database.');
+  });
+
+  // SEED INITIAL BASELINE SITES IF DATABASE IS EMPTY
+  db.get("SELECT COUNT(*) AS count FROM sites", (err, row) => {
+    if (!err && row && row.count === 0) {
+      const seedSites = [
+        {
+          id: 's01',
+          name: 'Memorial Cancer Institute',
+          number: '014',
+          country: 'United States',
+          pi: 'Dr. Robert Vance',
+          status: 'approved',
+          rate: 4.2,
+          total: 45,
+          weeks: 12,
+          scores_json: JSON.stringify({ invSite: 92, patientPop: 88, facilities: 95, pharmacy: 90, labBiomarker: 85, safety: 94, regulatory: 88, dataTech: 92, budget: 85 }),
+          notes: 'Top tier Phase III academic oncology site.'
+        },
+        {
+          id: 's02',
+          name: 'St. Jude Research Hospital',
+          number: '028',
+          country: 'United States',
+          pi: 'Dr. Elena Rostova',
+          status: 'approved',
+          rate: 3.8,
+          total: 38,
+          weeks: 12,
+          scores_json: JSON.stringify({ invSite: 88, patientPop: 85, facilities: 90, pharmacy: 88, labBiomarker: 92, safety: 90, regulatory: 86, dataTech: 90, budget: 82 }),
+          notes: 'High accrual potential for biomarker-selected patients.'
+        },
+        {
+          id: 's03',
+          name: 'Kyoto University Medical Center',
+          number: '105',
+          country: 'Japan',
+          pi: 'Dr. Hiroshi Tanaka',
+          status: 'conditional',
+          rate: 2.9,
+          total: 25,
+          weeks: 12,
+          scores_json: JSON.stringify({ invSite: 78, patientPop: 72, facilities: 82, pharmacy: 75, labBiomarker: 80, safety: 85, regulatory: 70, dataTech: 78, budget: 74 }),
+          notes: 'Requires central lab certification update.'
+        }
+      ];
+
+      const stmt = db.prepare(`
+        INSERT INTO sites (id, name, number, country, pi, status, rate, total, weeks, scores_json, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      seedSites.forEach(s => stmt.run(s.id, s.name, s.number, s.country, s.pi, s.status, s.rate, s.total, s.weeks, s.scores_json, s.notes));
+      stmt.finalize();
+      console.log('Seeded baseline clinical sites in SQLite 3 database.');
+    }
   });
 });
 
@@ -459,12 +508,11 @@ app.post('/api/questionnaire/submit', (req, res) => {
 
   const qId = 'q' + Date.now();
   const siteId = 's' + Date.now();
-  const siteName = answers.siteName || answers.institution || 'Submitted Clinical Site';
+  const siteName = answers.siteName || answers.institution || ('Submitted Site #' + Math.floor(100 + Math.random() * 900));
   const siteNumber = answers.siteNumber || String(Math.floor(100 + Math.random() * 900));
   const country = answers.country || 'United States';
   const piName = answers.piName || answers.completedBy || 'Dr. Submitting PI';
 
-  // Compute status based strictly on scoring algorithm
   let statusVal = 'pending';
   if (overallScore >= 80) statusVal = 'approved';
   else if (overallScore >= 65) statusVal = 'conditional';
