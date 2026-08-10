@@ -60,10 +60,10 @@
     if (!t) return;
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  // SUBTLE PARTICLES CANVAS ENGINE
+  // LUMINOUS MOUSE CURSOR WAVES & CONSTELLATION CANVAS ENGINE
   function initPharmaCanvas() {
     const canvas = document.getElementById('smokeCanvas');
     if (!canvas) return;
@@ -77,27 +77,50 @@
       height = canvas.height = window.innerHeight;
     });
 
-    const particles = [];
-    const maxParticles = 40;
+    const ambientParticles = [];
+    const cursorWaves = [];
+    const maxAmbient = 45;
 
-    for (let i = 0; i < maxParticles; i++) {
-      particles.push({
+    for (let i = 0; i < maxAmbient; i++) {
+      ambientParticles.push({
         x: Math.random() * width,
         y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.4,
         vy: (Math.random() - 0.5) * 0.4,
         radius: Math.random() * 3 + 1.2,
-        alpha: Math.random() * 0.4 + 0.1,
+        alpha: Math.random() * 0.45 + 0.1,
         color: Math.random() > 0.5 ? '45, 212, 191' : '59, 130, 246'
       });
     }
+
+    let lastMouseX = 0, lastMouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+      if (state.currentView !== 'landing') return;
+
+      const dist = Math.hypot(e.clientX - lastMouseX, e.clientY - lastMouseY);
+      if (dist > 15) {
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+
+        cursorWaves.push({
+          x: e.clientX,
+          y: e.clientY,
+          radius: 6,
+          maxRadius: Math.random() * 25 + 35,
+          alpha: 0.65,
+          color: Math.random() > 0.5 ? '45, 212, 191' : '2, 132, 199',
+          lineWidth: Math.random() * 2 + 1.2
+        });
+      }
+    });
 
     function render() {
       ctx.clearRect(0, 0, width, height);
 
       if (state.currentView === 'landing') {
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
+        // Render Ambient Constellation Particles
+        for (let i = 0; i < ambientParticles.length; i++) {
+          const p = ambientParticles[i];
           p.x += p.vx;
           p.y += p.vy;
 
@@ -108,6 +131,40 @@
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fill();
+
+          for (let j = i + 1; j < ambientParticles.length; j++) {
+            const p2 = ambientParticles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+
+            if (d < 100) {
+              ctx.strokeStyle = `rgba(${p.color}, ${(1 - d / 100) * 0.12})`;
+              ctx.lineWidth = 0.8;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Render Interactive Mouse Wave Ripples
+        for (let i = cursorWaves.length - 1; i >= 0; i--) {
+          const w = cursorWaves[i];
+          w.radius += 1.2;
+          w.alpha -= 0.018;
+
+          if (w.alpha <= 0 || w.radius >= w.maxRadius) {
+            cursorWaves.splice(i, 1);
+            continue;
+          }
+
+          ctx.strokeStyle = `rgba(${w.color}, ${w.alpha})`;
+          ctx.lineWidth = w.lineWidth;
+          ctx.beginPath();
+          ctx.arc(w.x, w.y, w.radius, 0, Math.PI * 2);
+          ctx.stroke();
         }
       }
 
@@ -128,17 +185,25 @@
       if (savedRole && savedView && savedView !== 'landing') {
         state.userRole = savedRole;
         state.userEmail = savedEmail || (savedRole === 'admin' ? 'name@admin.in' : 'name@client.in');
-        state.currentView = savedView;
+        
+        // RESTRICT CLIENT FROM DASHBOARD ON REFRESH
+        let targetView = savedView;
+        if (savedRole === 'client' && savedView === 'dashboard') {
+          targetView = 'questionnaire';
+          sessionStorage.setItem('clinovo_current_view', 'questionnaire');
+        }
+
+        state.currentView = targetView;
         document.body.classList.remove('landing-active');
         
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-view'));
-        const targetView = document.getElementById(`view-${savedView}`);
-        if (targetView) targetView.classList.add('active-view');
+        const targetViewEl = document.getElementById(`view-${targetView}`);
+        if (targetViewEl) targetViewEl.classList.add('active-view');
 
         this.updateUserNav();
-        if (savedView === 'dashboard') {
+        if (targetView === 'dashboard') {
           dashApp.fetchSites();
-        } else if (savedView === 'questionnaire') {
+        } else if (targetView === 'questionnaire') {
           questApp.renderAll();
         }
       } else {
@@ -162,6 +227,16 @@
     },
 
     navigateTo(viewId) {
+      // SECURITY ACCESS CONTROL: CLIENT CANNOT ACCESS DASHBOARD
+      if (viewId === 'dashboard' && state.userRole !== 'admin') {
+        showToast('Access Restricted: Admin privileges required.');
+        if (state.userRole === 'client') {
+          viewId = 'questionnaire';
+        } else {
+          viewId = 'landing';
+        }
+      }
+
       this.showPharmaLoader(() => {
         state.currentView = viewId;
         sessionStorage.setItem('clinovo_current_view', viewId);
@@ -688,6 +763,7 @@
         this.activeSection--;
         this.renderNav();
         this.renderContent();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
 
@@ -696,6 +772,7 @@
         this.activeSection++;
         this.renderNav();
         this.renderContent();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         this.submitToAdmin();
       }
@@ -753,18 +830,25 @@
           });
           const data = await res.json();
           if (data.success) {
-            state.sites = data.sites;
-            localStorage.setItem('clinovo_sites_fallback', JSON.stringify(data.sites));
-            showToast(`Site saved! Overall Score: ${data.overallScore}/100`);
-            app.navigateTo('dashboard');
+            this.handleSubmissionSuccess(data.overallScore);
           } else {
             this.submitFallbackLocal();
           }
         } catch (err) {
-          // SEAMLESS FALLBACK FOR GITHUB PAGES / STATIC HOSTING
           this.submitFallbackLocal();
         }
       });
+    },
+
+    handleSubmissionSuccess(overallScore) {
+      // CLEAR DRAFT & RESET QUESTIONNAIRE FOR CLIENT
+      this.answers = {};
+      localStorage.removeItem(this.storageKey);
+      this.activeSection = 0;
+      this.renderAll();
+
+      showToast(`Questionnaire Submitted Successfully! Overall Score: ${overallScore}/100`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
     submitFallbackLocal() {
@@ -773,7 +857,6 @@
       const country = this.answers['country'] || 'United States';
       const pi = this.answers['piName'] || 'Dr. Investigator';
 
-      // Compute local scores across 9 domains
       const scores = {
         invSite: this.calcDomain(['q_gcpPI', 'q_gcpStaff', 'q_cv', 'q_delegation', 'q_dedicated']),
         patientPop: this.calcDomain(['q_referral', 'q_reflex', 'q_diverse', 'q_realistic', 'q_soc', 'q_survival']),
@@ -806,10 +889,8 @@
       const existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
       existing.unshift(newSite);
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(existing));
-      state.sites = existing;
 
-      showToast(`Site saved! Overall Score: ${overallScore}/100`);
-      app.navigateTo('dashboard');
+      this.handleSubmissionSuccess(overallScore);
     },
 
     calcDomain(qIds) {

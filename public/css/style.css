@@ -231,6 +231,11 @@ input, select, textarea, button {
   align-items: center;
   gap: 12px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.03);
 }
 
 .brand-icon-square {
@@ -244,6 +249,7 @@ input, select, textarea, button {
   font-weight: 700;
   color: #fff;
   font-size: 19px;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
 }
 
 .brand-name {
@@ -264,7 +270,7 @@ input, select, textarea, button {
 }
 
 .btn-logout-exact {
-  padding: 7px 18px;
+  padding: 8px 20px;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: var(--radius-sm);
@@ -276,14 +282,21 @@ input, select, textarea, button {
   align-items: center;
   gap: 8px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-logout-exact:hover {
   background: rgba(225, 29, 72, 0.08);
   border-color: var(--brand-rose);
   color: var(--brand-rose);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.18);
+}
+
+.btn-logout-exact:active {
+  transform: translateY(0) scale(0.97);
 }
 
 /* VIEW CONTAINERS & SPA ROUTER STYLES */
@@ -337,6 +350,12 @@ input, select, textarea, button {
   border-radius: var(--radius-lg);
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.clinovo-login-window:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 50px 90px rgba(0, 0, 0, 0.45);
 }
 
 .login-left-panel {
@@ -358,6 +377,11 @@ input, select, textarea, button {
   overflow: hidden;
   margin-bottom: 24px;
   box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+  transition: transform 0.3s ease;
+}
+
+.illustration-card-frame:hover {
+  transform: scale(1.02);
 }
 
 .illustration-img {
@@ -390,6 +414,7 @@ input, select, textarea, button {
   border-radius: 50%;
   background: rgba(148, 163, 184, 0.5);
   cursor: pointer;
+  transition: all 0.25s ease;
 }
 .dot-item.active {
   background: var(--brand-teal);
@@ -459,12 +484,13 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .form-input-exact:focus {
   outline: none;
   border-color: var(--brand-teal);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18);
 }
 
 .input-password-wrapper {
@@ -478,6 +504,11 @@ input, select, textarea, button {
   transform: translateY(-50%);
   color: #94a3b8;
   cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.password-eye-icon:hover {
+  color: var(--brand-teal);
 }
 
 .form-options-row {
@@ -505,22 +536,100 @@ input, select, textarea, button {
 .sign-in-btn-exact {
   width: 100%;
   height: 48px;
-  background: var(--brand-teal);
+  background: linear-gradient(135deg, var(--brand-teal), #0f766e);
   color: #fff;
   font-weight: 700;
   font-size: 15px;
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.2s ease;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sign-in-btn-exact::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.5s ease;
+}
+
+.sign-in-btn-exact:hover::after {
+  left: 100%;
 }
 
 .sign-in-btn-exact:hover {
-  background: #0f766e;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4);
+}
+
+.sign-in-btn-exact:active {
+  transform: translateY(0) scale(0.98);
 }
 
 /* -------------------------------------------------------------------------
-   3. CLIENT QUESTIONNAIRE WIDE FULL-WIDTH LAYOUT (NO SIDEBAR)
+   3. BUTTON ANIMATIONS SYSTEM
+   ------------------------------------------------------------------------- */
+.btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary { 
+  background: linear-gradient(135deg, var(--brand-teal), #0f766e); 
+  color: #fff; 
+}
+.btn-primary:hover { 
+  background: linear-gradient(135deg, #0f766e, #115e59); 
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+}
+
+.btn-secondary { 
+  background: #ffffff; 
+  border: 1px solid #cbd5e1; 
+  color: #334155; 
+}
+.btn-secondary:hover { 
+  background: #f8fafc; 
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.btn-danger { 
+  background: linear-gradient(135deg, var(--brand-rose), #be123c); 
+  color: #fff; 
+}
+.btn-danger:hover {
+  background: linear-gradient(135deg, #be123c, #9f1239);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.35);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* -------------------------------------------------------------------------
+   4. CLIENT QUESTIONNAIRE WIDE FULL-WIDTH LAYOUT
    ------------------------------------------------------------------------- */
 .sfq-topbar {
   background: #ffffff;
@@ -603,13 +712,14 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: all 0.22s ease;
   flex-shrink: 0;
 }
 
 .sfq-role-tab:hover {
   background: #f8fafc;
   border-color: #cbd5e1;
+  transform: translateY(-2px);
 }
 
 .sfq-role-tab.active {
@@ -617,7 +727,7 @@ input, select, textarea, button {
   border-color: var(--brand-teal);
   color: var(--brand-teal);
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.12);
+  box-shadow: 0 3px 10px rgba(13, 148, 136, 0.15);
 }
 
 .sfq-role-tab .r-num {
@@ -678,6 +788,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .q-input-text:focus {
@@ -695,6 +806,7 @@ input, select, textarea, button {
   color: #0f172a;
   font-size: 14px;
   resize: vertical;
+  transition: all 0.2s ease;
 }
 
 .q-textarea:focus {
@@ -703,7 +815,7 @@ input, select, textarea, button {
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
 
-/* PASTEL YES / NO BUTTON STYLES */
+/* PASTEL YES / NO BUTTON STYLES WITH ANIMATIONS */
 .yn-row { display: flex; align-items: center; gap: 12px; }
 .yn-btn {
   padding: 9px 24px;
@@ -714,11 +826,20 @@ input, select, textarea, button {
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.yn-btn.yes.on { background: rgba(13, 148, 136, 0.15); border-color: var(--brand-teal); color: var(--brand-teal); font-weight: 700; }
-.yn-btn.no.on { background: rgba(225, 29, 72, 0.15); border-color: var(--brand-rose); color: var(--brand-rose); font-weight: 700; }
+.yn-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.yn-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.yn-btn.yes.on { background: rgba(13, 148, 136, 0.15); border-color: var(--brand-teal); color: var(--brand-teal); font-weight: 700; box-shadow: 0 3px 10px rgba(13, 148, 136, 0.2); }
+.yn-btn.no.on { background: rgba(225, 29, 72, 0.15); border-color: var(--brand-rose); color: var(--brand-rose); font-weight: 700; box-shadow: 0 3px 10px rgba(225, 29, 72, 0.2); }
 
 .yn-comment { flex: 1; }
 .yn-comment input {
@@ -729,19 +850,27 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 13px;
+  transition: all 0.2s ease;
 }
 
 .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill-item {
-  padding: 7px 16px;
+  padding: 8px 18px;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: var(--radius-full);
   color: #475569;
   font-size: 13px;
   cursor: pointer;
+  transition: all 0.22s ease;
 }
-.pill-item.on { background: var(--brand-teal); border-color: var(--brand-teal); color: #fff; font-weight: 600; }
+
+.pill-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-teal);
+}
+
+.pill-item.on { background: var(--brand-teal); border-color: var(--brand-teal); color: #fff; font-weight: 600; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25); }
 
 .q-divider {
   border-top: 1px solid var(--border-light);
@@ -769,7 +898,7 @@ input, select, textarea, button {
 }
 
 /* -------------------------------------------------------------------------
-   4. ADMIN FEASIBILITY DASHBOARD STYLES (CLEAN WHITE CARD CORPORATE THEME)
+   5. ADMIN FEASIBILITY DASHBOARD STYLES
    ------------------------------------------------------------------------- */
 .dash-container {
   max-width: 1340px;
@@ -791,25 +920,6 @@ input, select, textarea, button {
 
 .dash-top-btns { display: flex; gap: 12px; }
 
-.btn {
-  padding: 9px 18px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: background 0.2s ease;
-}
-
-.btn-primary { background: var(--brand-teal); color: #fff; }
-.btn-primary:hover { background: #0f766e; }
-.btn-secondary { background: #ffffff; border: 1px solid #cbd5e1; color: #334155; }
-.btn-secondary:hover { background: #f1f5f9; }
-.btn-danger { background: var(--brand-rose); color: #fff; }
-
 .kpi-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -823,6 +933,12 @@ input, select, textarea, button {
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-md);
   padding: 22px;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .kpi-card.flag { border-color: rgba(225, 29, 72, 0.4); }
@@ -838,6 +954,11 @@ input, select, textarea, button {
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-md);
   padding: 26px;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.dash-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .dash-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
@@ -856,7 +977,13 @@ input, select, textarea, button {
   display: flex;
   align-items: center;
   gap: 6px;
+  transition: transform 0.2s ease;
 }
+
+.radar-chip:hover {
+  transform: translateY(-1px);
+}
+
 .radar-chip.off { opacity: 0.4; }
 .radar-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
 
@@ -942,10 +1069,31 @@ input, select, textarea, button {
 }
 .toast-popup.show { opacity: 1; }
 
-/* RESPONSIVE DESIGN RULES */
+/* -------------------------------------------------------------------------
+   6. HIGHLY RESPONSIVE BREAKPOINTS (MOBILE, TABLET, LAPTOP)
+   ------------------------------------------------------------------------- */
 @media (max-width: 992px) {
-  .clinovo-login-window { flex-direction: column; }
-  .login-left-panel { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.35); padding: 32px; }
-  .login-right-panel { padding: 32px; }
+  .header-nav { padding: 0 20px; }
+  .clinovo-login-window { flex-direction: column; width: 100%; max-width: 540px; }
+  .login-left-panel { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.35); padding: 32px 24px; }
+  .login-right-panel { padding: 32px 24px; }
   .dash-grid-2 { grid-template-columns: 1fr; }
+  .dash-title-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .sfq-topbar { flex-direction: column; align-items: flex-start; gap: 12px; padding: 14px 20px; }
+  .sfq-actions-right { width: 100%; flex-wrap: wrap; }
+  .sfq-horizontal-stepper-wrap { padding: 12px 20px; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .sfq-wide-workspace { padding: 20px 12px 40px 12px; }
+  .q-card-container { padding: 24px 18px; }
+}
+
+@media (max-width: 576px) {
+  .brand-name { font-size: 18px; }
+  .login-viewport-container { padding: 20px 12px; }
+  .portal-left-heading { font-size: 19px; }
+  .brand-text-big { font-size: 21px; }
+  .sign-in-btn-exact { height: 44px; font-size: 14px; }
+  .yn-row { flex-direction: column; align-items: stretch; }
+  .yn-btn { text-align: center; }
+  .quest-foot-nav { flex-direction: column; gap: 12px; }
+  .quest-foot-nav button { width: 100%; justify-content: center; }
 }
