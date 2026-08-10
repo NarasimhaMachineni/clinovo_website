@@ -573,7 +573,7 @@ input, select, textarea, button {
 }
 
 /* -------------------------------------------------------------------------
-   3. BUTTON ANIMATIONS SYSTEM
+   3. BUTTON ANIMATIONS SYSTEM & SUBMIT STATE ANIMATIONS
    ------------------------------------------------------------------------- */
 .btn {
   padding: 10px 20px;
@@ -626,6 +626,32 @@ input, select, textarea, button {
 
 .btn:active {
   transform: translateY(0) scale(0.97);
+}
+
+/* EXACT SUBMIT BUTTON ANIMATIONS INSIDE THE BUTTON */
+.btn-submit-exact {
+  padding: 11px 32px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--brand-teal), #0f766e);
+  color: #ffffff;
+  min-width: 140px;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-submit-exact.submitting {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.btn-submit-exact.submitted-success {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25), 0 8px 20px rgba(16, 185, 129, 0.4);
+  transform: scale(1.05);
 }
 
 /* -------------------------------------------------------------------------

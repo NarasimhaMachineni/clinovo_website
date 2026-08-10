@@ -118,7 +118,6 @@
       ctx.clearRect(0, 0, width, height);
 
       if (state.currentView === 'landing') {
-        // Render Ambient Constellation Particles
         for (let i = 0; i < ambientParticles.length; i++) {
           const p = ambientParticles[i];
           p.x += p.vx;
@@ -149,7 +148,6 @@
           }
         }
 
-        // Render Interactive Mouse Wave Ripples
         for (let i = cursorWaves.length - 1; i >= 0; i--) {
           const w = cursorWaves[i];
           w.radius += 1.2;
@@ -177,7 +175,6 @@
   // Application Controller
   window.app = {
     init() {
-      // READ PERSISTED SESSION STATE ON PAGE RELOAD / REFRESH
       const savedRole = sessionStorage.getItem('clinovo_session_role');
       const savedView = sessionStorage.getItem('clinovo_current_view');
       const savedEmail = sessionStorage.getItem('clinovo_session_email');
@@ -186,7 +183,6 @@
         state.userRole = savedRole;
         state.userEmail = savedEmail || (savedRole === 'admin' ? 'name@admin.in' : 'name@client.in');
         
-        // RESTRICT CLIENT FROM DASHBOARD ON REFRESH
         let targetView = savedView;
         if (savedRole === 'client' && savedView === 'dashboard') {
           targetView = 'questionnaire';
@@ -227,7 +223,6 @@
     },
 
     navigateTo(viewId) {
-      // SECURITY ACCESS CONTROL: CLIENT CANNOT ACCESS DASHBOARD
       if (viewId === 'dashboard' && state.userRole !== 'admin') {
         showToast('Access Restricted: Admin privileges required.');
         if (state.userRole === 'client') {
@@ -352,7 +347,7 @@
   };
 
   // -------------------------------------------------------------------------
-  // 2. CLIENT QUESTIONNAIRE MODULE (EXACT 12 HEADINGS)
+  // 2. CLIENT QUESTIONNAIRE MODULE
   // -------------------------------------------------------------------------
   const SECTIONS = [
     {
@@ -645,6 +640,8 @@
       const c = document.getElementById('questContent');
       if (!c) return;
 
+      const isFinal = this.activeSection === SECTIONS.length - 1;
+
       c.innerHTML = `
         <div class="q-card-container">
           <div class="section-head">
@@ -655,8 +652,8 @@
           ${s.fields.map(f => this.fieldTemplate(f)).join('')}
           <div class="quest-foot-nav">
             <button class="btn btn-secondary btn-sm" onclick="questApp.goPrev()" ${this.activeSection === 0 ? 'disabled' : ''}>&larr; Previous section</button>
-            <button class="btn btn-primary btn-sm" onclick="questApp.goNext()">
-              ${this.activeSection === SECTIONS.length - 1 ? 'Finish & Submit ✓' : 'Next section &rarr;'}
+            <button id="btnSubmitFinal" class="btn btn-primary btn-sm ${isFinal ? 'btn-submit-exact' : ''}" onclick="questApp.goNext()">
+              ${isFinal ? 'Submit' : 'Next section &rarr;'}
             </button>
           </div>
         </div>
@@ -821,7 +818,14 @@
     },
 
     async submitToAdmin() {
-      app.showPharmaLoader(async () => {
+      const btn = document.getElementById('btnSubmitFinal');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
+        btn.classList.add('submitting');
+      }
+
+      setTimeout(async () => {
         try {
           const res = await fetch('/api/questionnaire/submit', {
             method: 'POST',
@@ -837,18 +841,27 @@
         } catch (err) {
           this.submitFallbackLocal();
         }
-      });
+      }, 600);
     },
 
     handleSubmissionSuccess(overallScore) {
-      // CLEAR DRAFT & RESET QUESTIONNAIRE FOR CLIENT
-      this.answers = {};
-      localStorage.removeItem(this.storageKey);
-      this.activeSection = 0;
-      this.renderAll();
+      const btn = document.getElementById('btnSubmitFinal');
+      if (btn) {
+        btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Submitted ✓`;
+        btn.classList.remove('submitting');
+        btn.classList.add('submitted-success');
+      }
 
-      showToast(`Questionnaire Submitted Successfully! Overall Score: ${overallScore}/100`);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast(`Submitted Successfully! Overall Score: ${overallScore}/100`);
+
+      // SHOW "Submitted ✓" ANIMATION FOR 1.8 SECONDS INSIDE BUTTON, THEN RESET TO SECTION 01
+      setTimeout(() => {
+        this.answers = {};
+        localStorage.removeItem(this.storageKey);
+        this.activeSection = 0;
+        this.renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1800);
     },
 
     submitFallbackLocal() {
@@ -905,7 +918,7 @@
   };
 
   // -------------------------------------------------------------------------
-  // 3. ADMIN FEASIBILITY DASHBOARD MODULE (LIGHT CORPORATE THEME)
+  // 3. ADMIN FEASIBILITY DASHBOARD MODULE
   // -------------------------------------------------------------------------
   const dashApp = {
     radarSelected: new Set(),
