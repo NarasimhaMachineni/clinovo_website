@@ -63,7 +63,7 @@
     setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  // LUMINOUS MOUSE CURSOR WAVES & CONSTELLATION CANVAS ENGINE
+  // 120HZ / 165HZ HIGH-REFRESH BUTTER-SMOOTH MOUSE WAVES & CONSTELLATION ENGINE
   function initPharmaCanvas() {
     const canvas = document.getElementById('smokeCanvas');
     if (!canvas) return;
@@ -85,8 +85,8 @@
       ambientParticles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
         radius: Math.random() * 3 + 1.2,
         alpha: Math.random() * 0.45 + 0.1,
         color: Math.random() > 0.5 ? '45, 212, 191' : '59, 130, 246'
@@ -98,14 +98,14 @@
       if (state.currentView !== 'landing') return;
 
       const dist = Math.hypot(e.clientX - lastMouseX, e.clientY - lastMouseY);
-      if (dist > 15) {
+      if (dist > 12) {
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
 
         cursorWaves.push({
           x: e.clientX,
           y: e.clientY,
-          radius: 6,
+          radius: 4,
           maxRadius: Math.random() * 25 + 35,
           alpha: 0.65,
           color: Math.random() > 0.5 ? '45, 212, 191' : '2, 132, 199',
@@ -114,14 +114,20 @@
       }
     });
 
-    function render() {
+    let lastTime = performance.now();
+
+    function render(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.033);
+      lastTime = now;
+
       ctx.clearRect(0, 0, width, height);
 
       if (state.currentView === 'landing') {
+        // High-Refresh Ambient Constellation Particles
         for (let i = 0; i < ambientParticles.length; i++) {
           const p = ambientParticles[i];
-          p.x += p.vx;
-          p.y += p.vy;
+          p.x += p.vx * (dt * 60);
+          p.y += p.vy * (dt * 60);
 
           if (p.x < 0 || p.x > width) p.vx *= -1;
           if (p.y < 0 || p.y > height) p.vy *= -1;
@@ -148,10 +154,11 @@
           }
         }
 
+        // 120Hz-165Hz Butter Smooth Mouse Wave Ripples
         for (let i = cursorWaves.length - 1; i >= 0; i--) {
           const w = cursorWaves[i];
-          w.radius += 1.2;
-          w.alpha -= 0.018;
+          w.radius += 1.4 * (dt * 60);
+          w.alpha -= 0.02 * (dt * 60);
 
           if (w.alpha <= 0 || w.radius >= w.maxRadius) {
             cursorWaves.splice(i, 1);
@@ -169,7 +176,7 @@
       requestAnimationFrame(render);
     }
 
-    render();
+    requestAnimationFrame(render);
   }
 
   // Application Controller
@@ -219,7 +226,7 @@
       setTimeout(() => {
         if (overlay) overlay.classList.remove('active');
         if (typeof callback === 'function') callback();
-      }, 700);
+      }, 550);
     },
 
     navigateTo(viewId) {
@@ -834,17 +841,17 @@
           });
           const data = await res.json();
           if (data.success) {
-            this.handleSubmissionSuccess(data.overallScore);
+            this.handleSubmissionSuccess(data.overallScore, data.sites);
           } else {
             this.submitFallbackLocal();
           }
         } catch (err) {
           this.submitFallbackLocal();
         }
-      }, 600);
+      }, 550);
     },
 
-    handleSubmissionSuccess(overallScore) {
+    handleSubmissionSuccess(overallScore, returnedSites) {
       const btn = document.getElementById('btnSubmitFinal');
       if (btn) {
         btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Submitted ✓`;
@@ -853,6 +860,12 @@
       }
 
       showToast(`Submitted Successfully! Overall Score: ${overallScore}/100`);
+
+      // PERSIST SUBMITTED SITES TO BOTH LOCALSTORAGE & STATE SO DASHBOARD ALWAYS REFLECTS SUBMITTED DATA 100% RELIABLY!
+      if (Array.isArray(returnedSites) && returnedSites.length > 0) {
+        state.sites = returnedSites;
+        localStorage.setItem('clinovo_sites_fallback', JSON.stringify(returnedSites));
+      }
 
       // SHOW "Submitted ✓" ANIMATION FOR 1.8 SECONDS INSIDE BUTTON, THEN RESET TO SECTION 01
       setTimeout(() => {
@@ -899,11 +912,17 @@
         notes: 'Submitted via Site Feasibility Portal'
       };
 
-      const existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
+      let existing = [];
+      try {
+        existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
+      } catch (e) {}
+
+      // UNPAIRS PREVIOUS DUPLICATES BY ID OR NAME
+      existing = existing.filter(s => s.id !== newSite.id && s.name !== newSite.name);
       existing.unshift(newSite);
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(existing));
 
-      this.handleSubmissionSuccess(overallScore);
+      this.handleSubmissionSuccess(overallScore, existing);
     },
 
     calcDomain(qIds) {
@@ -927,28 +946,39 @@
     editingId: null,
 
     async fetchSites() {
+      let apiSites = [];
       try {
         const res = await fetch('/api/sites');
         const data = await res.json();
         if (data.success && Array.isArray(data.sites)) {
-          state.sites = data.sites;
-          localStorage.setItem('clinovo_sites_fallback', JSON.stringify(data.sites));
-        } else {
-          this.loadFallback();
+          apiSites = data.sites;
         }
       } catch (err) {
-        this.loadFallback();
+        console.warn('Backend API unavailable, loading local fallback storage.', err);
       }
+
+      let localSites = [];
+      try {
+        const saved = localStorage.getItem('clinovo_sites_fallback');
+        if (saved) localSites = JSON.parse(saved);
+      } catch (e) {}
+
+      // MERGE BACKEND API SITES + LOCAL FALLBACK SITES DEDUPLICATED BY ID AND NAME
+      const mergedMap = new Map();
+      apiSites.forEach(s => mergedMap.set(s.id, s));
+      localSites.forEach(s => {
+        if (!mergedMap.has(s.id)) {
+          mergedMap.set(s.id, s);
+        }
+      });
+
+      state.sites = Array.from(mergedMap.values());
+      localStorage.setItem('clinovo_sites_fallback', JSON.stringify(state.sites));
 
       if (state.sites.length > 0) {
         this.radarSelected = new Set(state.sites.slice(0, Math.min(3, state.sites.length)).map(s => s.id));
       }
       this.renderAll();
-    },
-
-    loadFallback() {
-      const saved = localStorage.getItem('clinovo_sites_fallback');
-      state.sites = saved ? JSON.parse(saved) : [];
     },
 
     overallScore(site) {

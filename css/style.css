@@ -33,6 +33,9 @@
   --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
   --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+
+  /* Apple 120Hz-165Hz High-Refresh Fluid Easing Curve */
+  --ease-120hz: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after {
@@ -48,6 +51,7 @@ body {
   line-height: 1.5;
   overflow-x: hidden;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -59,6 +63,21 @@ h1, h2, h3, h4, h5, h6 {
 
 input, select, textarea, button {
   font-family: var(--font-body);
+}
+
+/* GPU HARDWARE ACCELERATION FOR 120HZ / 165HZ HIGH REFRESH RATE SMOOTHNESS */
+.view-section,
+.clinovo-login-window,
+.pharma-loader-card,
+.btn,
+.sign-in-btn-exact,
+.btn-submit-exact,
+.sfq-role-tab,
+.kpi-card,
+.dash-card {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* PHARMA DOMAIN PURE ANIMATION LOADING OVERLAY (NO TEXT) */
@@ -76,7 +95,7 @@ input, select, textarea, button {
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s var(--ease-120hz);
 }
 
 .pharma-loader-overlay.active {
@@ -97,7 +116,7 @@ input, select, textarea, button {
   align-items: center;
   gap: 22px;
   transform: scale(0.9) translateY(10px);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s var(--ease-120hz);
 }
 
 .pharma-loader-overlay.active .pharma-loader-card {
@@ -231,7 +250,7 @@ input, select, textarea, button {
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s var(--ease-120hz);
 }
 
 .brand-logo:hover {
@@ -282,7 +301,7 @@ input, select, textarea, button {
   align-items: center;
   gap: 8px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s var(--ease-120hz);
   position: relative;
   overflow: hidden;
 }
@@ -310,7 +329,7 @@ input, select, textarea, button {
 
 .view-section.active-view {
   display: block;
-  animation: fadeInView 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInView 0.28s var(--ease-120hz) forwards;
 }
 
 @keyframes fadeInView {
@@ -350,7 +369,7 @@ input, select, textarea, button {
   border-radius: var(--radius-lg);
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s var(--ease-120hz), box-shadow 0.3s var(--ease-120hz);
 }
 
 .clinovo-login-window:hover {
@@ -377,7 +396,7 @@ input, select, textarea, button {
   overflow: hidden;
   margin-bottom: 24px;
   box-shadow: 0 14px 30px rgba(0,0,0,0.18);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s var(--ease-120hz);
 }
 
 .illustration-card-frame:hover {
@@ -414,7 +433,7 @@ input, select, textarea, button {
   border-radius: 50%;
   background: rgba(148, 163, 184, 0.5);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s var(--ease-120hz);
 }
 .dot-item.active {
   background: var(--brand-teal);
@@ -484,7 +503,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.2s var(--ease-120hz);
 }
 
 .form-input-exact:focus {
@@ -544,7 +563,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s var(--ease-120hz);
   position: relative;
   overflow: hidden;
 }
@@ -585,7 +604,7 @@ input, select, textarea, button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s var(--ease-120hz);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -638,7 +657,7 @@ input, select, textarea, button {
   color: #ffffff;
   min-width: 140px;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.28s var(--ease-120hz);
 }
 
 .btn-submit-exact.submitting {
@@ -738,7 +757,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.22s ease;
+  transition: all 0.22s var(--ease-120hz);
   flex-shrink: 0;
 }
 
@@ -789,7 +808,7 @@ input, select, textarea, button {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   padding: 44px;
-  animation: cardFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: cardFadeIn 0.28s var(--ease-120hz) forwards;
 }
 
 @keyframes cardFadeIn {
@@ -814,7 +833,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.2s var(--ease-120hz);
 }
 
 .q-input-text:focus {
@@ -832,7 +851,7 @@ input, select, textarea, button {
   color: #0f172a;
   font-size: 14px;
   resize: vertical;
-  transition: all 0.2s ease;
+  transition: all 0.2s var(--ease-120hz);
 }
 
 .q-textarea:focus {
@@ -852,7 +871,7 @@ input, select, textarea, button {
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s var(--ease-120hz);
 }
 
 .yn-btn:hover {
@@ -876,7 +895,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 13px;
-  transition: all 0.2s ease;
+  transition: all 0.2s var(--ease-120hz);
 }
 
 .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -888,7 +907,7 @@ input, select, textarea, button {
   color: #475569;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: all 0.22s var(--ease-120hz);
 }
 
 .pill-item:hover {
@@ -959,7 +978,7 @@ input, select, textarea, button {
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-md);
   padding: 22px;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transition: transform 0.22s var(--ease-120hz), box-shadow 0.22s var(--ease-120hz);
 }
 
 .kpi-card:hover {
@@ -980,7 +999,7 @@ input, select, textarea, button {
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-md);
   padding: 26px;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transition: transform 0.22s var(--ease-120hz), box-shadow 0.22s var(--ease-120hz);
 }
 
 .dash-card:hover {
@@ -1003,7 +1022,7 @@ input, select, textarea, button {
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s var(--ease-120hz);
 }
 
 .radar-chip:hover {
@@ -1096,8 +1115,13 @@ input, select, textarea, button {
 .toast-popup.show { opacity: 1; }
 
 /* -------------------------------------------------------------------------
-   6. HIGHLY RESPONSIVE BREAKPOINTS (MOBILE, TABLET, LAPTOP)
+   6. HIGHLY RESPONSIVE BREAKPOINTS (DESKTOP, LAPTOP, TABLET, MOBILE)
    ------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .sfq-wide-content { max-width: 960px; }
+  .dash-container { padding: 28px 20px; }
+}
+
 @media (max-width: 992px) {
   .header-nav { padding: 0 20px; }
   .clinovo-login-window { flex-direction: column; width: 100%; max-width: 540px; }
@@ -1105,21 +1129,23 @@ input, select, textarea, button {
   .login-right-panel { padding: 32px 24px; }
   .dash-grid-2 { grid-template-columns: 1fr; }
   .dash-title-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .dash-top-btns { width: 100%; flex-wrap: wrap; }
   .sfq-topbar { flex-direction: column; align-items: flex-start; gap: 12px; padding: 14px 20px; }
   .sfq-actions-right { width: 100%; flex-wrap: wrap; }
   .sfq-horizontal-stepper-wrap { padding: 12px 20px; flex-direction: column; align-items: flex-start; gap: 14px; }
   .sfq-wide-workspace { padding: 20px 12px 40px 12px; }
-  .q-card-container { padding: 24px 18px; }
+  .q-card-container { padding: 28px 20px; }
 }
 
 @media (max-width: 576px) {
   .brand-name { font-size: 18px; }
-  .login-viewport-container { padding: 20px 12px; }
+  .login-viewport-container { padding: 16px 10px; }
   .portal-left-heading { font-size: 19px; }
   .brand-text-big { font-size: 21px; }
   .sign-in-btn-exact { height: 44px; font-size: 14px; }
   .yn-row { flex-direction: column; align-items: stretch; }
-  .yn-btn { text-align: center; }
+  .yn-btn { text-align: center; width: 100%; }
   .quest-foot-nav { flex-direction: column; gap: 12px; }
   .quest-foot-nav button { width: 100%; justify-content: center; }
+  .kpi-row { grid-template-columns: 1fr; }
 }
