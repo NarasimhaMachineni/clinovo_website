@@ -559,22 +559,36 @@
 
     const ambientParticles = [];
     const cursorWaves = [];
-    const maxAmbient = 60;
+    const maxAmbient = 90; // Premium density
 
     for (let i = 0; i < maxAmbient; i++) {
       ambientParticles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.55,
-        vy: (Math.random() - 0.5) * 0.55,
-        radius: Math.random() * 3.5 + 1.2,
-        alpha: Math.random() * 0.5 + 0.15,
-        color: Math.random() > 0.5 ? '11, 110, 110' : '2, 132, 199'
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
+        radius: Math.random() * 3 + 1,
+        baseAlpha: Math.random() * 0.45 + 0.15,
+        alpha: 0.2,
+        pulseSpeed: 0.02 + Math.random() * 0.03,
+        pulseDir: Math.random() > 0.5 ? 1 : -1,
+        color: Math.random() > 0.5 ? '11, 110, 110' : '2, 132, 199' // Teal & Blue
       });
     }
 
+    // Slow drifting background blobs for high-end aesthetic depth
+    const blobs = [
+      { x: width * 0.2, y: height * 0.3, vx: 0.08, vy: 0.12, radius: 400, color1: 'rgba(11, 110, 110, 0.18)', color2: 'rgba(11, 110, 110, 0)' },
+      { x: width * 0.8, y: height * 0.7, vx: -0.12, vy: -0.06, radius: 450, color1: 'rgba(2, 132, 199, 0.18)', color2: 'rgba(2, 132, 199, 0)' }
+    ];
+
     let lastMouseX = 0, lastMouseY = 0;
+    let mouseX = null, mouseY = null;
+
     window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
       if (state.currentView !== 'landing') return;
 
       const dist = Math.hypot(e.clientX - lastMouseX, e.clientY - lastMouseY);
@@ -585,46 +599,100 @@
         cursorWaves.push({
           x: e.clientX,
           y: e.clientY,
-          radius: 4,
-          maxRadius: Math.random() * 30 + 40,
-          alpha: 0.85,
-          color: Math.random() > 0.5 ? '11, 110, 110' : '184, 132, 46',
-          lineWidth: Math.random() * 2.2 + 1.4
+          radius: 3,
+          maxRadius: Math.random() * 35 + 40,
+          alpha: 0.65,
+          color: Math.random() > 0.5 ? '11, 110, 110' : '2, 132, 199',
+          lineWidth: Math.random() * 1.5 + 1
         });
       }
+    });
+
+    window.addEventListener('mouseleave', () => {
+      mouseX = null;
+      mouseY = null;
     });
 
     let lastTime = performance.now();
 
     function render(now) {
-      const dt = Math.min((now - lastTime) / 1000, 0.016);
+      // Time-delta scale for 240Hz / ultra-high refresh rate support
+      const dt = Math.min((now - lastTime) / 1000, 0.08);
       lastTime = now;
 
       ctx.clearRect(0, 0, width, height);
 
       if (state.currentView === 'landing') {
+        // 1. Draw slow-moving colored background blobs
+        blobs.forEach(b => {
+          b.x += b.vx * (dt * 120);
+          b.y += b.vy * (dt * 120);
+
+          if (b.x < 0 || b.x > width) b.vx *= -1;
+          if (b.y < 0 || b.y > height) b.vy *= -1;
+
+          const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.radius);
+          grad.addColorStop(0, b.color1);
+          grad.addColorStop(1, b.color2);
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // 2. Draw neural particle network
         for (let i = 0; i < ambientParticles.length; i++) {
           const p = ambientParticles[i];
+
+          // Drift physics
           p.x += p.vx * (dt * 120);
           p.y += p.vy * (dt * 120);
 
+          // Boundary check
           if (p.x < 0 || p.x > width) p.vx *= -1;
           if (p.y < 0 || p.y > height) p.vy *= -1;
 
+          // Gentle mouse gravity attraction/repulsion
+          if (mouseX !== null && mouseY !== null) {
+            const dx = p.x - mouseX;
+            const dy = p.y - mouseY;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 180) {
+              const force = (180 - dist) / 180;
+              // Gentle slide towards mouse
+              p.x -= (dx / dist) * force * 0.95 * (dt * 120);
+              p.y -= (dy / dist) * force * 0.95 * (dt * 120);
+            }
+          }
+
+          // Gentle alpha pulse (twinkle)
+          p.alpha += p.pulseSpeed * p.pulseDir * (dt * 120);
+          if (p.alpha > p.baseAlpha) {
+            p.alpha = p.baseAlpha;
+            p.pulseDir = -1;
+          } else if (p.alpha < 0.05) {
+            p.alpha = 0.05;
+            p.pulseDir = 1;
+          }
+
+          // Draw node dot
           ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fill();
 
+          // Connect nearby nodes
           for (let j = i + 1; j < ambientParticles.length; j++) {
             const p2 = ambientParticles[j];
             const dx = p.x - p2.x;
             const dy = p.y - p2.y;
             const d = Math.sqrt(dx * dx + dy * dy);
 
-            if (d < 110) {
-              ctx.strokeStyle = `rgba(${p.color}, ${(1 - d / 110) * 0.14})`;
-              ctx.lineWidth = 0.9;
+            if (d < 125) {
+              const alphaFactor = (1 - d / 125) * 0.12 * Math.min(p.alpha, p2.alpha);
+              ctx.strokeStyle = `rgba(${p.color}, ${alphaFactor})`;
+              ctx.lineWidth = 0.85;
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
               ctx.lineTo(p2.x, p2.y);
@@ -633,10 +701,11 @@
           }
         }
 
+        // 3. Draw cursor wave pulses
         for (let i = cursorWaves.length - 1; i >= 0; i--) {
           const w = cursorWaves[i];
-          w.radius += 1.8 * (dt * 120);
-          w.alpha -= 0.02 * (dt * 120);
+          w.radius += 1.45 * (dt * 120);
+          w.alpha -= 0.015 * (dt * 120);
 
           if (w.alpha <= 0 || w.radius >= w.maxRadius) {
             cursorWaves.splice(i, 1);

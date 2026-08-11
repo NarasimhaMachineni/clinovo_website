@@ -375,11 +375,14 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .view-section.active-view {
   display: block;
   animation: fadeInView 0.32s var(--ease-fluid) forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @keyframes fadeInView {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 /* -------------------------------------------------------------------------
@@ -426,12 +429,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 }
 
 @keyframes loginCardAppear {
-  0% { opacity: 0; transform: translateY(30px) scale(0.96); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% { opacity: 0; transform: translate3d(0, 30px, 0) scale(0.96); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 .clinovo-login-window:hover {
-  transform: translateY(-4px) scale(1.002);
+  transform: translate3d(0, -4px, 0) scale(1.002);
   box-shadow: 0 55px 100px rgba(0, 0, 0, 0.48), 0 0 60px rgba(11, 110, 110, 0.22);
 }
 
