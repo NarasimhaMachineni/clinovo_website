@@ -832,6 +832,11 @@
         if (i === idx) dot.classList.add('active');
         else dot.classList.remove('active');
       });
+      const imgs = document.querySelectorAll('#loginCarouselSlider .carousel-img');
+      imgs.forEach((img, i) => {
+        if (i === idx) img.classList.add('active');
+        else img.classList.remove('active');
+      });
     }
   };
 
@@ -1465,6 +1470,7 @@
     sortKey: null,
     sortAsc: false,
     rankFilter: 'top10', // 'top10' | 'top20' | 'allRanked' | 'raw'
+    selectedSection: 'sec01',
     editingId: null,
     pollTimer: null,
 
@@ -1474,6 +1480,81 @@
         btn.classList.toggle('active', btn.dataset.mode === mode);
       });
       this.renderRank();
+    },
+
+    getSectionScore(site, secId) {
+      if (!site || !site.scores) return 0;
+      const s = site.scores;
+      switch (secId) {
+        case 'sec01': return s.invSite || 85;
+        case 'sec02': return s.invSite || 0;
+        case 'sec03': return Math.round(((s.invSite || 0) + (s.patientPop || 0)) / 2);
+        case 'sec04': return s.patientPop || 0;
+        case 'sec05': return s.facilities || 0;
+        case 'sec06': return s.pharmacy || 0;
+        case 'sec07': return s.labBiomarker || 0;
+        case 'sec08': return s.safety || 0;
+        case 'sec09': return s.regulatory || 0;
+        case 'sec10': return s.dataTech || 0;
+        case 'sec11': return s.budget || 0;
+        case 'sec12': return this.overallScore(site);
+        default: return this.overallScore(site);
+      }
+    },
+
+    renderSectionTop5(secId) {
+      if (secId) this.selectedSection = secId;
+      const currentSec = this.selectedSection || 'sec01';
+
+      const selectEl = document.getElementById('sectionSelect');
+      if (selectEl && selectEl.value !== currentSec) {
+        selectEl.value = currentSec;
+      }
+
+      const svg = document.getElementById('sectionTop5Svg');
+      if (!svg) return;
+
+      if (!state.sites.length) {
+        svg.setAttribute('viewBox', '0 0 440 260');
+        svg.innerHTML = `<text x="220" y="130" font-size="13" fill="#8A94A3" text-anchor="middle">No site data available</text>`;
+        return;
+      }
+
+      const top5 = state.sites
+        .map(site => ({ site, score: this.getSectionScore(site, currentSec) }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      const rowH = 46, top = 16, left = 10;
+      const barX = 220, chartW = 160;
+      const H = 260;
+      let s = '';
+
+      top5.forEach((item, i) => {
+        const y = top + i * rowH;
+        const w = (item.score / 100) * chartW;
+        const color = STATUS_COLOR[item.site.status] || '#0B6E6E';
+        const nameParts = item.site.name.split(' ');
+        const shortName = nameParts.slice(0, 2).join(' ');
+
+        // Rank Badge (01, 02, 03, 04, 05)
+        s += `<text x="${left}" y="${y + 24}" font-size="12" font-weight="700" fill="#0B6E6E">${String(i + 1).padStart(2, '0')}</text>`;
+        
+        // Site Name
+        s += `<text x="${left + 26}" y="${y + 24}" font-size="12" font-weight="600" fill="#16233D" title="${item.site.name}">${shortName}</text>`;
+        
+        // Background Bar
+        s += `<rect x="${barX}" y="${y + 12}" width="${chartW}" height="14" rx="7" fill="#EEF0F3"/>`;
+        
+        // Foreground Score Bar
+        s += `<rect x="${barX}" y="${y + 12}" width="${Math.max(6, w)}" height="14" rx="7" fill="${color}"/>`;
+        
+        // Score Badge
+        s += `<text x="${barX + chartW + 12}" y="${y + 24}" font-size="12.5" font-weight="700" font-family="ui-monospace,monospace" fill="${color}">${item.score}</text>`;
+      });
+
+      svg.setAttribute('viewBox', `0 0 440 ${H}`);
+      svg.innerHTML = s;
     },
 
     startAutoPoll() {
@@ -1596,6 +1677,7 @@
       this.renderWeights();
       this.renderRadarChips();
       this.renderRadar();
+      this.renderSectionTop5();
       this.renderRank();
       this.renderBubble();
       this.renderTable();

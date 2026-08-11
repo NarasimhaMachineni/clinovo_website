@@ -50,8 +50,7 @@
   <!-- ========================================================================== -->
   <header class="header-nav" id="headerNav">
     <div class="brand-logo" onclick="app.navigateTo('landing')">
-      <div class="brand-icon-square">C</div>
-      <span class="brand-name">Clinovo</span>
+      <img src="images/clinovo-logo.png" alt="Clinovo Logo" class="brand-logo-img">
     </div>
 
     <div class="header-user-right" id="userNavActions">
@@ -84,7 +83,12 @@
           </div>
 
           <div class="illustration-card-frame">
-            <img src="images/illustration.jpg" alt="Clinovo Analytics Team Illustration" class="illustration-img">
+            <div class="carousel-slider" id="loginCarouselSlider">
+              <img src="images/carousel_1.jpg" alt="Clinovo Analytics Slide 1" class="carousel-img active">
+              <img src="images/carousel_2.jpg" alt="Clinovo Analytics Slide 2" class="carousel-img">
+              <img src="images/carousel_3.jpg" alt="Clinovo Analytics Slide 3" class="carousel-img">
+              <img src="images/carousel_4.jpg" alt="Clinovo Analytics Slide 4" class="carousel-img">
+            </div>
           </div>
 
           <h2 class="portal-left-heading">Clinovo Analytics Portal</h2>
@@ -101,8 +105,7 @@
         <!-- RIGHT PANEL -->
         <div class="login-right-panel">
           <div class="brand-right-header">
-            <div class="brand-icon-big">C</div>
-            <div class="brand-text-big">Clinovo</div>
+            <img src="images/clinovo-logo.png" alt="Clinovo Logo" class="login-brand-logo-img">
           </div>
 
           <div class="portal-access-label">Site Feasibility Portal Access</div>
@@ -253,16 +256,48 @@
         </div>
       </div>
 
-      <!-- RADAR OVERLAY CARD -->
-      <div class="card" style="margin-bottom:20px;">
-        <h3>Domain Balance — Multi-Site Overlay</h3>
-        <div class="card-sub">Select candidate sites below to compare capability profiles across 9 feasibility domains.</div>
-        <div class="chips" id="radarChips">
-          <!-- Chips rendered dynamically -->
+      <!-- 2-COLUMN CENTER MID ROW: SPIDER PLOT (LEFT) & TOP 5 SECTION BAR GRAPH (RIGHT) -->
+      <div class="grid2" style="margin-bottom:20px;">
+        
+        <!-- LEFT CENTER: SPIDER PLOT (RADAR OVERLAY) -->
+        <div class="card" style="margin-bottom:0;">
+          <h3 style="margin:0;">Domain Balance — Multi-Site Overlay</h3>
+          <div class="card-sub" style="margin-bottom:12px;">Select candidate sites to compare capability profiles across 9 feasibility domains.</div>
+          <div class="chips" id="radarChips">
+            <!-- Chips rendered dynamically -->
+          </div>
+          <div style="text-align:center;">
+            <svg id="radarSvg" width="100%" height="320" viewBox="0 0 400 400" style="max-width:380px; margin:0 auto;"></svg>
+          </div>
         </div>
-        <div style="text-align:center;">
-          <svg id="radarSvg" width="100%" height="340" viewBox="0 0 400 400" style="max-width:440px; margin:0 auto;"></svg>
+
+        <!-- RIGHT CENTER: TOP 5 SITES SECTION BAR GRAPH WITH 12-SECTION DROPDOWN -->
+        <div class="card" style="margin-bottom:0;">
+          <div style="margin-bottom:12px;">
+            <h3 style="margin:0;">Top 5 Sites Section Analysis</h3>
+            <div class="card-sub" style="margin-bottom:10px;">Select a feasibility section below to view top 5 performing candidate sites.</div>
+            
+            <select class="form-select-exact" id="sectionSelect" onchange="dashApp.renderSectionTop5(this.value)">
+              <option value="sec01">01 · Study Information</option>
+              <option value="sec02">02 · Site & Investigator</option>
+              <option value="sec03">03 · Tumor Board</option>
+              <option value="sec04">04 · Patient Population</option>
+              <option value="sec05">05 · Facilities & Equipment</option>
+              <option value="sec06">06 · Pharmacy & IP</option>
+              <option value="sec07">07 · Lab, Pathology & Biomarkers</option>
+              <option value="sec08">08 · Safety & Toxicity</option>
+              <option value="sec09">09 · Regulatory & Experience</option>
+              <option value="sec10">10 · Data Management & Technology</option>
+              <option value="sec11">11 · Budget, Contracts & Timelines</option>
+              <option value="sec12">12 · Site Declaration</option>
+            </select>
+          </div>
+
+          <div style="margin-top:14px;">
+            <svg id="sectionTop5Svg" width="100%" height="260" viewBox="0 0 440 260"></svg>
+          </div>
         </div>
+
       </div>
 
       <!-- OVERALL COMPOSITE RANKING CARD (FULL GRID 100% WIDTH) -->
