@@ -97,13 +97,6 @@
 
           <h2 class="portal-left-heading">Clinovo Analytics Portal</h2>
           <p class="portal-left-sub">Accelerating Clinical Development & Site Assessment Preparedness.</p>
-
-          <div class="carousel-dots" id="carouselDots">
-            <div class="dot-item active" onclick="app.setDot(0)"></div>
-            <div class="dot-item" onclick="app.setDot(1)"></div>
-            <div class="dot-item" onclick="app.setDot(2)"></div>
-            <div class="dot-item" onclick="app.setDot(3)"></div>
-          </div>
         </div>
 
         <div class="login-right-panel">
@@ -349,13 +342,20 @@
             </div>
             <div class="card-sub" style="margin-bottom:0;">Bubble size represents total projected enrollment capacity over recruitment period.</div>
           </div>
-          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <div class="rank-filter-pills" id="bubbleFilterPills">
-              <button class="rank-pill active" data-filter="top5" onclick="dashApp.setBubbleFilter('top5')">Top 5 Sites</button>
-              <button class="rank-pill" data-filter="top10" onclick="dashApp.setBubbleFilter('top10')">Top 10 Sites</button>
-              <button class="rank-pill" data-filter="all" onclick="dashApp.setBubbleFilter('all')">All Sites</button>
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+            <!-- Dropdown Focus -->
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:11.5px; font-weight:700; color:var(--ink-soft);">Focus Site:</span>
+              <select id="bubbleSiteSelect" style="padding:5px 10px; border-radius:6px; font-size:12px; font-weight:700; color:#374151; background:#fff; border:1px solid #d1d5db; cursor:pointer;" onchange="dashApp.onBubbleSiteSelectChange()"></select>
             </div>
-            <div class="legend" id="bubbleLegend"></div>
+            <!-- Vertical Pills -->
+            <div class="rank-filter-pills" id="bubbleFilterPills" style="display:flex; flex-direction:column; gap:4px; width:125px;">
+              <button class="rank-pill active" data-filter="top5" onclick="dashApp.setBubbleFilter('top5')" style="width:100%; text-align:center; box-sizing:border-box;">Top 5 Sites</button>
+              <button class="rank-pill" data-filter="top10" onclick="dashApp.setBubbleFilter('top10')" style="width:100%; text-align:center; box-sizing:border-box;">Top 10 Sites</button>
+              <button class="rank-pill" data-filter="all" onclick="dashApp.setBubbleFilter('all')" style="width:100%; text-align:center; box-sizing:border-box;">All Sites</button>
+            </div>
+            <!-- Legend -->
+            <div class="legend" id="bubbleLegend" style="margin-top:2px;"></div>
           </div>
         </div>
 

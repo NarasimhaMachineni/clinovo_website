@@ -16,6 +16,7 @@
     carouselDot: 0,
     sites: [],
     bubbleFilter: 'top5',
+    bubbleSelectedSiteId: '',
     weights: {
       invSite: 1,
       patientPop: 1,
@@ -811,10 +812,7 @@
     },
 
     startDotCarousel() {
-      setInterval(() => {
-        state.carouselDot = (state.carouselDot + 1) % 4;
-        window.app.setDot(state.carouselDot);
-      }, 3500);
+      // Disabled per user request to remove login slide animation
     },
 
     setDot(idx) {
@@ -1572,7 +1570,7 @@
         'linear-gradient(90deg, #be185d 0%, #f472b6 100%)',
         'linear-gradient(90deg, #b45309 0%, #fbbf24 100%)'
       ];
-      const medals = ['🥇', '🥈', '🥉', '4', '5'];
+      const medals = ['1', '2', '3', '4', '5'];
       const maxScore = top5.length ? top5[0].score : 100;
 
       let html = '';
@@ -1586,7 +1584,7 @@
         html += `
           <div class="top5-bar-row" style="display:flex; align-items:center; gap:10px; padding:8px 10px; background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.07); border:1px solid #f0f0f0;">
             <!-- Rank Badge -->
-            <div style="min-width:36px; height:36px; border-radius:50%; background:${gradient}; display:flex; align-items:center; justify-content:center; font-size:${i < 3 ? '18' : '13'}px; font-weight:800; color:#fff; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+            <div style="min-width:36px; height:36px; border-radius:50%; background:${gradient}; display:flex; align-items:center; justify-content:center; font-size:13.5px; font-weight:800; color:#fff; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
               ${medal}
             </div>
             <!-- Name + Bar -->
@@ -1725,6 +1723,7 @@
     },
 
     renderAll() {
+      this.populateBubbleSiteSelect();
       this.renderKPIs();
       this.renderWeights();
       this.renderRadarChips();
@@ -1959,6 +1958,35 @@
       document.querySelectorAll('#bubbleFilterPills .rank-pill').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.filter === filter);
       });
+      // Clear site dropdown focus if switching view presets
+      const select = document.getElementById('bubbleSiteSelect');
+      if (select) {
+        select.value = "";
+        state.bubbleSelectedSiteId = "";
+      }
+      this.renderBubble();
+    },
+
+    populateBubbleSiteSelect() {
+      const select = document.getElementById('bubbleSiteSelect');
+      if (!select) return;
+
+      const currentSel = state.bubbleSelectedSiteId || "";
+      const sortedSites = state.sites.slice().sort((a, b) => a.name.localeCompare(b.name));
+
+      let optHtml = `<option value="">Show All Filtered Sites</option>`;
+      sortedSites.forEach(site => {
+        optHtml += `<option value="${site.id}" ${site.id === currentSel ? 'selected' : ''}>${site.name}</option>`;
+      });
+
+      select.innerHTML = optHtml;
+    },
+
+    onBubbleSiteSelectChange() {
+      const select = document.getElementById('bubbleSiteSelect');
+      if (!select) return;
+
+      state.bubbleSelectedSiteId = select.value;
       this.renderBubble();
     },
 
@@ -2007,11 +2035,15 @@
         .map(s => ({ site: s, score: this.overallScore(s) }))
         .sort((a, b) => b.score - a.score);
 
-      // Apply top5/10 filter
+      // Apply Focus Site or Top 5/10/All filter
       let poolSites;
-      if (state.bubbleFilter === 'top5')       poolSites = allScored.slice(0, 5);
-      else if (state.bubbleFilter === 'top10') poolSites = allScored.slice(0, 10);
-      else                                     poolSites = allScored;
+      if (state.bubbleSelectedSiteId) {
+        poolSites = allScored.filter(x => x.site.id === state.bubbleSelectedSiteId);
+      } else {
+        if (state.bubbleFilter === 'top5')       poolSites = allScored.slice(0, 5);
+        else if (state.bubbleFilter === 'top10') poolSites = allScored.slice(0, 10);
+        else                                     poolSites = allScored;
+      }
 
       // Axis helpers
       const allPool = poolSites.map(x => x.site);
