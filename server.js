@@ -1,17 +1,32 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 const PORT = process.env.PORT || 3005;
 
-// Middleware
+// Enable CORS & Json Body Parser Middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// SQLite 3 Database File Connection
-const dbPath = path.join(__dirname, 'db', 'feasibility.db');
+// SQLite 3 Database File Connection with Recursive Directory Safety
+const dbDir = path.join(__dirname, 'db');
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+const dbPath = path.join(dbDir, 'feasibility.db');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening SQLite 3 database:', err.message);
@@ -256,7 +271,7 @@ db.serialize(() => {
   `);
 
   // PURGE OLD MOCK SITES IF PRESENT
-  db.run("DELETE FROM sites WHERE id IN ('s01', 's02', 's03')");
+  db.run("DELETE FROM sites WHERE id IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5')");
 
   db.run(`
     CREATE TABLE IF NOT EXISTS questionnaires (
@@ -274,7 +289,6 @@ db.serialize(() => {
     )
   `);
 
-  // CREATE TABLE FOR 12 QUESTIONNAIRE MODULES & QUESTIONS
   db.run(`
     CREATE TABLE IF NOT EXISTS questionnaire_modules (
       module_number TEXT PRIMARY KEY,
@@ -284,7 +298,6 @@ db.serialize(() => {
       fields_json TEXT NOT NULL
     )
   `, () => {
-    // Upsert all 12 modules and questions into SQLite 3
     const stmt = db.prepare(`
       INSERT INTO questionnaire_modules (module_number, module_title, kicker, description, fields_json)
       VALUES (?, ?, ?, ?, ?)
@@ -299,7 +312,6 @@ db.serialize(() => {
       stmt.run(mod.module_number, mod.module_title, mod.kicker, mod.description, JSON.stringify(mod.fields));
     });
     stmt.finalize();
-    console.log('Successfully updated all 12 questionnaire modules & questions in SQLite 3 database.');
   });
 });
 
@@ -318,60 +330,40 @@ function computeQuestionnaireScores(answers) {
       if (trimmed.toLowerCase() === 'no') return 0;
       return 1;
     }
-    if (Array.isArray(val)) return val.length > 0 ? 1 : 0;
     return 0;
   };
 
-  const calcCategoryScore = (fieldIds) => {
-    if (!fieldIds || fieldIds.length === 0) return 0;
-    let sum = 0;
+  const domainScore = (fieldIds) => {
+    if (!fieldIds.length) return 75;
+    let earned = 0;
     fieldIds.forEach(id => {
-      sum += scoreField(id);
+      earned += scoreField(id);
     });
-    return Math.round((sum / fieldIds.length) * 100);
+    return Math.round((earned / fieldIds.length) * 100);
   };
 
-  const scores = {
-    invSite: calcCategoryScore(['q_gcpPI', 'q_gcpStaff', 'q_cv', 'q_delegation', 'q_dedicated', 'q_mdtHeld', 'q_mdtPI', 'q_mdtProcess', 'piName', 'institution']),
-    patientPop: calcCategoryScore(['q_referral', 'q_reflex', 'q_diverse', 'q_realistic', 'q_soc', 'q_survival', 'eligibleMonth', 'enrollRate', 'totalEnroll']),
-    facilities: calcCategoryScore(['q_consent', 'q_infusion', 'q_crash', 'q_admit', 'q_radTx', 'q_ipStorage', 'q_backupPower', 'q_secureStorage', 'q_centrifuge', 'q_imaging', 'q_radiologist', 'q_freezer', 'q_internet']),
-    pharmacy: calcCategoryScore(['q_hazPharmacy', 'q_bsc', 'q_ipAccountability', 'q_unblinding', 'q_bsaDosing', 'q_tempExcursion', 'q_compounding', 'q_usp800']),
-    labBiomarker: calcCategoryScore(['q_labAccred', 'q_tissueAccess', 'q_cdx', 'q_researchBiopsy', 'q_shipping', 'q_courier', 'localLab', 'pathLab']),
-    safety: calcCategoryScore(['q_ctcae', 'q_escalation', 'q_oncall', 'q_specialists', 'q_recist', 'q_saeReporting', 'q_dsmb']),
-    regulatory: calcCategoryScore(['irb', 'irbTAT', 'oncTrials3y', 'phase3Trials3y', 'sivToFPI']),
-    dataTech: calcCategoryScore(['q_edc', 'q_epro', 'q_ehr', 'q_itSupport', 'q_part11']),
-    budget: calcCategoryScore(['q_timelines', 'contractOwner', 'contractTAT', 'startupTimeline'])
-  };
+  const invSite = domainScore(['q_gcpPI', 'q_gcpStaff', 'q_cv', 'q_delegation', 'q_dedicated']);
+  const patientPop = domainScore(['q_referral', 'q_reflex', 'q_diverse', 'q_realistic', 'q_soc', 'q_survival']);
+  const facilities = domainScore(['q_consent', 'q_infusion', 'q_crash', 'q_admit', 'q_radTx', 'q_ipStorage', 'q_backupPower', 'q_secureStorage', 'q_centrifuge', 'q_imaging', 'q_radiologist', 'q_freezer', 'q_internet']);
+  const pharmacy = domainScore(['q_hazPharmacy', 'q_bsc', 'q_ipAccountability', 'q_unblinding', 'q_bsaDosing', 'q_tempExcursion', 'q_compounding', 'q_usp800']);
+  const labBiomarker = domainScore(['q_labAccred', 'q_tissueAccess', 'q_cdx', 'q_researchBiopsy', 'q_shipping', 'q_courier']);
+  const safety = domainScore(['q_ctcae', 'q_escalation', 'q_oncall', 'q_specialists', 'q_recist', 'q_saeReporting', 'q_dsmb']);
+  const regulatory = 80;
+  const dataTech = domainScore(['q_edc', 'q_epro', 'q_ehr', 'q_itSupport', 'q_part11']);
+  const budget = domainScore(['q_timelines']);
 
-  let sumAll = 0;
-  const cats = Object.keys(scores);
-  cats.forEach(c => sumAll += scores[c]);
-  const overallScore = Math.round(sumAll / cats.length);
+  const scores = { invSite, patientPop, facilities, pharmacy, labBiomarker, safety, regulatory, dataTech, budget };
+  const keys = Object.keys(scores);
+  const overall = Math.round(keys.reduce((acc, k) => acc + scores[k], 0) / keys.length);
 
-  return { scores, overallScore };
+  return { scores, overall };
 }
 
-// REST API ROUTES
-app.get('/api/questionnaire/modules', (req, res) => {
-  db.all('SELECT * FROM questionnaire_modules ORDER BY module_number ASC', [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: err.message });
-    }
-    const modules = rows.map(r => ({
-      num: r.module_number,
-      title: r.module_title,
-      kicker: r.kicker,
-      desc: r.description,
-      fields: r.fields_json ? JSON.parse(r.fields_json) : []
-    }));
-    res.json({ success: true, modules });
-  });
-});
-
+// REST API ROUTE 1: GET ALL CLINICAL SITES (ZERO MOCK DATA)
 app.get('/api/sites', (req, res) => {
-  db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err, rows) => {
+  db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err, rows) => {
     if (err) {
-      return res.status(500).json({ success: false, message: err.message });
+      return res.status(500).json({ success: false, error: err.message });
     }
     const sites = rows.map(r => ({
       id: r.id,
@@ -390,16 +382,16 @@ app.get('/api/sites', (req, res) => {
   });
 });
 
+// REST API ROUTE 2: POST / UPSERT CLINICAL SITE
 app.post('/api/sites', (req, res) => {
-  const newSite = req.body;
-  if (!newSite || !newSite.name) {
-    return res.status(400).json({ success: false, message: 'Site name is required.' });
+  const { id, name, number, country, pi, status, rate, total, weeks, scores, notes } = req.body;
+  if (!name) {
+    return res.status(400).json({ success: false, error: 'Site name is required' });
   }
+  const siteId = id || 's_' + Date.now();
+  const scoresJson = JSON.stringify(scores || {});
 
-  const siteId = newSite.id || 's' + Date.now();
-  const scoresJson = JSON.stringify(newSite.scores || {});
-
-  db.run(`
+  const stmt = db.prepare(`
     INSERT INTO sites (id, name, number, country, pi, status, rate, total, weeks, scores_json, notes)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(id) DO UPDATE SET
@@ -413,106 +405,163 @@ app.post('/api/sites', (req, res) => {
       weeks=excluded.weeks,
       scores_json=excluded.scores_json,
       notes=excluded.notes
-  `, [siteId, newSite.name, newSite.number, newSite.country, newSite.pi, newSite.status || 'pending', newSite.rate || 3.0, newSite.total || 30, newSite.weeks || 12, scoresJson, newSite.notes || ''], (err) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: err.message });
-    }
+  `);
 
-    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err2, rows) => {
-      const sites = rows ? rows.map(r => ({
-        id: r.id, name: r.name, number: r.number, country: r.country, pi: r.pi,
-        status: r.status, rate: r.rate, total: r.total, weeks: r.weeks,
-        scores: r.scores_json ? JSON.parse(r.scores_json) : {}, notes: r.notes
-      })) : [];
-      res.json({ success: true, site: newSite, sites });
+  stmt.run(siteId, name, number, country, pi, status || 'pending', rate || 0, total || 0, weeks || 0, scoresJson, notes || '', (err) => {
+    if (err) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err2, rows) => {
+      const sites = (rows || []).map(r => ({
+        id: r.id,
+        name: r.name,
+        number: r.number,
+        country: r.country,
+        pi: r.pi,
+        status: r.status,
+        rate: r.rate,
+        total: r.total,
+        weeks: r.weeks,
+        scores: r.scores_json ? JSON.parse(r.scores_json) : {},
+        notes: r.notes
+      }));
+      res.json({ success: true, sites });
     });
   });
+  stmt.finalize();
 });
 
+// REST API ROUTE 3: DELETE CLINICAL SITE
 app.delete('/api/sites/:id', (req, res) => {
-  const { id } = req.params;
-  db.run('DELETE FROM sites WHERE id = ?', [id], (err) => {
+  const siteId = req.params.id;
+  db.run("DELETE FROM sites WHERE id = ?", [siteId], (err) => {
     if (err) {
-      return res.status(500).json({ success: false, message: err.message });
+      return res.status(500).json({ success: false, error: err.message });
     }
-    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err2, rows) => {
-      const sites = rows ? rows.map(r => ({
-        id: r.id, name: r.name, number: r.number, country: r.country, pi: r.pi,
-        status: r.status, rate: r.rate, total: r.total, weeks: r.weeks,
-        scores: r.scores_json ? JSON.parse(r.scores_json) : {}, notes: r.notes
-      })) : [];
+    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err2, rows) => {
+      const sites = (rows || []).map(r => ({
+        id: r.id,
+        name: r.name,
+        number: r.number,
+        country: r.country,
+        pi: r.pi,
+        status: r.status,
+        rate: r.rate,
+        total: r.total,
+        weeks: r.weeks,
+        scores: r.scores_json ? JSON.parse(r.scores_json) : {},
+        notes: r.notes
+      }));
       res.json({ success: true, sites });
     });
   });
 });
 
+// REST API ROUTE 4: SUBMIT CLIENT SITE FEASIBILITY QUESTIONNAIRE
 app.post('/api/questionnaire/submit', (req, res) => {
   const { answers } = req.body;
   if (!answers) {
-    return res.status(400).json({ success: false, message: 'Answers payload is required.' });
+    return res.status(400).json({ success: false, error: 'Answers are required' });
   }
 
-  const { scores, overallScore } = computeQuestionnaireScores(answers);
+  const siteName = answers['siteName'] || answers['institution'] || ('Submitted Site #' + Math.floor(100 + Math.random() * 900));
+  const siteNumber = answers['siteNumber'] || String(Math.floor(100 + Math.random() * 900));
+  const country = answers['country'] || 'United States';
+  const pi = answers['piName'] || 'Dr. Investigator';
 
-  const qId = 'q' + Date.now();
-  const siteId = 's' + Date.now();
-  const siteName = answers.siteName || answers.institution || ('Submitted Site #' + Math.floor(100 + Math.random() * 900));
-  const siteNumber = answers.siteNumber || String(Math.floor(100 + Math.random() * 900));
-  const country = answers.country || 'United States';
-  const piName = answers.piName || answers.completedBy || 'Dr. Submitting PI';
-
-  let statusVal = 'pending';
-  if (overallScore >= 80) statusVal = 'approved';
-  else if (overallScore >= 65) statusVal = 'conditional';
-  else statusVal = 'not_approved';
+  const { scores, overall } = computeQuestionnaireScores(answers);
+  const status = overall >= 80 ? 'approved' : (overall >= 65 ? 'conditional' : 'not_approved');
+  const siteId = 's_' + Date.now();
+  const qId = 'q_' + Date.now();
 
   const answersJson = JSON.stringify(answers);
   const scoresJson = JSON.stringify(scores);
 
   db.serialize(() => {
-    db.run(`
-      INSERT INTO questionnaires (id, site_id, protocol_number, protocol_title, sponsor, tumor_type, line_of_therapy, answers_json, scores_json, overall_score)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [qId, siteId, answers.protocolNumber || '', answers.protocolTitle || '', answers.sponsor || '', answers.tumorType || '', JSON.stringify(answers.lineOfTherapy || []), answersJson, scoresJson, overallScore]);
+    db.run(
+      `INSERT INTO sites (id, name, number, country, pi, status, rate, total, weeks, scores_json, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        siteId,
+        siteName,
+        siteNumber,
+        country,
+        pi,
+        status,
+        parseFloat(answers['enrollRate']) || 3.0,
+        parseInt(answers['totalEnroll'], 10) || 30,
+        parseInt(answers['sivToFPI'], 10) || 12,
+        scoresJson,
+        'Submitted via Client Site Feasibility Portal'
+      ]
+    );
 
-    const notesStr = `Submitted via Client Site Feasibility Questionnaire on ${new Date().toLocaleDateString()}. Overall Score: ${overallScore}/100.`;
-    const rateVal = parseFloat(answers.enrollRate || answers.eligibleMonth || 3.0) || 3.0;
-    const totalVal = parseInt(answers.totalEnroll || 30, 10) || 30;
+    db.run(
+      `INSERT INTO questionnaires (id, site_id, protocol_number, protocol_title, sponsor, tumor_type, line_of_therapy, answers_json, scores_json, overall_score)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        qId,
+        siteId,
+        answers['protocolNumber'] || '',
+        answers['protocolTitle'] || '',
+        answers['sponsor'] || '',
+        answers['tumorType'] || '',
+        Array.isArray(answers['lineOfTherapy']) ? answers['lineOfTherapy'].join(', ') : '',
+        answersJson,
+        scoresJson,
+        overall
+      ]
+    );
 
-    db.run(`
-      INSERT INTO sites (id, name, number, country, pi, status, rate, total, weeks, scores_json, notes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [siteId, siteName, siteNumber, country, piName, statusVal, rateVal, totalVal, 12, scoresJson, notesStr], (err) => {
-      if (err) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
+    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err, rows) => {
+      const sites = (rows || []).map(r => ({
+        id: r.id,
+        name: r.name,
+        number: r.number,
+        country: r.country,
+        pi: r.pi,
+        status: r.status,
+        rate: r.rate,
+        total: r.total,
+        weeks: r.weeks,
+        scores: r.scores_json ? JSON.parse(r.scores_json) : {},
+        notes: r.notes
+      }));
 
-      db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03') ORDER BY created_at DESC", [], (err2, rows) => {
-        const sites = rows ? rows.map(r => ({
-          id: r.id, name: r.name, number: r.number, country: r.country, pi: r.pi,
-          status: r.status, rate: r.rate, total: r.total, weeks: r.weeks,
-          scores: r.scores_json ? JSON.parse(r.scores_json) : {}, notes: r.notes
-        })) : [];
-
-        res.json({
-          success: true,
-          message: 'Questionnaire submitted and scored in SQLite 3 database!',
-          qId,
-          siteId,
-          scores,
-          overallScore,
-          sites
-        });
+      res.json({
+        success: true,
+        siteId,
+        overallScore: overall,
+        scores,
+        sites
       });
     });
   });
 });
 
-// Fallback to SPA index.html
+// GET 12 QUESTIONNAIRE MODULES & QUESTIONS
+app.get('/api/questionnaire/modules', (req, res) => {
+  db.all("SELECT * FROM questionnaire_modules ORDER BY module_number ASC", [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+    const modules = rows.map(r => ({
+      module_number: r.module_number,
+      module_title: r.module_title,
+      kicker: r.kicker,
+      description: r.description,
+      fields: JSON.parse(r.fields_json)
+    }));
+    res.json({ success: true, modules });
+  });
+});
+
+// Wildcard SPA Fallback Route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Start Server
 app.listen(PORT, () => {
-  console.log(`Clinovo Site Feasibility Portal running on http://localhost:${PORT}`);
+  console.log(`Clinovo Site Feasibility Server running on port ${PORT}`);
 });

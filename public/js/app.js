@@ -518,10 +518,10 @@
       fields: [
         { id: 'contractOwner', type: 'text', label: 'Institution / department responsible for contract and budget negotiation' },
         { id: 'contractTAT', type: 'text', label: 'Typical timeline for contract execution once terms are agreed' },
-        { id: 'overhead', type: 'text', label: 'Does the site require a separate institutional overhead / indirect cost rate?' },
+        { id: 'indirectCost', type: 'text', label: 'Does the site require a separate institutional overhead / indirect cost rate?' },
         { id: 'startupTimeline', type: 'text', label: 'Anticipated start-up timeline (contract execution to first patient enrolled)' },
         { id: 'q_timelines', type: 'yesno', label: "Is the site able to meet the sponsor's proposed study timelines?" },
-        { id: 'q_coi', type: 'yesno', label: 'Are there any anticipated conflicts of interest requiring disclosure?' },
+        { id: 'q_conflict', type: 'yesno', label: 'Are there any anticipated conflicts of interest requiring disclosure?' },
         { id: 'additionalComments', type: 'textarea', label: 'Additional comments' }
       ]
     },
@@ -533,7 +533,7 @@
         { id: 'declSignature', type: 'text', label: 'Signature', hint: 'type name to represent signature in this draft; obtain a wet or e-signature on the final copy' },
         { id: 'declDate', type: 'text', label: 'Date' },
         { type: 'divider', label: 'For sponsor / CRO use only' },
-        { id: 'outcome', type: 'select', label: 'Feasibility outcome', options: ['Approved', 'Approved with conditions', 'Not approved'] },
+        { id: 'sponsorOutcome', type: 'select', label: 'Feasibility outcome', options: ['Approved', 'Approved with conditions', 'Not approved'] },
         { id: 'reviewedBy', type: 'text', label: 'Reviewed by' },
         { id: 'reviewDate', type: 'text', label: 'Date' }
       ]
@@ -991,9 +991,11 @@
       let apiSites = [];
       try {
         const res = await fetch('/api/sites');
-        const data = await res.json();
-        if (data.success && Array.isArray(data.sites)) {
-          apiSites = data.sites;
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.sites)) {
+            apiSites = data.sites;
+          }
         }
       } catch (err) {
         console.warn('Backend API unavailable, loading local fallback storage.', err);
@@ -1093,7 +1095,7 @@
         el.innerHTML = `
           <div class="kpi" style="grid-column: 1 / -1; text-align: center; padding: 24px;">
             <div class="k-label">No client questionnaire data submitted yet</div>
-            <div class="k-sub" style="margin-top:4px;">When a client submits a site feasibility questionnaire, their record will appear here live.</div>
+            <div class="k-sub" style="margin-top:4px;">When a client submits a site feasibility questionnaire, their record will appear here live across all devices.</div>
           </div>
         `;
         return;
@@ -1538,7 +1540,7 @@
 
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
       try {
-        const blob = new Blob([text], { type: 'text/csv' });
+        const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
