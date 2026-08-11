@@ -697,52 +697,42 @@
     },
 
     showPharmaLoader(callback) {
-      const overlay = document.getElementById('pharmaLoaderOverlay');
-      if (overlay) overlay.classList.add('active');
-
-      setTimeout(() => {
-        if (overlay) overlay.classList.remove('active');
-        if (typeof callback === 'function') callback();
-      }, 450);
+      if (typeof callback === 'function') callback();
     },
 
     navigateTo(viewId) {
       if (viewId === 'dashboard' && state.userRole !== 'admin') {
         showToast('Access Restricted: Admin privileges required.');
-        if (state.userRole === 'client') {
-          viewId = 'questionnaire';
-        } else {
-          viewId = 'landing';
+        viewId = (state.userRole === 'client') ? 'questionnaire' : 'landing';
+      }
+
+      state.currentView = viewId;
+      sessionStorage.setItem('clinovo_current_view', viewId);
+
+      if (viewId === 'landing') {
+        document.body.classList.add('landing-active');
+      } else {
+        document.body.classList.remove('landing-active');
+      }
+
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-view'));
+      
+      const targetView = document.getElementById(`view-${viewId}`);
+      if (targetView) targetView.classList.add('active-view');
+
+      this.updateUserNav();
+
+      if (viewId === 'dashboard') {
+        dashApp.fetchSites();
+        dashApp.startAutoPoll();
+      } else {
+        dashApp.stopAutoPoll();
+        if (viewId === 'questionnaire') {
+          questApp.renderAll();
         }
       }
 
-      this.showPharmaLoader(() => {
-        state.currentView = viewId;
-        sessionStorage.setItem('clinovo_current_view', viewId);
-
-        if (viewId === 'landing') {
-          document.body.classList.add('landing-active');
-        } else {
-          document.body.classList.remove('landing-active');
-        }
-
-        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-view'));
-        
-        const targetView = document.getElementById(`view-${viewId}`);
-        if (targetView) targetView.classList.add('active-view');
-
-        if (viewId === 'dashboard') {
-          dashApp.fetchSites();
-          dashApp.startAutoPoll();
-        } else {
-          dashApp.stopAutoPoll();
-          if (viewId === 'questionnaire') {
-            questApp.renderAll();
-          }
-        }
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
     togglePasswordVisibility() {
@@ -775,8 +765,9 @@
     },
 
     handleSignIn(event) {
-      if (event && typeof event.preventDefault === 'function') {
-        event.preventDefault();
+      if (event) {
+        if (typeof event.preventDefault === 'function') event.preventDefault();
+        if (typeof event.stopPropagation === 'function') event.stopPropagation();
       }
 
       const usernameInput = document.getElementById('usernameInput');
@@ -806,6 +797,8 @@
         showToast('Signed in as Client!');
         this.navigateTo('questionnaire');
       }
+
+      return false;
     },
 
     logout() {

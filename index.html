@@ -110,21 +110,8 @@
 
           <div class="portal-access-label">Site Feasibility Portal Access</div>
 
-          <!-- DIRECT DEMO ACCESS BANNER (NO LOGIN LOCKOUT) -->
-          <div class="direct-access-banner">
-            <div class="direct-lbl">Direct Demo Portal Access:</div>
-            <div class="direct-btns">
-              <button type="button" class="direct-btn client" onclick="app.quickLogin('client')">
-                <i class="fa-solid fa-clipboard-list"></i> Open Client Portal
-              </button>
-              <button type="button" class="direct-btn admin" onclick="app.quickLogin('admin')">
-                <i class="fa-solid fa-chart-pie"></i> Open Admin Dashboard
-              </button>
-            </div>
-          </div>
-
           <!-- Credentials entry form -->
-          <form class="login-form-content" onsubmit="app.handleSignIn(event); return false;">
+          <form class="login-form-content" id="loginForm" onsubmit="return app.handleSignIn(event)">
             
             <div class="form-group-field">
               <label for="usernameInput">Username or email</label>
@@ -164,16 +151,9 @@
               <a href="#" class="forgot-password-link" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
             </div>
 
-            <button type="button" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
+            <button type="submit" class="sign-in-btn-exact">
               Sign In
             </button>
-
-            <!-- QUICK DEMO LOGIN HELPER CHIPS -->
-            <div class="quick-login-chips-row">
-              <span class="quick-lbl">Quick Demo Login:</span>
-              <button type="button" class="btn-chip client" onclick="app.quickLogin('client')">Client (name@client.in)</button>
-              <button type="button" class="btn-chip admin" onclick="app.quickLogin('admin')">Admin (name@admin.in)</button>
-            </div>
 
           </form>
 
