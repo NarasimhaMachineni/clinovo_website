@@ -1462,7 +1462,7 @@
   // -------------------------------------------------------------------------
   const dashApp = {
     radarSelected: new Set(),
-    sortKey: 'overall',
+    sortKey: null,
     sortAsc: false,
     editingId: null,
     pollTimer: null,
@@ -1758,7 +1758,7 @@
         return;
       }
 
-      const ranked = state.sites.map(s => ({ s, o: this.overallScore(s) })).sort((a, b) => b.o - a.o);
+      const ranked = state.sites.map(s => ({ s, o: this.overallScore(s) }));
       const rowH = 42, top = 16, left = 14;
       const barX = 400, chartW = 420;
       const H = top + ranked.length * rowH + 20;
@@ -2060,7 +2060,7 @@
 
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
       try {
-        const blob = new Blob([text], { type: 'text/csv' });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
