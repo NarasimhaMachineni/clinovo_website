@@ -2034,26 +2034,26 @@
         '#0284c7','#15803d','#dc2626','#92400e','#0e7490'
       ];
 
-      // ── DRAW bubbles as beautiful 5-pointed stars ─────────────────────
+      // ── DRAW bubbles as clean medium circles with full name labels ───
       poolSites.forEach(({ site, score }, idx) => {
-        const cx = X(+site.rate || 0), cy = Y(score), r = Rr(+site.total || 0);
+        const cx = X(+site.rate || 0), cy = Y(score);
+        const r = 9; // Perfect medium dot size
         const color = state.bubbleFilter === 'all'
           ? (STATUS_COLOR[site.status] || '#8A94A3')
           : rankColors[idx % rankColors.length];
-        const shortName = site.name.split(' ').slice(0, 2).join(' ');
 
-        // Draw star polygon element
-        const scale = r / 12;
-        s += `<polygon points="0,-12 3.5,-3.5 11.4,-3.5 5,1.5 7.5,9.2 0,4.5 -7.5,9.2 -5,1.5 -11.4,-3.5 -3.5,-3.5"
-                 transform="translate(${cx}, ${cy}) scale(${scale})"
-                 fill="${color}" fill-opacity="0.65" stroke="${color}" stroke-width="1.2" style="cursor:pointer;">
+        // Draw standard colored circle (medium dot)
+        s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.8" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;">
           <title>${site.name}\nRank #${idx+1} | Score: ${score} | ${site.rate}/mo | ${site.total} total</title>
-        </polygon>`;
+        </circle>`;
 
-        // Rank label above star
-        s += `<text x="${cx}" y="${cy - r - 5}" font-size="10" text-anchor="middle" fill="${color}" font-weight="700">#${idx+1}</text>`;
-        // Site name below star
-        s += `<text x="${cx}" y="${cy + r + 11}" font-size="8.5" text-anchor="middle" fill="#16233D" pointer-events="none" font-weight="600">${shortName}</text>`;
+        // Rank label above circle (with white outline for legibility)
+        s += `<text x="${cx}" y="${cy - r - 5}" font-size="10" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" pointer-events="none" font-weight="800">#${idx+1}</text>`;
+        s += `<text x="${cx}" y="${cy - r - 5}" font-size="10" text-anchor="middle" fill="${color}" pointer-events="none" font-weight="800">#${idx+1}</text>`;
+
+        // Site name below circle (with white outline for legibility)
+        s += `<text x="${cx}" y="${cy + r + 13}" font-size="9" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" pointer-events="none" font-weight="800">${site.name}</text>`;
+        s += `<text x="${cx}" y="${cy + r + 13}" font-size="9" text-anchor="middle" fill="#111827" pointer-events="none" font-weight="800">${site.name}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
