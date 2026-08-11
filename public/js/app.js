@@ -1964,20 +1964,24 @@
 
     toggleBubbleZoom() {
       const card = document.getElementById('bubblePlotCard');
-      const backdrop = document.getElementById('chartBackdrop');
+      const placeholder = document.getElementById('bubblePlotCardPlaceholder');
       const btn = document.getElementById('bubbleZoomBtn');
       const view = document.getElementById('view-dashboard');
-      if (!card || !backdrop || !btn || !view) return;
+      if (!card || !placeholder || !btn || !view) return;
 
-      const isMax = card.classList.toggle('maximized-chart');
-      backdrop.classList.toggle('show', isMax);
-      view.classList.toggle('bubble-maximized', isMax);
-
-      if (isMax) {
+      const isMax = card.classList.contains('maximized-chart');
+      if (!isMax) {
+        card.classList.add('maximized-chart');
+        view.classList.add('bubble-maximized');
+        document.body.appendChild(card);
         btn.innerHTML = `<i class="fa-solid fa-compress"></i> Minimize`;
       } else {
+        card.classList.remove('maximized-chart');
+        view.classList.remove('bubble-maximized');
+        placeholder.parentNode.insertBefore(card, placeholder);
         btn.innerHTML = `<i class="fa-solid fa-expand"></i> Maximize`;
       }
+      this.renderBubble();
     },
 
     renderBubble() {
@@ -1987,7 +1991,7 @@
       const card = document.getElementById('bubblePlotCard');
       const isMax = card ? card.classList.contains('maximized-chart') : false;
       const W = isMax ? Math.max(900, window.innerWidth - 80) : 900;
-      const H = isMax ? Math.max(500, window.innerHeight - 180) : 480;
+      const H = isMax ? Math.max(500, window.innerHeight - 180) : 580;
 
       const padL = 64, padR = 48, padT = 44, padB = 60;
       const plotW = W - padL - padR, plotH = H - padT - padB;
@@ -2079,7 +2083,7 @@
       s += `<text x="${padL + plotW/2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected Enrollment (patients / month)</text>`;
       s += `<text x="14" y="${padT + plotH/2}" font-size="11" fill="#4C5A73" transform="rotate(-90 14 ${padT + plotH/2})" text-anchor="middle">Overall Feasibility Score</text>`;
 
-      // ── DRAW Bubbles & Rank text ────────────────────────────────────────
+      // ── DRAW Bubbles & Site Name Labels ────────────────────────────────
       poolSites.forEach(({ site, score }, idx) => {
         const cx = X(+site.rate || 0), cy = Y(score);
         const r = Rr(+site.total || 0);
@@ -2087,16 +2091,16 @@
 
         // Draw standard colored circle (medium dot)
         s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.8" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;">
-          <title>${site.name}\nRank #${idx+1} | Score: ${score} | ${site.rate}/mo | ${site.total} total</title>
+          <title>${site.name}\nScore: ${score} | ${site.rate}/mo | ${site.total} total</title>
         </circle>`;
 
-        // Draw the rank text (like #1) next to the bubble (slightly offset to the top-right)
-        if (state.bubbleFilter !== 'all' || idx < 10) {
-          const textX = cx + r + 4;
-          const textY = cy - 4;
-          s += `<text x="${textX}" y="${textY}" font-size="10" font-weight="800" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" pointer-events="none">#${idx+1}</text>`;
-          s += `<text x="${textX}" y="${textY}" font-size="10" font-weight="800" fill="#111827" pointer-events="none">#${idx+1}</text>`;
-        }
+        // Alternate label positioning above and below to prevent collisions
+        const isEven = idx % 2 === 0;
+        const textY = isEven ? (cy - r - 6) : (cy + r + 13);
+
+        // Site name text with white outline mask for perfect legibility
+        s += `<text x="${cx}" y="${textY}" font-size="8.5" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" pointer-events="none" font-weight="800">${site.name}</text>`;
+        s += `<text x="${cx}" y="${textY}" font-size="8.5" text-anchor="middle" fill="#111827" pointer-events="none" font-weight="800">${site.name}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);

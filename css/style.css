@@ -1280,7 +1280,11 @@ input[type=text]::placeholder, textarea::placeholder { color: #A0AEC0; }
 }
 
 /* Heatmap Table */
-.table-wrap { overflow-x: auto; }
+.table-wrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 320px;
+}
 table.heat {
   border-collapse: collapse;
   width: 100%;
@@ -1832,7 +1836,7 @@ svg text { font-family: var(--font-body); }
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: 100000 !important;
+  z-index: 9999999 !important; /* Force to cover the header nav bar */
   background: #ffffff !important;
   padding: 30px 40px !important;
   display: flex !important;
@@ -1845,7 +1849,7 @@ svg text { font-family: var(--font-body); }
 
 #bubbleSvg {
   width: 100%;
-  height: 480px;
+  height: 580px;
   transition: height 0.25s ease;
 }
 
@@ -1861,7 +1865,7 @@ svg text { font-family: var(--font-body); }
   width: 100vw;
   height: 100vh;
   background: rgba(16, 27, 46, 0.4);
-  z-index: 99999;
+  z-index: 999999;
   display: none;
 }
 .chart-backdrop.show {
