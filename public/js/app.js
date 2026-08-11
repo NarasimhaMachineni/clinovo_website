@@ -1,5 +1,6 @@
 /* ==========================================================================
    CLINOVO SITE FEASIBILITY PORTAL & DASHBOARD - APPLICATION JAVASCRIPT
+   Font: Bookman Old Style | 240Hz High Refresh Hardware Accelerated Engine
    ========================================================================== */
 
 (function () {
@@ -46,8 +47,8 @@
     { key: 'not_approved', label: 'Not approved' }
   ];
 
-  const STATUS_COLOR = { approved: '#0B6E6E', conditional: '#B8842E', pending: '#8A94A3', not_approved: '#B23A3A' };
-  const SITE_COLORS = ['#0B6E6E', '#B8842E', '#4C6FA5', '#8B5A8C', '#6E7F3D', '#B23A3A', '#3D5A80'];
+  const STATUS_COLOR = { approved: '#0B6E6E', conditional: '#B8842E', pending: '#7E8C9F', not_approved: '#B23A3A' };
+  const SITE_COLORS = ['#0B6E6E', '#B8842E', '#0284c7', '#8b5cf6', '#10b981', '#B23A3A', '#3D5A80'];
 
   function showToast(msg) {
     const t = document.getElementById('toastMsg') || document.getElementById('toast');
@@ -57,7 +58,7 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // 240HZ SUPER-FLUID HIGH REFRESH RATE CANVAS ENGINE
+  // 240HZ ULTRA-FLUID HIGH REFRESH RATE CANVAS ANIMATION ENGINE
   function initPharmaCanvas() {
     const canvas = document.getElementById('smokeCanvas');
     if (!canvas) return;
@@ -73,17 +74,17 @@
 
     const ambientParticles = [];
     const cursorWaves = [];
-    const maxAmbient = 45;
+    const maxAmbient = 60;
 
     for (let i = 0; i < maxAmbient; i++) {
       ambientParticles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.45,
-        radius: Math.random() * 3 + 1.2,
-        alpha: Math.random() * 0.45 + 0.1,
-        color: Math.random() > 0.5 ? '11, 110, 110' : '59, 130, 246'
+        vx: (Math.random() - 0.5) * 0.55,
+        vy: (Math.random() - 0.5) * 0.55,
+        radius: Math.random() * 3.5 + 1.2,
+        alpha: Math.random() * 0.5 + 0.15,
+        color: Math.random() > 0.5 ? '11, 110, 110' : '2, 132, 199'
       });
     }
 
@@ -92,7 +93,7 @@
       if (state.currentView !== 'landing') return;
 
       const dist = Math.hypot(e.clientX - lastMouseX, e.clientY - lastMouseY);
-      if (dist > 10) {
+      if (dist > 8) {
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
 
@@ -100,10 +101,10 @@
           x: e.clientX,
           y: e.clientY,
           radius: 4,
-          maxRadius: Math.random() * 25 + 35,
-          alpha: 0.7,
-          color: Math.random() > 0.5 ? '11, 110, 110' : '2, 132, 199',
-          lineWidth: Math.random() * 2 + 1.2
+          maxRadius: Math.random() * 30 + 40,
+          alpha: 0.85,
+          color: Math.random() > 0.5 ? '11, 110, 110' : '184, 132, 46',
+          lineWidth: Math.random() * 2.2 + 1.4
         });
       }
     });
@@ -136,9 +137,9 @@
             const dy = p.y - p2.y;
             const d = Math.sqrt(dx * dx + dy * dy);
 
-            if (d < 100) {
-              ctx.strokeStyle = `rgba(${p.color}, ${(1 - d / 100) * 0.12})`;
-              ctx.lineWidth = 0.8;
+            if (d < 110) {
+              ctx.strokeStyle = `rgba(${p.color}, ${(1 - d / 110) * 0.14})`;
+              ctx.lineWidth = 0.9;
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
               ctx.lineTo(p2.x, p2.y);
@@ -149,8 +150,8 @@
 
         for (let i = cursorWaves.length - 1; i >= 0; i--) {
           const w = cursorWaves[i];
-          w.radius += 1.6 * (dt * 120);
-          w.alpha -= 0.022 * (dt * 120);
+          w.radius += 1.8 * (dt * 120);
+          w.alpha -= 0.02 * (dt * 120);
 
           if (w.alpha <= 0 || w.radius >= w.maxRadius) {
             cursorWaves.splice(i, 1);
@@ -1537,7 +1538,7 @@
 
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
       try {
-        const blob = new Blob([csv], { type: 'text/csv' });
+        const blob = new Blob([text], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
