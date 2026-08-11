@@ -150,9 +150,20 @@
               <a href="#" class="forgot-password-link" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
             </div>
 
-            <button type="button" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
-              Sign In
-            </button>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+              <button type="button" id="signInBtnMain" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
+                Sign In
+              </button>
+
+              <div style="display:flex; gap:10px; margin-top:4px;">
+                <button type="button" class="btn" style="flex:1; background:#0284c7; color:#fff; font-weight:600; padding:10px; border-radius:8px; border:none; cursor:pointer; font-size:13px;" onclick="app.navigateTo('questionnaire')">
+                  <i class="fa-solid fa-clipboard-list"></i> Client Portal
+                </button>
+                <button type="button" class="btn" style="flex:1; background:#0B6E6E; color:#fff; font-weight:600; padding:10px; border-radius:8px; border:none; cursor:pointer; font-size:13px;" onclick="app.navigateTo('dashboard')">
+                  <i class="fa-solid fa-chart-pie"></i> Admin Dashboard
+                </button>
+              </div>
+            </div>
 
           </form>
 

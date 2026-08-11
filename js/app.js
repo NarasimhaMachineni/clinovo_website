@@ -658,6 +658,23 @@
   // Application Controller
   window.app = {
     init() {
+      // Direct Event Listener Binding
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+          if (e) e.preventDefault();
+          this.handleSignIn(e);
+        });
+      }
+
+      const signInBtn = document.getElementById('signInBtnMain');
+      if (signInBtn) {
+        signInBtn.addEventListener('click', (e) => {
+          if (e) e.preventDefault();
+          this.handleSignIn(e);
+        });
+      }
+
       const savedRole = sessionStorage.getItem('clinovo_session_role');
       const savedView = sessionStorage.getItem('clinovo_current_view');
       const savedEmail = sessionStorage.getItem('clinovo_session_email');
@@ -672,24 +689,11 @@
           sessionStorage.setItem('clinovo_current_view', 'questionnaire');
         }
 
-        state.currentView = targetView;
-        document.body.classList.remove('landing-active');
-        
-        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-view'));
-        const targetViewEl = document.getElementById(`view-${targetView}`);
-        if (targetViewEl) targetViewEl.classList.add('active-view');
-
-        this.updateUserNav();
-        if (targetView === 'dashboard') {
-          dashApp.fetchSites();
-          dashApp.startAutoPoll();
-        } else if (targetView === 'questionnaire') {
-          questApp.renderAll();
-        }
+        this.navigateTo(targetView);
       } else {
         document.body.classList.add('landing-active');
         this.updateUserNav();
-        dashApp.fetchSites();
+        try { dashApp.fetchSites(); } catch (e) { console.error(e); }
       }
 
       this.startDotCarousel();
@@ -722,8 +726,12 @@
         }
 
         this.updateUserNav();
-        dashApp.fetchSites();
-        dashApp.startAutoPoll();
+        try {
+          dashApp.fetchSites();
+          dashApp.startAutoPoll();
+        } catch (e) {
+          console.error('Dash error:', e);
+        }
       } else if (viewId === 'questionnaire') {
         state.userRole = 'client';
         state.userEmail = state.userEmail || 'name@client.in';
@@ -741,8 +749,12 @@
         }
 
         this.updateUserNav();
-        dashApp.stopAutoPoll();
-        questApp.renderAll();
+        try {
+          dashApp.stopAutoPoll();
+          questApp.renderAll();
+        } catch (e) {
+          console.error('Quest error:', e);
+        }
       } else {
         state.currentView = 'landing';
         sessionStorage.setItem('clinovo_current_view', 'landing');
@@ -756,7 +768,7 @@
         }
 
         this.updateUserNav();
-        dashApp.stopAutoPoll();
+        try { dashApp.stopAutoPoll(); } catch (e) { console.error(e); }
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
