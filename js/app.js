@@ -42,25 +42,19 @@
   const STATUSES = [
     { key: 'approved', label: 'Approved' },
     { key: 'conditional', label: 'Conditional' },
-    { key: 'pending', label: 'Pending Review' },
-    { key: 'not_approved', label: 'Not Approved' }
+    { key: 'pending', label: 'Pending review' },
+    { key: 'not_approved', label: 'Not approved' }
   ];
 
-  const STATUS_COLOR = {
-    approved: '#0B6E6E',
-    conditional: '#B8842E',
-    pending: '#8FA6B8',
-    not_approved: '#B23A3A'
-  };
-
-  const SITE_COLORS = ['#0B6E6E', '#B8842E', '#0284c7', '#8b5cf6', '#10b981', '#f43f5e', '#6366f1'];
+  const STATUS_COLOR = { approved: '#0B6E6E', conditional: '#B8842E', pending: '#8A94A3', not_approved: '#B23A3A' };
+  const SITE_COLORS = ['#0B6E6E', '#B8842E', '#4C6FA5', '#8B5A8C', '#6E7F3D', '#B23A3A', '#3D5A80'];
 
   function showToast(msg) {
     const t = document.getElementById('toastMsg') || document.getElementById('toast');
     if (!t) return;
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
+    setTimeout(() => t.classList.remove('show'), 2500);
   }
 
   // 240HZ SUPER-FLUID HIGH REFRESH RATE CANVAS ENGINE
@@ -224,7 +218,7 @@
       setTimeout(() => {
         if (overlay) overlay.classList.remove('active');
         if (typeof callback === 'function') callback();
-      }, 500);
+      }, 450);
     },
 
     navigateTo(viewId) {
@@ -352,7 +346,7 @@
   };
 
   // -------------------------------------------------------------------------
-  // 2. CLIENT QUESTIONNAIRE MODULE (EXACT SPECIFICATION IMPLEMENTATION)
+  // 2. CLIENT QUESTIONNAIRE MODULE
   // -------------------------------------------------------------------------
   const SECTIONS = [
     {
@@ -900,8 +894,9 @@
       showToast(`Submitted Successfully! Overall Score: ${overallScore}/100`);
 
       if (Array.isArray(returnedSites)) {
-        const cleanSites = returnedSites.filter(s => !['s01', 's02', 's03'].includes(s.id));
+        const cleanSites = returnedSites.filter(s => !['s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5'].includes(s.id));
         state.sites = cleanSites;
+        localStorage.setItem('onc-phase3-sfq:site-dashboard-v1', JSON.stringify({ sites: cleanSites, weights: state.weights }));
         localStorage.setItem('clinovo_sites_fallback', JSON.stringify(cleanSites));
       }
 
@@ -945,17 +940,27 @@
         status: status,
         rate: parseFloat(this.answers['enrollRate']) || 3.0,
         total: parseInt(this.answers['totalEnroll'], 10) || 30,
+        weeks: parseInt(this.answers['sivToFPI'], 10) || 12,
         scores: scores,
-        notes: 'Submitted via Site Feasibility Portal'
+        notes: 'Submitted via Client Site Feasibility Portal'
       };
 
       let existing = [];
       try {
-        existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
+        const savedDash = localStorage.getItem('onc-phase3-sfq:site-dashboard-v1');
+        if (savedDash) {
+          const parsed = JSON.parse(savedDash);
+          existing = parsed.sites || [];
+        } else {
+          existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
+        }
       } catch (e) {}
 
-      existing = existing.filter(s => !['s01', 's02', 's03'].includes(s.id));
+      const mockIds = new Set(['s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5']);
+      existing = existing.filter(s => !mockIds.has(s.id));
       existing.unshift(newSite);
+
+      localStorage.setItem('onc-phase3-sfq:site-dashboard-v1', JSON.stringify({ sites: existing, weights: state.weights }));
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(existing));
 
       this.handleSubmissionSuccess(overallScore, existing);
@@ -973,7 +978,7 @@
   };
 
   // -------------------------------------------------------------------------
-  // 3. ADMIN FEASIBILITY DASHBOARD MODULE (ONLY REAL CLIENT DATA)
+  // 3. ADMIN FEASIBILITY DASHBOARD MODULE (EXACT SPEC & REAL CLIENT DATA ONLY)
   // -------------------------------------------------------------------------
   const dashApp = {
     radarSelected: new Set(),
@@ -995,12 +1000,19 @@
 
       let localSites = [];
       try {
-        const saved = localStorage.getItem('clinovo_sites_fallback');
-        if (saved) localSites = JSON.parse(saved);
+        const savedDash = localStorage.getItem('onc-phase3-sfq:site-dashboard-v1');
+        if (savedDash) {
+          const parsed = JSON.parse(savedDash);
+          localSites = parsed.sites || [];
+          if (parsed.weights) state.weights = parsed.weights;
+        } else {
+          const fallback = localStorage.getItem('clinovo_sites_fallback');
+          if (fallback) localSites = JSON.parse(fallback);
+        }
       } catch (e) {}
 
-      // EXCLUSIVELY SHOW REAL CLIENT SUBMITTED QUESTIONNAIRES (NO MOCK DATA)
-      const mockIds = new Set(['s01', 's02', 's03']);
+      // EXCLUSIVELY SHOW REAL CLIENT SUBMITTED QUESTIONNAIRES (ZERO MOCK DATA)
+      const mockIds = new Set(['s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5']);
       apiSites = apiSites.filter(s => !mockIds.has(s.id));
       localSites = localSites.filter(s => !mockIds.has(s.id));
 
@@ -1009,6 +1021,8 @@
       localSites.forEach(s => mergedMap.set(s.id, s));
 
       state.sites = Array.from(mergedMap.values());
+
+      localStorage.setItem('onc-phase3-sfq:site-dashboard-v1', JSON.stringify({ sites: state.sites, weights: state.weights }));
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(state.sites));
 
       if (state.sites.length > 0) {
@@ -1019,6 +1033,11 @@
       this.renderAll();
     },
 
+    saveState() {
+      localStorage.setItem('onc-phase3-sfq:site-dashboard-v1', JSON.stringify({ sites: state.sites, weights: state.weights }));
+      localStorage.setItem('clinovo_sites_fallback', JSON.stringify(state.sites));
+    },
+
     overallScore(site) {
       let sum = 0, wsum = 0;
       CATEGORIES.forEach(c => {
@@ -1027,6 +1046,32 @@
         wsum += w;
       });
       return wsum ? Math.round(sum / wsum) : 0;
+    },
+
+    hexToRgb(h) {
+      h = h.replace('#', '');
+      return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)];
+    },
+
+    rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+    },
+
+    lerp(a, b, t) {
+      return a + (b - a) * t;
+    },
+
+    lerpColor(c1, c2, t) {
+      const a = this.hexToRgb(c1), b = this.hexToRgb(c2);
+      return this.rgbToHex(this.lerp(a[0], b[0], t), this.lerp(a[1], b[1], t), this.lerp(a[2], b[2], t));
+    },
+
+    scoreColor(v) {
+      const t = Math.max(0, Math.min(100, v)) / 100;
+      let base;
+      if (t < 0.5) base = this.lerpColor('#B23A3A', '#B8842E', t / 0.5);
+      else base = this.lerpColor('#B8842E', '#0B6E6E', (t - 0.5) / 0.5);
+      return this.lerpColor(base, '#FFFFFF', 0.58);
     },
 
     renderAll() {
@@ -1042,11 +1087,12 @@
     renderKPIs() {
       const el = document.getElementById('kpiRow');
       if (!el) return;
+
       if (!state.sites.length) {
         el.innerHTML = `
-          <div class="kpi-card" style="grid-column: 1 / -1; text-align: center; padding: 32px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 16px;">
-            <div style="font-size: 16px; color: #16233D; font-weight: 700; margin-bottom: 6px;">No Questionnaire Data Submitted Yet</div>
-            <div style="font-size: 13px; color: #4C5A73;">Log in as a <strong>Client</strong> and fill out the Site Feasibility Questionnaire to submit your real clinical site data. Once submitted, your record will reflect here live.</div>
+          <div class="kpi" style="grid-column: 1 / -1; text-align: center; padding: 24px;">
+            <div class="k-label">No client questionnaire data submitted yet</div>
+            <div class="k-sub" style="margin-top:4px;">When a client submits a site feasibility questionnaire, their record will appear here live.</div>
           </div>
         `;
         return;
@@ -1059,18 +1105,18 @@
       const avgRate = (state.sites.reduce((a, s) => a + (+s.rate || 0), 0) / state.sites.length).toFixed(1);
 
       const cards = [
-        { label: 'Candidate Sites Tracked', val: state.sites.length, sub: 'Stored live in SQLite 3 DB' },
-        { label: 'Average Score', val: avg, sub: 'Weighted across 9 domains' },
-        { label: 'Top Performer', val: top.s.name.split(' ').slice(0, 2).join(' '), sub: `Score ${top.o}` },
-        { label: 'Flagged Sites', val: flagged, sub: 'Score < 60 or Not Approved', flag: flagged > 0 },
-        { label: 'Avg Monthly Accrual', val: avgRate, sub: 'Patients / month per site' }
+        { label: 'Sites tracked', val: state.sites.length, sub: 'in this comparison set' },
+        { label: 'Average score', val: avg, sub: 'weighted across ' + CATEGORIES.length + ' domains' },
+        { label: 'Top performer', val: top.s.name.split(' ').slice(0, 2).join(' '), sub: 'score ' + top.o },
+        { label: 'Flagged sites', val: flagged, sub: 'score < 60 or not approved', flag: flagged > 0 },
+        { label: 'Avg. monthly accrual', val: avgRate, sub: 'patients / month across sites' }
       ];
 
       el.innerHTML = cards.map(c => `
-        <div class="kpi-card ${c.flag ? 'flag' : ''}">
-          <div class="kpi-label">${c.label}</div>
-          <div class="kpi-val">${c.val}</div>
-          <div class="kpi-sub">${c.sub}</div>
+        <div class="kpi ${c.flag ? 'flag' : ''}">
+          <div class="k-label">${c.label}</div>
+          <div class="k-val">${c.val}</div>
+          <div class="k-sub">${c.sub}</div>
         </div>
       `).join('');
     },
@@ -1085,7 +1131,7 @@
       if (!grid) return;
       grid.innerHTML = CATEGORIES.map(c => `
         <div class="weight-row">
-          <label><span>${c.label}</span> <span id="wv_${c.key}">${(state.weights[c.key] ?? 1).toFixed(1)}×</span></label>
+          <label>${c.label} <span id="wv_${c.key}">${(state.weights[c.key] ?? 1).toFixed(1)}×</span></label>
           <input type="range" min="0" max="3" step="0.1" value="${state.weights[c.key] ?? 1}" oninput="dashApp.updateWeight('${c.key}', this.value)">
         </div>
       `).join('');
@@ -1095,12 +1141,14 @@
       state.weights[key] = parseFloat(val);
       const span = document.getElementById('wv_' + key);
       if (span) span.textContent = parseFloat(val).toFixed(1) + '×';
+      this.saveState();
       this.renderAll();
     },
 
     resetWeights() {
       CATEGORIES.forEach(c => state.weights[c.key] = 1);
       this.renderWeights();
+      this.saveState();
       this.renderAll();
     },
 
@@ -1108,15 +1156,15 @@
       const el = document.getElementById('radarChips');
       if (!el) return;
       if (!state.sites.length) {
-        el.innerHTML = `<span style="font-size:12px; color:#4C5A73;">No client submitted sites to display in radar overlay</span>`;
+        el.innerHTML = `<span style="font-size:12px; color:var(--ink-soft);">No client submitted sites to compare</span>`;
         return;
       }
       el.innerHTML = state.sites.map((s, i) => {
         const color = SITE_COLORS[i % SITE_COLORS.length];
         const on = this.radarSelected.has(s.id);
         return `
-          <div class="radar-chip ${on ? '' : 'off'}" onclick="dashApp.toggleRadarChip('${s.id}')">
-            <span class="dot" style="background:${on ? color : 'transparent'}; border: 1.5px solid ${color}"></span>
+          <div class="chip ${on ? '' : 'off'}" onclick="dashApp.toggleRadarChip('${s.id}')">
+            <span class="dot" style="background:${on ? color : 'transparent'}"></span>
             ${s.name.split(' ').slice(0, 2).join(' ')}
           </div>
         `;
@@ -1127,6 +1175,10 @@
       if (this.radarSelected.has(id)) {
         this.radarSelected.delete(id);
       } else {
+        if (this.radarSelected.size >= 5) {
+          showToast('Compare up to 5 sites at a time');
+          return;
+        }
         this.radarSelected.add(id);
       }
       this.renderRadarChips();
@@ -1142,7 +1194,7 @@
       if (!svg) return;
 
       const N = CATEGORIES.length;
-      const cx = 220, cy = 200, R = 140;
+      const cx = 200, cy = 200, R = 150;
       const startAngle = -Math.PI / 2;
       let s = '';
 
@@ -1152,13 +1204,13 @@
           const a = startAngle + i * (2 * Math.PI / N);
           pts.push(this.polar(cx, cy, R * f, a));
         }
-        s += `<polygon points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="#cbd5e1" stroke-width="1"/>`;
+        s += `<polygon points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="#E3E8ED" stroke-width="1"/>`;
       });
 
       for (let i = 0; i < N; i++) {
         const a = startAngle + i * (2 * Math.PI / N);
         const [x, y] = this.polar(cx, cy, R, a);
-        s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#cbd5e1" stroke-width="1"/>`;
+        s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#E3E8ED" stroke-width="1"/>`;
         const [lx, ly] = this.polar(cx, cy, R + 22, a);
         let anchor = 'middle';
         if (Math.cos(a) > 0.3) anchor = 'start';
@@ -1176,11 +1228,15 @@
           const v = (site.scores[c.key] || 0) / 100;
           pts.push(this.polar(cx, cy, R * v, a));
         });
-        s += `<polygon points="${pts.map(p => p.join(',')).join(' ')}" fill="${color}" fill-opacity="0.25" stroke="${color}" stroke-width="2.5"/>`;
-        pts.forEach(p => { s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="${color}"/>`; });
+        s += `<polygon points="${pts.map(p => p.join(',')).join(' ')}" fill="${color}" fill-opacity="0.12" stroke="${color}" stroke-width="2"/>`;
+        pts.forEach(p => { s += `<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="${color}"/>`; });
       });
 
-      svg.setAttribute('viewBox', '0 0 440 400');
+      if (selected.length === 0) {
+        s += `<text x="${cx}" y="${cy}" text-anchor="middle" font-size="13" fill="#8A94A3">${state.sites.length ? 'Select sites above to compare' : 'No client site data'}</text>`;
+      }
+
+      svg.setAttribute('viewBox', '0 0 400 400');
       svg.innerHTML = s;
     },
 
@@ -1190,24 +1246,23 @@
 
       if (!state.sites.length) {
         svg.setAttribute('viewBox', '0 0 320 100');
-        svg.innerHTML = `<text x="160" y="50" font-size="12" fill="#4C5A73" text-anchor="middle">No client submitted sites to rank</text>`;
+        svg.innerHTML = `<text x="160" y="50" font-size="12" fill="#8A94A3" text-anchor="middle">No client sites submitted yet</text>`;
         return;
       }
 
       const ranked = state.sites.map(s => ({ s, o: this.overallScore(s) })).sort((a, b) => b.o - a.o);
-      const rowH = 42, top = 16, left = 14, chartW = 220;
+      const rowH = 42, top = 16, left = 14, chartW = 230, chartMaxX = left + chartW;
       const H = Math.max(200, top + ranked.length * rowH + 16);
       let s = '';
 
       ranked.forEach((r, i) => {
         const y = top + i * rowH;
         const w = (r.o / 100) * chartW;
-        const color = STATUS_COLOR[r.s.status] || '#8FA6B8';
-
-        s += `<text x="${left}" y="${y + 14}" font-size="12" font-weight="600" fill="#16233D">${r.s.name.length > 24 ? r.s.name.slice(0, 22) + '…' : r.s.name}</text>`;
-        s += `<rect x="${left}" y="${y + 20}" width="${chartW}" height="10" rx="5" fill="#e2e8f0"/>`;
-        s += `<rect x="${left}" y="${y + 20}" width="${Math.max(6, w)}" height="10" rx="5" fill="${color}"/>`;
-        s += `<text x="${left + chartW + 12}" y="${y + 29}" font-size="12" font-family="ui-monospace, monospace" font-weight="700" fill="#0B6E6E">${r.o}</text>`;
+        const color = STATUS_COLOR[r.s.status] || '#8A94A3';
+        s += `<text x="${left}" y="${y + 14}" font-size="12" font-weight="600" fill="#16233D">${r.s.name.length > 26 ? r.s.name.slice(0, 24) + '…' : r.s.name}</text>`;
+        s += `<rect x="${left}" y="${y + 20}" width="${chartW}" height="10" rx="5" fill="#EEF0F3"/>`;
+        s += `<rect x="${left}" y="${y + 20}" width="${Math.max(4, w)}" height="10" rx="5" fill="${color}"/>`;
+        s += `<text x="${chartMaxX + 10}" y="${y + 29}" font-size="12" font-family="ui-monospace,monospace" fill="#16233D">${r.o}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 320 ${H}`);
@@ -1218,12 +1273,12 @@
       const svg = document.getElementById('bubbleSvg');
       if (!svg) return;
 
-      const W = 900, H = 320, padL = 60, padR = 30, padT = 20, padB = 42;
+      const W = 900, H = 320, padL = 56, padR = 30, padT = 20, padB = 42;
       const plotW = W - padL - padR, plotH = H - padT - padB;
 
       if (!state.sites.length) {
         svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-        svg.innerHTML = `<text x="${W/2}" y="${H/2}" font-size="13" fill="#4C5A73" text-anchor="middle">No client site data submitted yet</text>`;
+        svg.innerHTML = `<text x="${W / 2}" y="${H / 2}" font-size="13" fill="#8A94A3" text-anchor="middle">No client site data submitted yet</text>`;
         return;
       }
 
@@ -1238,32 +1293,29 @@
 
       [0, 25, 50, 75, 100].forEach(v => {
         const y = Y(v);
-        s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>`;
-        s += `<text x="${padL - 10}" y="${y + 4}" font-size="10.5" text-anchor="end" fill="#4C5A73">${v}</text>`;
+        s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#EAEEF2" stroke-width="1"/>`;
+        s += `<text x="${padL - 10}" y="${y + 4}" font-size="10.5" text-anchor="end" fill="#8A94A3">${v}</text>`;
       });
 
       const rateTicks = 5;
       for (let i = 0; i <= rateTicks; i++) {
         const v = (maxRate / rateTicks) * i;
         const x = X(v);
-        s += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#f1f5f9" stroke-width="1"/>`;
-        s += `<text x="${x}" y="${H - padB + 18}" font-size="10.5" text-anchor="middle" fill="#4C5A73">${v.toFixed(1)}</text>`;
+        s += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#F2F4F6" stroke-width="1"/>`;
+        s += `<text x="${x}" y="${H - padB + 18}" font-size="10.5" text-anchor="middle" fill="#8A94A3">${v.toFixed(1)}</text>`;
       }
 
-      s += `<text x="${padL + plotW / 2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected Monthly Accrual (patients / month)</text>`;
-      s += `<text x="16" y="${padT + plotH / 2}" font-size="11" fill="#4C5A73" transform="rotate(-90 16 ${padT + plotH / 2})" text-anchor="middle">Feasibility Score</text>`;
+      s += `<text x="${padL + plotW / 2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected enrollment (patients / month)</text>`;
+      s += `<text x="14" y="${padT + plotH / 2}" font-size="11" fill="#4C5A73" transform="rotate(-90 14 ${padT + plotH / 2})" text-anchor="middle">Overall score</text>`;
 
       state.sites.forEach(site => {
         const o = this.overallScore(site);
         const cx = X(+site.rate || 0), cy = Y(o), r = Rr(+site.total || 0);
-        const color = STATUS_COLOR[site.status] || '#8FA6B8';
-
-        s += `
-          <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.35" stroke="${color}" stroke-width="2.5" style="cursor:pointer;">
-            <title>${site.name} — Overall Score: ${o}, ${site.rate} pts/mo, ${site.total} total</title>
-          </circle>
-          <text x="${cx}" y="${cy + 3}" font-size="9.5" text-anchor="middle" fill="#16233D" font-weight="600" pointer-events="none">${site.name.split(' ')[0]}</text>
-        `;
+        const color = STATUS_COLOR[site.status] || '#8A94A3';
+        s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.30" stroke="${color}" stroke-width="1.6">
+          <title>${site.name} — score ${o}, ${site.rate}/mo, ${site.total} total, ${STATUSES.find(x => x.key === site.status)?.label || site.status}</title>
+        </circle>`;
+        s += `<text x="${cx}" y="${cy + 3}" font-size="9.5" text-anchor="middle" fill="#16233D" pointer-events="none">${site.name.split(' ')[0]}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -1272,24 +1324,9 @@
       const legend = document.getElementById('bubbleLegend');
       if (legend) {
         legend.innerHTML = STATUSES.map(st => `
-          <span style="display:flex; align-items:center; gap:6px; color:#4C5A73; font-size:12px;">
-            <span style="width:10px; height:10px; border-radius:50%; background:${STATUS_COLOR[st.key]}"></span>
-            ${st.label}
-          </span>
+          <span><span class="sw" style="background:${STATUS_COLOR[st.key]}"></span>${st.label}</span>
         `).join('');
       }
-    },
-
-    scoreColor(v) {
-      if (v >= 80) return 'rgba(11, 110, 110, 0.15)';
-      if (v >= 65) return 'rgba(184, 132, 46, 0.15)';
-      return 'rgba(178, 58, 58, 0.15)';
-    },
-
-    scoreTextColor(v) {
-      if (v >= 80) return '#0B6E6E';
-      if (v >= 65) return '#B8842E';
-      return '#B23A3A';
     },
 
     renderTable() {
@@ -1300,10 +1337,9 @@
         table.innerHTML = `
           <tbody>
             <tr>
-              <td colspan="12" style="padding: 36px; text-align: center; color: #4C5A73;">
-                <i class="fa-solid fa-folder-open" style="font-size: 24px; color: #8FA6B8; margin-bottom: 8px; display: block;"></i>
-                No candidate sites submitted by clients yet.<br>
-                <span style="font-size: 12px; color: #8FA6B8;">Client filled questionnaires will automatically populate this dashboard table when submitted.</span>
+              <td colspan="12" style="padding: 36px; text-align: center; color: var(--ink-soft);">
+                No client candidate sites submitted yet.<br>
+                <span style="font-size: 12px; color: var(--grey);">Client filled questionnaires will automatically populate this dashboard table when submitted.</span>
               </td>
             </tr>
           </tbody>
@@ -1312,41 +1348,39 @@
       }
 
       let rows = state.sites.map(s => ({ s, o: this.overallScore(s) }));
+
+      const sortVal = (row) => {
+        if (this.sortKey === 'name') return row.s.name.toLowerCase();
+        if (this.sortKey === 'status') return row.s.status;
+        if (this.sortKey === 'overall') return row.o;
+        return row.s.scores[this.sortKey] ?? 0;
+      };
+
       rows.sort((a, b) => {
-        let va = a.s[this.sortKey] || a.o;
-        let vb = b.s[this.sortKey] || b.o;
-        if (this.sortKey === 'overall') { va = a.o; vb = b.o; }
-        else if (CATEGORIES.some(c => c.key === this.sortKey)) {
-          va = a.s.scores[this.sortKey] || 0;
-          vb = b.s.scores[this.sortKey] || 0;
-        }
-        return this.sortAsc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+        const va = sortVal(a), vb = sortVal(b);
+        const cmp = (va > vb) - (va < vb);
+        return this.sortAsc ? cmp : -cmp;
       });
 
       let thead = '<thead><tr>';
-      thead += `<th onclick="dashApp.setSort('name')">Site Name</th>`;
-      thead += `<th onclick="dashApp.setSort('status')">Status</th>`;
+      thead += `<th data-key="name" onclick="dashApp.setSort('name')" class="${this.sortKey === 'name' ? 'sorted ' + (this.sortAsc ? 'asc' : '') : ''}">Site</th>`;
+      thead += `<th data-key="status" onclick="dashApp.setSort('status')" class="${this.sortKey === 'status' ? 'sorted ' + (this.sortAsc ? 'asc' : '') : ''}">Status</th>`;
       CATEGORIES.forEach(c => {
-        thead += `<th onclick="dashApp.setSort('${c.key}')">${c.short}</th>`;
+        thead += `<th data-key="${c.key}" onclick="dashApp.setSort('${c.key}')" class="${this.sortKey === c.key ? 'sorted ' + (this.sortAsc ? 'asc' : '') : ''}">${c.short}</th>`;
       });
-      thead += `<th onclick="dashApp.setSort('overall')">Overall</th>`;
+      thead += `<th data-key="overall" onclick="dashApp.setSort('overall')" class="${this.sortKey === 'overall' ? 'sorted ' + (this.sortAsc ? 'asc' : '') : ''}">Overall</th>`;
       thead += '</tr></thead>';
 
       let tbody = '<tbody>';
       rows.forEach(r => {
         tbody += `<tr>`;
-        tbody += `
-          <td class="site-cell" onclick="dashApp.openModal('${r.s.id}')">
-            ${r.s.name}
-            <span class="meta">#${r.s.number} · ${r.s.country}</span>
-          </td>
-        `;
-        tbody += `<td><span class="status-badge ${r.s.status}">${STATUSES.find(x => x.key === r.s.status)?.label || r.s.status}</span></td>`;
+        tbody += `<td class="site-cell" onclick="dashApp.openModal('${r.s.id}')">${r.s.name}<span class="meta">${r.s.number || ''} · ${r.s.country || ''}</span></td>`;
+        tbody += `<td><span class="badge ${r.s.status}">${STATUSES.find(x => x.key === r.s.status)?.label || r.s.status}</span></td>`;
         CATEGORIES.forEach(c => {
           const v = r.s.scores[c.key] || 0;
-          tbody += `<td style="background:${this.scoreColor(v)}; color:${this.scoreTextColor(v)}; font-weight:700;">${v}</td>`;
+          tbody += `<td style="background:${this.scoreColor(v)}">${v}</td>`;
         });
-        tbody += `<td class="overall" style="background:${this.scoreColor(r.o)}; color:${this.scoreTextColor(r.o)}; font-size:15px; font-weight:700;">${r.o}</td>`;
+        tbody += `<td class="overall" style="background:${this.scoreColor(r.o)}">${r.o}</td>`;
         tbody += `</tr>`;
       });
       tbody += '</tbody>';
@@ -1360,49 +1394,67 @@
       this.renderTable();
     },
 
+    statusPillsHTML(current) {
+      return STATUSES.map(st => `<div class="pill ${current === st.key ? 'on' : ''}" data-key="${st.key}">${st.label}</div>`).join('');
+    },
+
+    scoreSlidersHTML(scores) {
+      return CATEGORIES.map(c => `
+        <div class="slider-row">
+          <div class="slabel">${c.label}</div>
+          <input type="range" min="0" max="100" step="1" value="${scores[c.key] ?? 50}" data-key="${c.key}" oninput="document.getElementById('sv_${c.key}').textContent = this.value">
+          <div class="sval" id="sv_${c.key}">${scores[c.key] ?? 50}</div>
+        </div>
+      `).join('');
+    },
+
     openModal(id) {
       this.editingId = id || null;
       const site = this.editingId ? state.sites.find(s => s.id === this.editingId) : null;
 
-      document.getElementById('modalTitle').textContent = site ? 'Edit Clinical Site' : 'Add Clinical Site';
+      document.getElementById('modalTitle').textContent = site ? 'Edit site' : 'Add site';
       document.getElementById('f_name').value = site?.name || '';
       document.getElementById('f_number').value = site?.number || '';
       document.getElementById('f_country').value = site?.country || '';
       document.getElementById('f_pi').value = site?.pi || '';
-      document.getElementById('f_status').value = site?.status || 'pending';
-      document.getElementById('f_rate').value = site?.rate ?? 3.0;
-      document.getElementById('f_total').value = site?.total ?? 30;
+      document.getElementById('f_rate').value = site?.rate ?? '';
+      document.getElementById('f_total').value = site?.total ?? '';
+      document.getElementById('f_weeks').value = site?.weeks ?? '';
       document.getElementById('f_notes').value = site?.notes || '';
 
-      const scores = site?.scores || Object.fromEntries(CATEGORIES.map(c => [c.key, 75]));
-      const scoresContainer = document.getElementById('f_scores');
-      scoresContainer.innerHTML = CATEGORIES.map(c => `
-        <div class="slider-score-row">
-          <div class="slabel">${c.label}</div>
-          <input type="range" min="0" max="100" step="1" value="${scores[c.key] ?? 75}" data-key="${c.key}" oninput="document.getElementById('sv_${c.key}').textContent = this.value">
-          <div class="sval" id="sv_${c.key}">${scores[c.key] ?? 75}</div>
-        </div>
-      `).join('');
+      const statusEl = document.getElementById('f_status');
+      statusEl.innerHTML = this.statusPillsHTML(site?.status || 'pending');
+      statusEl.dataset.value = site?.status || 'pending';
+      statusEl.querySelectorAll('.pill').forEach(p => {
+        p.addEventListener('click', () => {
+          statusEl.dataset.value = p.dataset.key;
+          statusEl.querySelectorAll('.pill').forEach(x => x.classList.remove('on'));
+          p.classList.add('on');
+        });
+      });
 
-      document.getElementById('deleteBtn').style.display = site ? 'inline-flex' : 'none';
-      document.getElementById('siteModalOverlay').classList.add('open');
+      const scores = site?.scores || Object.fromEntries(CATEGORIES.map(c => [c.key, 50]));
+      document.getElementById('f_scores').innerHTML = this.scoreSlidersHTML(scores);
+
+      document.getElementById('deleteBtn').style.display = site ? 'inline-block' : 'none';
+      document.getElementById('overlay').classList.add('open');
     },
 
     closeModal() {
-      document.getElementById('siteModalOverlay').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
       this.editingId = null;
     },
 
     async saveModal() {
       const name = document.getElementById('f_name').value.trim();
       if (!name) {
-        showToast('Site Name is required');
+        showToast('Site name is required');
         return;
       }
 
-      const scores = {};
+      const newScores = {};
       document.querySelectorAll('#f_scores input[type=range]').forEach(inp => {
-        scores[inp.dataset.key] = parseInt(inp.value, 10);
+        newScores[inp.dataset.key] = parseInt(inp.value, 10);
       });
 
       const siteData = {
@@ -1411,10 +1463,11 @@
         number: document.getElementById('f_number').value.trim(),
         country: document.getElementById('f_country').value.trim(),
         pi: document.getElementById('f_pi').value.trim(),
-        status: document.getElementById('f_status').value,
+        status: document.getElementById('f_status').dataset.value || 'pending',
         rate: parseFloat(document.getElementById('f_rate').value) || 0,
         total: parseInt(document.getElementById('f_total').value, 10) || 0,
-        scores,
+        weeks: parseInt(document.getElementById('f_weeks').value, 10) || 0,
+        scores: newScores,
         notes: document.getElementById('f_notes').value.trim()
       };
 
@@ -1427,7 +1480,6 @@
         const data = await res.json();
         if (data.success) {
           state.sites = data.sites;
-          localStorage.setItem('clinovo_sites_fallback', JSON.stringify(data.sites));
         } else {
           this.saveModalFallback(siteData);
         }
@@ -1435,70 +1487,69 @@
         this.saveModalFallback(siteData);
       }
 
+      this.saveState();
       this.closeModal();
       this.renderAll();
-      showToast('Site saved!');
+      showToast('Site saved');
     },
 
     saveModalFallback(siteData) {
-      const existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
-      const idx = existing.findIndex(s => s.id === siteData.id);
-      if (idx >= 0) existing[idx] = siteData;
-      else existing.unshift(siteData);
-      localStorage.setItem('clinovo_sites_fallback', JSON.stringify(existing));
-      state.sites = existing;
+      const idx = state.sites.findIndex(s => s.id === siteData.id);
+      if (idx >= 0) state.sites[idx] = siteData;
+      else {
+        state.sites.unshift(siteData);
+        this.radarSelected.add(siteData.id);
+      }
     },
 
     async deleteSite() {
       if (!this.editingId) return;
-      if (!confirm('Are you sure you want to delete this site?')) return;
+      if (!confirm('Remove this site from the comparison?')) return;
 
       try {
         const res = await fetch(`/api/sites/${this.editingId}`, { method: 'DELETE' });
         const data = await res.json();
         if (data.success) {
           state.sites = data.sites;
-          localStorage.setItem('clinovo_sites_fallback', JSON.stringify(data.sites));
         } else {
-          this.deleteFallback(this.editingId);
+          state.sites = state.sites.filter(s => s.id !== this.editingId);
         }
       } catch (err) {
-        this.deleteFallback(this.editingId);
+        state.sites = state.sites.filter(s => s.id !== this.editingId);
       }
 
       this.radarSelected.delete(this.editingId);
+      this.saveState();
       this.closeModal();
       this.renderAll();
-      showToast('Site deleted');
-    },
-
-    deleteFallback(id) {
-      const existing = JSON.parse(localStorage.getItem('clinovo_sites_fallback') || '[]');
-      const filtered = existing.filter(s => s.id !== id);
-      localStorage.setItem('clinovo_sites_fallback', JSON.stringify(filtered));
-      state.sites = filtered;
+      showToast('Site removed');
     },
 
     exportCSV() {
-      const headers = ['Site Name', 'Site Number', 'Country', 'PI', 'Status', ...CATEGORIES.map(c => c.label), 'Overall Score', 'Monthly Rate', 'Total Enrollment', 'Notes'];
+      const headers = ['Site', 'Number', 'Country', 'PI', 'Status', ...CATEGORIES.map(c => c.label), 'Overall', 'Rate/mo', 'Total enrollment', 'Activation (wks)', 'Notes'];
       const rows = state.sites.map(s => {
         const o = this.overallScore(s);
         return [
-          s.name, s.number, s.country, s.pi, s.status,
-          ...CATEGORIES.map(c => s.scores[c.key] || 0),
-          o, s.rate, s.total, (s.notes || '').replace(/\n/g, ' ')
+          s.name, s.number, s.country, s.pi, STATUSES.find(x => x.key === s.status)?.label || s.status,
+          ...CATEGORIES.map(c => s.scores[c.key] || 0), o, s.rate, s.total, s.weeks, (s.notes || '').replace(/\n/g, ' ')
         ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
       });
 
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const hiddenA = document.createElement('a');
-      hiddenA.href = url;
-      hiddenA.download = 'clinovo-site-feasibility-matrix.csv';
-      hiddenA.click();
-      URL.revokeObjectURL(url);
-      showToast('CSV exported');
+      try {
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'site-comparison.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('CSV exported');
+      } catch (e) {
+        showToast('Could not export CSV');
+      }
     }
   };
 

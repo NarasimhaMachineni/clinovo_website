@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oncology Phase III · Site Feasibility Questionnaire</title>
+  <title>Site Comparison Dashboard · Oncology Phase III</title>
   
   <!-- Modern Google Fonts: Bookman Old Style Fallback / JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +50,7 @@
   </div>
 
   <!-- Toast Notification Popup -->
-  <div id="toastMsg" class="toast-popup"></div>
+  <div id="toast" class="toast"></div>
 
   <!-- ========================================================================== -->
   <!-- HEADER NAVIGATION BAR                                                      -->
@@ -205,105 +205,60 @@
   </section>
 
   <!-- ========================================================================== -->
-  <!-- VIEW 3: ADMIN FEASIBILITY DASHBOARD & ANALYTICS                            -->
+  <!-- VIEW 3: ADMIN FEASIBILITY DASHBOARD (EXACT DASHBOARD SPEC MATCH)           -->
   <!-- ========================================================================== -->
   <section id="view-dashboard" class="view-section">
-    <div class="dash-container">
-      
-      <!-- Top Title Bar -->
-      <div class="dash-title-bar">
+    <div class="wrap">
+
+      <div class="hdr">
         <div>
-          <div class="dash-kicker">FEASIBILITY ANALYTICS & SCORING ENGINE</div>
+          <div class="eyebrow">Feasibility Analytics</div>
           <h1>Site Comparison Dashboard</h1>
-          <p class="dash-sub">Oncology Phase III — Comparative evaluation of candidate trial sites side-by-side</p>
+          <div class="sub">Oncology · Phase III — compare candidate sites side by side</div>
         </div>
-        <div class="dash-top-btns">
-          <button class="btn btn-secondary" onclick="dashApp.exportCSV()"><i class="fa-solid fa-download"></i> Export CSV</button>
-          <button class="btn btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
-          <button class="btn btn-secondary" onclick="dashApp.toggleWeights()"><i class="fa-solid fa-sliders"></i> Weighting Settings</button>
-          <button class="btn btn-primary" onclick="dashApp.openModal()"><i class="fa-solid fa-plus"></i> Add Site</button>
-        </div>
-      </div>
-
-      <!-- KPI Summary Cards Row -->
-      <div class="kpi-row" id="kpiRow">
-        <!-- Populated dynamically by JS -->
-      </div>
-
-      <!-- Domain Weighting Adjustment Panel (Collapsible) -->
-      <div class="dash-card mb-6 weights-panel" id="weightsPanel">
-        <div class="dash-card-head">
-          <div>
-            <h3>Domain Weighting Configuration</h3>
-            <p>Adjust weight multiplier per domain to recalculate overall site feasibility scores dynamically</p>
-          </div>
-          <button class="btn btn-secondary btn-sm" onclick="dashApp.resetWeights()">Reset to 1.0×</button>
-        </div>
-        <div class="weights-grid" id="weightsGrid">
-          <!-- Populated dynamically by JS -->
+        <div class="hdr-actions">
+          <button class="btn" id="weightsToggle" onclick="dashApp.toggleWeights()">Adjust weights</button>
+          <button class="btn" id="csvBtn" onclick="dashApp.exportCSV()">Export CSV</button>
+          <button class="btn" id="printBtn" onclick="window.print()">Print</button>
+          <button class="btn primary" id="addBtn" onclick="dashApp.openModal()">+ Add site</button>
         </div>
       </div>
 
-      <!-- 2-Column Visual Charts Grid -->
-      <div class="dash-grid-2">
-        
-        <!-- Radar Multi-Domain Comparison Chart Card -->
-        <div class="dash-card">
-          <div class="dash-card-head">
-            <div>
-              <h3>Domain Profile Comparison</h3>
-              <p>Radar overlay across 9 feasibility evaluation categories (Score 0-100)</p>
-            </div>
-          </div>
-          <div class="radar-chips" id="radarChips">
-            <!-- Populated dynamically by JS -->
-          </div>
-          <div class="chart-box">
-            <svg id="radarSvg" width="440" height="400" viewBox="0 0 440 400"></svg>
-          </div>
-        </div>
-
-        <!-- Ranked Overall Feasibility Scores Card -->
-        <div class="dash-card">
-          <div class="dash-card-head">
-            <div>
-              <h3>Ranked Site Feasibility Scores</h3>
-              <p>Weighted overall index score per site (High to Low)</p>
-            </div>
-          </div>
-          <div class="chart-box">
-            <svg id="rankSvg" width="320" height="360" viewBox="0 0 320 360"></svg>
-          </div>
-        </div>
-
+      <div class="weights-panel" id="weightsPanel">
+        <h3 style="margin:0;font-family:var(--font-display);font-size:16px;">Category weighting</h3>
+        <div class="card-sub">Overall scores below are a weighted average. Raise a category's weight to prioritize it in the ranking.</div>
+        <div class="weights-grid" id="weightsGrid"></div>
+        <button class="btn small" id="weightsReset" style="margin-top:12px;" onclick="dashApp.resetWeights()">Reset to equal weights</button>
       </div>
 
-      <!-- Bubble Plot: Feasibility Score vs Accrual Rate -->
-      <div class="dash-card mt-6">
-        <div class="dash-card-head">
-          <div>
-            <h3>Feasibility Score vs. Projected Monthly Accrual</h3>
-            <p>X: Monthly Patients, Y: Feasibility Score, Bubble Size: Total Projected Target</p>
-          </div>
-          <div class="legend-row" id="bubbleLegend"></div>
+      <div class="kpis" id="kpiRow"></div>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Category comparison</h3>
+          <div class="card-sub">Toggle sites to overlay their feasibility profile across all nine domains.</div>
+          <div class="chips" id="radarChips"></div>
+          <svg id="radarSvg" viewBox="0 0 460 420" width="100%" style="max-height:420px;"></svg>
         </div>
-        <div class="chart-box">
-          <svg id="bubbleSvg" width="900" height="320" viewBox="0 0 900 320"></svg>
+        <div class="card">
+          <h3>Overall ranking</h3>
+          <div class="card-sub">Weighted feasibility score, highest first.</div>
+          <svg id="rankSvg" viewBox="0 0 380 420" width="100%" style="max-height:420px;"></svg>
         </div>
       </div>
 
-      <!-- Full Comparison Heatmap Table -->
-      <div class="dash-card mt-6">
-        <div class="dash-card-head">
-          <div>
-            <h3>Comprehensive Site Evaluation Matrix</h3>
-            <p>Click any header to sort. Color intensity indicates score strength (Teal: &ge;80, Amber: 65-79, Rose: &lt;65)</p>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <table class="heat-table" id="heatTable">
-            <!-- Populated dynamically by JS -->
-          </table>
+      <div class="card" style="margin-bottom:16px;">
+        <h3>Accrual potential vs. feasibility</h3>
+        <div class="card-sub">Bubble size = total projected enrollment. Hover a bubble for site detail.</div>
+        <svg id="bubbleSvg" viewBox="0 0 900 320" width="100%" style="max-height:320px;"></svg>
+        <div class="legend" id="bubbleLegend"></div>
+      </div>
+
+      <div class="card">
+        <h3>Full comparison matrix</h3>
+        <div class="card-sub">Click a site name to edit. Click a column header to sort.</div>
+        <div class="table-wrap">
+          <table class="heat" id="heatTable"></table>
         </div>
       </div>
 
@@ -311,71 +266,40 @@
   </section>
 
   <!-- ========================================================================== -->
-  <!-- SITE EDIT / ADD MODAL                                                      -->
+  <!-- SITE EDIT / ADD MODAL OVERLAY                                             -->
   <!-- ========================================================================== -->
-  <div class="modal-overlay" id="siteModalOverlay">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 id="modalTitle">Add Clinical Site</h3>
-        <button class="btn btn-secondary btn-sm" onclick="dashApp.closeModal()">&times;</button>
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h3 id="modalTitle">Add site</h3>
+      <div class="form-grid2">
+        <div class="form-row"><label>Site name</label><input type="text" id="f_name"></div>
+        <div class="form-row"><label>Site number</label><input type="text" id="f_number"></div>
+        <div class="form-row"><label>Country</label><input type="text" id="f_country"></div>
+        <div class="form-row"><label>Principal Investigator</label><input type="text" id="f_pi"></div>
       </div>
-      <div class="modal-body">
-        <form id="siteForm" onsubmit="event.preventDefault(); dashApp.saveModal();">
-          <div class="form-row-2">
-            <div class="form-group-field">
-              <label>Site Name *</label>
-              <input type="text" id="f_name" class="form-input-exact" required>
-            </div>
-            <div class="form-group-field">
-              <label>Site Number</label>
-              <input type="text" id="f_number" class="form-input-exact">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group-field">
-              <label>Country</label>
-              <input type="text" id="f_country" class="form-input-exact">
-            </div>
-            <div class="form-group-field">
-              <label>Principal Investigator (PI)</label>
-              <input type="text" id="f_pi" class="form-input-exact">
-            </div>
-          </div>
-          <div class="form-row-3">
-            <div class="form-group-field">
-              <label>Status</label>
-              <select id="f_status" class="form-input-exact">
-                <option value="approved">Approved</option>
-                <option value="conditional">Conditional</option>
-                <option value="pending" selected>Pending Review</option>
-                <option value="not_approved">Not Approved</option>
-              </select>
-            </div>
-            <div class="form-group-field">
-              <label>Monthly Rate (pts/mo)</label>
-              <input type="number" step="0.1" id="f_rate" class="form-input-exact" value="3.0">
-            </div>
-            <div class="form-group-field">
-              <label>Total Enrollment</label>
-              <input type="number" id="f_total" class="form-input-exact" value="30">
-            </div>
-          </div>
-          <div class="form-group-field">
-            <label>Domain Scores (0-100)</label>
-            <div class="scores-slider-grid" id="f_scores">
-              <!-- Sliders injected dynamically -->
-            </div>
-          </div>
-          <div class="form-group-field">
-            <label>Notes & Observations</label>
-            <textarea id="f_notes" class="q-textarea" rows="3"></textarea>
-          </div>
-        </form>
+      <div class="form-row">
+        <label>Feasibility status</label>
+        <div class="status-pills" id="f_status"></div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-danger" id="deleteBtn" style="display:none;" onclick="dashApp.deleteSite()">Delete Site</button>
-        <button class="btn btn-secondary" onclick="dashApp.closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="dashApp.saveModal()">Save Site</button>
+      <div class="form-grid2">
+        <div class="form-row"><label>Projected enrollment / month</label><input type="number" id="f_rate" min="0" step="0.1"></div>
+        <div class="form-row"><label>Total projected enrollment</label><input type="number" id="f_total" min="0" step="1"></div>
+      </div>
+      <div class="form-row"><label>Estimated activation timeline (weeks, SIV → first patient in)</label><input type="number" id="f_weeks" min="0" step="1"></div>
+
+      <div class="form-row" style="margin-top:6px;">
+        <label style="margin-bottom:10px;">Category scores (0–100)</label>
+        <div id="f_scores"></div>
+      </div>
+
+      <div class="form-row"><label>Notes</label><textarea id="f_notes" rows="3"></textarea></div>
+
+      <div class="modal-actions">
+        <button class="btn ghost" id="deleteBtn" style="color:var(--red);" onclick="dashApp.deleteSite()">Delete site</button>
+        <div class="right">
+          <button class="btn" id="cancelBtn" onclick="dashApp.closeModal()">Cancel</button>
+          <button class="btn primary" id="saveBtn" onclick="dashApp.saveModal()">Save site</button>
+        </div>
       </div>
     </div>
   </div>
