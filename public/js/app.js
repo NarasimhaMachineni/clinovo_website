@@ -1502,6 +1502,21 @@
       }
     },
 
+    SECTION_META: {
+      sec01: { title: 'Section 01 · Study Information', desc: 'Core protocol identifiers and feasibility draft details for this assessment.' },
+      sec02: { title: 'Section 02 · Site & Investigator', desc: 'GCP certifications, CVs, delegation logs, and dedicated oncology research staff.' },
+      sec03: { title: 'Section 03 · Tumor Board', desc: 'Multidisciplinary Tumor Board (MDT) frequency and study protocol reviews.' },
+      sec04: { title: 'Section 04 · Patient Population', desc: 'Referral network, biomarker testing, diverse recruitment, SOC, and 1-yr survival.' },
+      sec05: { title: 'Section 05 · Facilities & Equipment', desc: 'Infusion chairs, ICU crash cart, CT/MRI imaging, -80°C freezers, and centrifuges.' },
+      sec06: { title: 'Section 06 · Pharmacy & IP', desc: 'Class II BSC, investigational product storage, BSA dosing, and temp excursion tracking.' },
+      sec07: { title: 'Section 07 · Lab, Pathology & Biomarkers', desc: 'CAP/CLIA accreditation, tissue biopsy access, companion diagnostics, and cold shipping.' },
+      sec08: { title: 'Section 08 · Safety & Toxicity', desc: 'CTCAE grading, toxicity escalation protocols, 24/7 coverage, and RECIST v1.1.' },
+      sec09: { title: 'Section 09 · Regulatory & Experience', desc: 'IRB turnaround timelines, CTA negotiation pace, and prior Phase III oncology trials.' },
+      sec10: { title: 'Section 10 · Data Management & Technology', desc: 'EDC, ePRO, EHR access, and 21 CFR Part 11 compliant computer systems.' },
+      sec11: { title: 'Section 11 · Budget, Contracts & Timelines', desc: 'Contract negotiation departmental responsibility, indirect overhead, and start-up TAT.' },
+      sec12: { title: 'Section 12 · Site Declaration', desc: 'PI sign-off and sponsor / CRO review approval outcome.' }
+    },
+
     renderSectionTop5(secId) {
       if (secId) this.selectedSection = secId;
       const currentSec = this.selectedSection || 'sec01';
@@ -1511,12 +1526,22 @@
         selectEl.value = currentSec;
       }
 
+      // Render Selected Section Details Box
+      const detailsEl = document.getElementById('sectionDetailsBox');
+      const meta = this.SECTION_META[currentSec] || this.SECTION_META['sec01'];
+      if (detailsEl) {
+        detailsEl.innerHTML = `
+          <div class="section-details-title">${meta.title}</div>
+          <div class="section-details-desc">${meta.desc}</div>
+        `;
+      }
+
       const svg = document.getElementById('sectionTop5Svg');
       if (!svg) return;
 
       if (!state.sites.length) {
-        svg.setAttribute('viewBox', '0 0 440 260');
-        svg.innerHTML = `<text x="220" y="130" font-size="13" fill="#8A94A3" text-anchor="middle">No site data available</text>`;
+        svg.setAttribute('viewBox', '0 0 440 240');
+        svg.innerHTML = `<text x="220" y="120" font-size="13" fill="#8A94A3" text-anchor="middle">No site data available</text>`;
         return;
       }
 
@@ -1525,9 +1550,9 @@
         .sort((a, b) => b.score - a.score)
         .slice(0, 5);
 
-      const rowH = 46, top = 16, left = 10;
+      const rowH = 44, top = 12, left = 10;
       const barX = 220, chartW = 160;
-      const H = 260;
+      const H = 240;
       let s = '';
 
       top5.forEach((item, i) => {
@@ -1541,7 +1566,7 @@
         s += `<text x="${left}" y="${y + 24}" font-size="12" font-weight="700" fill="#0B6E6E">${String(i + 1).padStart(2, '0')}</text>`;
         
         // Site Name
-        s += `<text x="${left + 26}" y="${y + 24}" font-size="12" font-weight="600" fill="#16233D" title="${item.site.name}">${shortName}</text>`;
+        s += `<text x="${left + 26}" y="${y + 24}" font-size="12.5" font-weight="600" fill="#16233D" title="${item.site.name}">${shortName}</text>`;
         
         // Background Bar
         s += `<rect x="${barX}" y="${y + 12}" width="${chartW}" height="14" rx="7" fill="#EEF0F3"/>`;

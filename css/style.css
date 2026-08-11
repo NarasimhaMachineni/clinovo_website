@@ -624,6 +624,30 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   box-shadow: 0 0 0 3px rgba(11, 110, 110, 0.15);
 }
 
+.section-details-box {
+  background: var(--sand-soft);
+  border-left: 3.5px solid var(--teal);
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.section-details-title {
+  font-size: 13px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.section-details-desc {
+  font-size: 12px;
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
 .brand-icon-big {
   width: 42px;
   height: 42px;
