@@ -827,15 +827,21 @@
       const container = document.getElementById('userNavActions');
       if (!container) return;
 
-      if (!state.userRole) {
-        container.innerHTML = '';
-      } else {
-        container.innerHTML = `
-          <button class="btn-logout-exact" onclick="app.logout()">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
+      container.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button class="nav-access-btn ${state.currentView === 'questionnaire' ? 'active' : ''}" onclick="app.quickLogin('client')">
+            <i class="fa-solid fa-clipboard-list"></i> Client Portal
           </button>
-        `;
-      }
+          <button class="nav-access-btn ${state.currentView === 'dashboard' ? 'active' : ''}" onclick="app.quickLogin('admin')">
+            <i class="fa-solid fa-chart-pie"></i> Admin Dashboard
+          </button>
+          ${state.userRole ? `
+            <button class="btn-logout-exact" onclick="app.logout()">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+          ` : ''}
+        </div>
+      `;
     },
 
     startDotCarousel() {

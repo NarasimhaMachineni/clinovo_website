@@ -110,7 +110,20 @@
 
           <div class="portal-access-label">Site Feasibility Portal Access</div>
 
-          <!-- Credentials empty by default for manual user entry -->
+          <!-- DIRECT DEMO ACCESS BANNER (NO LOGIN LOCKOUT) -->
+          <div class="direct-access-banner">
+            <div class="direct-lbl">Direct Demo Portal Access:</div>
+            <div class="direct-btns">
+              <button type="button" class="direct-btn client" onclick="app.quickLogin('client')">
+                <i class="fa-solid fa-clipboard-list"></i> Open Client Portal
+              </button>
+              <button type="button" class="direct-btn admin" onclick="app.quickLogin('admin')">
+                <i class="fa-solid fa-chart-pie"></i> Open Admin Dashboard
+              </button>
+            </div>
+          </div>
+
+          <!-- Credentials entry form -->
           <form class="login-form-content" onsubmit="app.handleSignIn(event); return false;">
             
             <div class="form-group-field">

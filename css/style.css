@@ -1543,6 +1543,95 @@ svg text { font-family: var(--font-body); }
 .rank-chart-wrap::-webkit-scrollbar {
   width: 6px;
 }
+.nav-access-btn {
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--sand-soft);
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.nav-access-btn:hover {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+}
+
+.nav-access-btn.active {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+  box-shadow: 0 2px 8px rgba(11, 110, 110, 0.3);
+}
+
+.direct-access-banner {
+  background: rgba(11, 110, 110, 0.05);
+  border: 1px solid rgba(11, 110, 110, 0.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.direct-lbl {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.direct-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.direct-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.direct-btn.client {
+  background: #0284c7;
+  color: #fff;
+}
+
+.direct-btn.client:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.direct-btn.admin {
+  background: var(--teal);
+  color: #fff;
+}
+
+.direct-btn.admin:hover {
+  background: #085656;
+  transform: translateY(-1px);
+}
+
 .quick-login-chips-row {
   display: flex;
   align-items: center;
