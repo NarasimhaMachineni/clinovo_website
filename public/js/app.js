@@ -778,33 +778,21 @@
       }
 
       const usernameInput = document.getElementById('usernameInput');
-      let usernameVal = (usernameInput ? usernameInput.value : '').toLowerCase().trim();
-      if (!usernameVal) {
-        usernameVal = 'name@client.in';
-      }
+      let usernameVal = (usernameInput && usernameInput.value) ? usernameInput.value.toLowerCase().trim() : '';
 
-      if (usernameVal.includes('admin')) {
-        state.userRole = 'admin';
-        state.userEmail = usernameVal;
-        sessionStorage.setItem('clinovo_session_role', 'admin');
-        sessionStorage.setItem('clinovo_session_email', state.userEmail);
-        sessionStorage.setItem('clinovo_current_view', 'dashboard');
+      const isAdmin = usernameVal.includes('admin');
+      const targetRole = isAdmin ? 'admin' : 'client';
+      const targetEmail = usernameVal || (isAdmin ? 'name@admin.in' : 'name@client.in');
+      const targetView = isAdmin ? 'dashboard' : 'questionnaire';
 
-        this.updateUserNav();
-        showToast('Signed in as Admin!');
-        this.navigateTo('dashboard');
-      } else {
-        state.userRole = 'client';
-        state.userEmail = usernameVal;
-        sessionStorage.setItem('clinovo_session_role', 'client');
-        sessionStorage.setItem('clinovo_session_email', state.userEmail);
-        sessionStorage.setItem('clinovo_current_view', 'questionnaire');
+      state.userRole = targetRole;
+      state.userEmail = targetEmail;
+      sessionStorage.setItem('clinovo_session_role', targetRole);
+      sessionStorage.setItem('clinovo_session_email', targetEmail);
+      sessionStorage.setItem('clinovo_current_view', targetView);
 
-        this.updateUserNav();
-        showToast('Signed in as Client!');
-        this.navigateTo('questionnaire');
-      }
-
+      showToast(`Signed in as ${isAdmin ? 'Admin' : 'Client'}!`);
+      this.navigateTo(targetView);
       return false;
     },
 
