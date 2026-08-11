@@ -1956,6 +1956,22 @@
       this.renderBubble();
     },
 
+    toggleBubbleZoom() {
+      const card = document.getElementById('bubblePlotCard');
+      const backdrop = document.getElementById('chartBackdrop');
+      const btn = document.getElementById('bubbleZoomBtn');
+      if (!card || !backdrop || !btn) return;
+
+      const isMax = card.classList.toggle('maximized-chart');
+      backdrop.classList.toggle('show', isMax);
+
+      if (isMax) {
+        btn.innerHTML = `<i class="fa-solid fa-compress"></i> Minimize`;
+      } else {
+        btn.innerHTML = `<i class="fa-solid fa-expand"></i> Maximize`;
+      }
+    },
+
     renderBubble() {
       const svg = document.getElementById('bubbleSvg');
       if (!svg) return;
@@ -2010,27 +2026,29 @@
       s += `<text x="${padL + plotW/2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected enrollment (patients / month)</text>`;
       s += `<text x="13" y="${padT + plotH/2}" font-size="11" fill="#4C5A73" transform="rotate(-90 13 ${padT + plotH/2})" text-anchor="middle">Overall Feasibility Score</text>`;
 
-      // ── DRAW bubbles using Clinovo Logo image ──────────────────────────
+      // Color palettes for ranked sites
+      const rankColors = [
+        '#0B6E6E','#1d4ed8','#6d28d9','#be185d','#b45309',
+        '#0284c7','#15803d','#dc2626','#92400e','#0e7490'
+      ];
+
+      // ── DRAW bubbles ──────────────────────────────────────────────────
       poolSites.forEach(({ site, score }, idx) => {
         const cx = X(+site.rate || 0), cy = Y(score), r = Rr(+site.total || 0);
+        const color = state.bubbleFilter === 'all'
+          ? (STATUS_COLOR[site.status] || '#8A94A3')
+          : rankColors[idx % rankColors.length];
         const shortName = site.name.split(' ').slice(0, 2).join(' ');
 
-        // Scale logo based on size factor r
-        // PNG aspect ratio: 562 x 132 (approx 4.2575)
-        const h = r * 1.4;
-        const w = h * 4.2575;
-        const x = cx - w / 2;
-        const y = cy - h / 2;
-
-        // Render site logo image
-        s += `<image href="img/clinovo-logo.png" x="${x}" y="${y}" width="${w}" height="${h}" pointer-events="all">
+        // Draw standard colored circle
+        s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.30" stroke="${color}" stroke-width="1.6" style="cursor:pointer;">
           <title>${site.name}\nRank #${idx+1} | Score: ${score} | ${site.rate}/mo | ${site.total} total</title>
-        </image>`;
+        </circle>`;
 
-        // Rank label above logo
-        s += `<text x="${cx}" y="${y - 4}" font-size="10" text-anchor="middle" fill="#0B6E6E" font-weight="700">#${idx+1}</text>`;
-        // Site name below logo
-        s += `<text x="${cx}" y="${y + h + 10}" font-size="9" text-anchor="middle" fill="#16233D" font-weight="600">${shortName}</text>`;
+        // Rank label above circle
+        s += `<text x="${cx}" y="${cy - r - 5}" font-size="10" text-anchor="middle" fill="${color}" font-weight="700">#${idx+1}</text>`;
+        // Site name inside/next to circle
+        s += `<text x="${cx}" y="${cy + 3}" font-size="8.5" text-anchor="middle" fill="#16233D" pointer-events="none" font-weight="600">${shortName}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -2039,8 +2057,14 @@
       // ── Legend ─────────────────────────────────────────────────────────
       const legend = document.getElementById('bubbleLegend');
       if (legend) {
-        const n = state.bubbleFilter === 'top5' ? 5 : (state.bubbleFilter === 'top10' ? 10 : 36);
-        legend.innerHTML = `<span style="font-size:11px;color:#4C5A73;font-weight:600;">Showing top ${n} ranked sites represented by Clinovo Logo</span>`;
+        if (state.bubbleFilter === 'all') {
+          legend.innerHTML = STATUSES.map(st =>
+            `<span><span class="sw" style="background:${STATUS_COLOR[st.key]}"></span>${st.label}</span>`
+          ).join('');
+        } else {
+          const n = state.bubbleFilter === 'top5' ? 5 : 10;
+          legend.innerHTML = `<span style="font-size:11px;color:#4C5A73;font-weight:600;">Showing top ${n} ranked sites</span>`;
+        }
       }
     },
 
