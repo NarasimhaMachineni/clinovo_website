@@ -780,31 +780,32 @@
       }
 
       const usernameInput = document.getElementById('usernameInput');
-      const usernameVal = ((usernameInput && usernameInput.value) || 'client').toLowerCase().trim();
+      let usernameVal = (usernameInput ? usernameInput.value : '').toLowerCase().trim();
+      if (!usernameVal) {
+        usernameVal = 'name@client.in';
+      }
 
-      this.showPharmaLoader(() => {
-        if (usernameVal.includes('admin')) {
-          state.userRole = 'admin';
-          state.userEmail = usernameVal || 'name@admin.in';
-          sessionStorage.setItem('clinovo_session_role', 'admin');
-          sessionStorage.setItem('clinovo_session_email', state.userEmail);
-          sessionStorage.setItem('clinovo_current_view', 'dashboard');
+      if (usernameVal.includes('admin')) {
+        state.userRole = 'admin';
+        state.userEmail = usernameVal;
+        sessionStorage.setItem('clinovo_session_role', 'admin');
+        sessionStorage.setItem('clinovo_session_email', state.userEmail);
+        sessionStorage.setItem('clinovo_current_view', 'dashboard');
 
-          this.updateUserNav();
-          showToast('Signed in as Admin!');
-          this.navigateTo('dashboard');
-        } else {
-          state.userRole = 'client';
-          state.userEmail = usernameVal || 'name@client.in';
-          sessionStorage.setItem('clinovo_session_role', 'client');
-          sessionStorage.setItem('clinovo_session_email', state.userEmail);
-          sessionStorage.setItem('clinovo_current_view', 'questionnaire');
+        this.updateUserNav();
+        showToast('Signed in as Admin!');
+        this.navigateTo('dashboard');
+      } else {
+        state.userRole = 'client';
+        state.userEmail = usernameVal;
+        sessionStorage.setItem('clinovo_session_role', 'client');
+        sessionStorage.setItem('clinovo_session_email', state.userEmail);
+        sessionStorage.setItem('clinovo_current_view', 'questionnaire');
 
-          this.updateUserNav();
-          showToast('Signed in as Client!');
-          this.navigateTo('questionnaire');
-        }
-      });
+        this.updateUserNav();
+        showToast('Signed in as Client!');
+        this.navigateTo('questionnaire');
+      }
     },
 
     logout() {

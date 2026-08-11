@@ -111,7 +111,7 @@
           <div class="portal-access-label">Site Feasibility Portal Access</div>
 
           <!-- Credentials empty by default for manual user entry -->
-          <form class="login-form-content" onsubmit="app.handleSignIn(event)">
+          <form class="login-form-content" onsubmit="app.handleSignIn(event); return false;">
             
             <div class="form-group-field">
               <label for="usernameInput">Username or email</label>
@@ -121,7 +121,6 @@
                 class="form-input-exact" 
                 placeholder="name@client.in or name@admin.in" 
                 value="" 
-                required
               >
             </div>
 
@@ -134,7 +133,6 @@
                   class="form-input-exact" 
                   placeholder="Enter password" 
                   value="" 
-                  required
                 >
                 <i 
                   id="togglePasswordBtn"
@@ -153,7 +151,7 @@
               <a href="#" class="forgot-password-link" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
             </div>
 
-            <button type="submit" class="sign-in-btn-exact">
+            <button type="button" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
               Sign In
             </button>
 
