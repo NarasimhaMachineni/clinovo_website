@@ -721,23 +721,37 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 }
 
 /* -------------------------------------------------------------------------
-   3. CLIENT QUESTIONNAIRE - FIXED UNCONGESTED FULL-HEIGHT SIDEBAR LAYOUT
+   3. CLIENT QUESTIONNAIRE - PERMANENTLY FIXED FULL-HEIGHT SIDEBAR & EXPORT OPTIONS
    ------------------------------------------------------------------------- */
 .app {
   display: flex;
   min-height: calc(100vh - 64px);
+  position: relative;
 }
 
-/* ---------- Fixed Dark Blue/Navy Left Sidebar (UNCONGESTED & SPACIALLY BALANCED) ---------- */
+/* BACKGROUND NAVY FILL EXTENDING TILL VERY BOTTOM OF PAGE */
+.app::before {
+  content: '';
+  position: fixed;
+  top: 64px;
+  left: 0;
+  bottom: 0;
+  width: 310px;
+  background: var(--ink);
+  z-index: 30;
+}
+
+/* ---------- Fixed Dark Blue/Navy Left Sidebar & Pinned Export Buttons ---------- */
 .sidebar {
   width: 310px;
   flex: none;
   background: var(--ink);
   color: #EAF0F3;
-  padding: 22px 18px 18px;
+  padding: 20px 16px 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 14px;
   position: fixed;
   top: 64px;
   left: 0;
@@ -746,8 +760,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   overflow-y: auto;
   scrollbar-width: none; /* Hide default scrollbar for sleek presentation */
   -ms-overflow-style: none;
-  z-index: 40;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+  z-index: 45;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.22);
 }
 
 .sidebar::-webkit-scrollbar {
@@ -824,7 +838,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .navitem .ttl { font-size: 12.5px; line-height: 1.3; flex: 1; }
 .navitem .mini-ring { flex: none; }
 
+/* EXPORT SUMMARY & FOOTER BUTTONS ALWAYS PINNED TO SIDEBAR BOTTOM */
 .sidebar-foot {
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -833,19 +849,20 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 }
 
 .foot-btn {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.18);
   color: #D6E1E8;
   border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 11.5px;
+  padding: 8.5px 12px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
 }
-.foot-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.36); transform: translateY(-1px); }
+.foot-btn:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4); transform: translateY(-1px); }
 .foot-btn.danger { color: #F0A4A0; }
-.foot-btn.danger:hover { background: rgba(178, 58, 58, 0.2); border-color: rgba(178, 58, 58, 0.5); }
+.foot-btn.danger:hover { background: rgba(178, 58, 58, 0.25); border-color: rgba(178, 58, 58, 0.55); }
 
 /* ---------- Main Workspace (Offset for Fixed Sidebar) ---------- */
 .main {
@@ -1307,6 +1324,7 @@ svg text { font-family: var(--font-body); }
    ------------------------------------------------------------------------- */
 @media (max-width: 992px) {
   .app { flex-direction: column; }
+  .app::before { display: none; }
   .sidebar {
     width: 100%;
     height: auto;
@@ -1330,7 +1348,7 @@ svg text { font-family: var(--font-body); }
   .navlist { flex-direction: row; flex: none; }
   .navitem { flex: none; }
   .navitem .ttl { white-space: nowrap; }
-  .sidebar-foot { flex-direction: row; border-top: none; padding-top: 0; flex: none; }
+  .sidebar-foot { flex-direction: row; border-top: none; padding-top: 0; flex: none; margin-top: 0; }
   .content { padding: 28px 20px 90px; }
   .topbar { padding: 14px 20px; top: 64px; }
   .kpis { grid-template-columns: repeat(2, 1fr); }
