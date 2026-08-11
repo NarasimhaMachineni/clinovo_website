@@ -1526,13 +1526,34 @@
         selectEl.value = currentSec;
       }
 
-      // Render Selected Section Details Box
+      // Calculate dynamic 36-site analytical stats for this section
+      const allScored = state.sites
+        .map(site => ({ site, score: this.getSectionScore(site, currentSec) }))
+        .sort((a, b) => b.score - a.score);
+
+      const top5 = allScored.slice(0, 5);
+      const topSite = top5[0] ? top5[0] : { site: { name: 'None' }, score: 0 };
+      const totalCount = allScored.length;
+      const avgScore = totalCount ? Math.round(allScored.reduce((sum, item) => sum + item.score, 0) / totalCount) : 0;
+      const top5Avg = top5.length ? Math.round(top5.reduce((sum, item) => sum + item.score, 0) / top5.length) : 0;
+      const passCount = allScored.filter(item => item.score >= 80).length;
+
+      // Render Selected Section Details & Analysis Summary Box
       const detailsEl = document.getElementById('sectionDetailsBox');
       const meta = this.SECTION_META[currentSec] || this.SECTION_META['sec01'];
       if (detailsEl) {
         detailsEl.innerHTML = `
+          <div class="analysis-badge-header">
+            <span class="analysis-tag">36-Site Dataset Analysis</span>
+            <span class="analysis-top-performer">Top #1: ${topSite.site.name.split(' ').slice(0, 2).join(' ')} (${topSite.score}%)</span>
+          </div>
           <div class="section-details-title">${meta.title}</div>
           <div class="section-details-desc">${meta.desc}</div>
+          <div class="analysis-stats-row">
+            <div class="astat"><span class="astat-lbl">Top 5 Avg:</span> <span class="astat-val">${top5Avg}%</span></div>
+            <div class="astat"><span class="astat-lbl">Overall Avg:</span> <span class="astat-val">${avgScore}%</span></div>
+            <div class="astat"><span class="astat-lbl">Qualified (≥80%):</span> <span class="astat-val">${passCount}/${totalCount}</span></div>
+          </div>
         `;
       }
 
