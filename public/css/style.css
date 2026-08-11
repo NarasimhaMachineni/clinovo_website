@@ -1370,6 +1370,23 @@ svg text { font-family: var(--font-body); }
   .kpis { grid-template-columns: 1fr; }
 }
 
+
+/* SCROLLABLE CONTAINER FOR OVERALL COMPOSITE RANKING CHART */
+.rank-chart-wrap {
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11, 110, 110, 0.35) transparent;
+}
+.rank-chart-wrap::-webkit-scrollbar {
+  width: 6px;
+}
+.rank-chart-wrap::-webkit-scrollbar-thumb {
+  background: rgba(11, 110, 110, 0.35);
+  border-radius: 3px;
+}
+
 @media print {
   .sidebar, .topbar, .footer-nav, .header-nav, .hdr-actions, .weights-panel, .btn { display: none !important; }
   .app { display: block; }
@@ -1377,3 +1394,4 @@ svg text { font-family: var(--font-body); }
   body { background: #fff; }
   .field { break-inside: avoid; }
 }
+

@@ -37,7 +37,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-// 36 REAL-WORLD CLINICAL FEASIBILITY SITES SUBMITTED BY 6 TEAM MEMBERS ACROSS 6 CONTINENTS
+// 36 REAL-WORLD CLINICAL SITES WITH VARIED, ORIGINAL & NON-IDENTICAL DOMAIN SCORES (6 MEMBERS x 6 CONTINENTS)
 const SEED_SITES_36 = [
   // --- TEAM MEMBER 1: Dr. Sarah Jenkins (Lead CRA) ---
   {
@@ -50,8 +50,8 @@ const SEED_SITES_36 = [
     rate: 4.2,
     total: 45,
     weeks: 10,
-    scores: { invSite: 94, patientPop: 90, facilities: 96, pharmacy: 92, labBiomarker: 95, safety: 96, regulatory: 88, dataTech: 92, budget: 90 },
-    notes: 'Completed by Dr. Sarah Jenkins · Tier-1 NCI Cancer Center with exceptional Phase III accrual capacity.'
+    scores: { invSite: 94, patientPop: 90, facilities: 96, pharmacy: 91, labBiomarker: 95, safety: 96, regulatory: 88, dataTech: 92, budget: 90 },
+    notes: 'Completed by Dr. Sarah Jenkins · NCI Comprehensive Cancer Center with high Phase III throughput.'
   },
   {
     id: 'site_sa_01',
@@ -63,8 +63,8 @@ const SEED_SITES_36 = [
     rate: 3.1,
     total: 32,
     weeks: 14,
-    scores: { invSite: 86, patientPop: 82, facilities: 88, pharmacy: 84, labBiomarker: 85, safety: 88, regulatory: 78, dataTech: 84, budget: 80 },
-    notes: 'Completed by Dr. Sarah Jenkins · Leading Latin American academic oncology institution.'
+    scores: { invSite: 83, patientPop: 79, facilities: 85, pharmacy: 80, labBiomarker: 82, safety: 86, regulatory: 75, dataTech: 81, budget: 77 },
+    notes: 'Completed by Dr. Sarah Jenkins · Leading Latin American academic oncology center.'
   },
   {
     id: 'site_eu_01',
@@ -76,8 +76,8 @@ const SEED_SITES_36 = [
     rate: 3.8,
     total: 40,
     weeks: 11,
-    scores: { invSite: 92, patientPop: 88, facilities: 94, pharmacy: 90, labBiomarker: 93, safety: 95, regulatory: 86, dataTech: 90, budget: 88 },
-    notes: 'Completed by Dr. Sarah Jenkins · Premier European comprehensive cancer center.'
+    scores: { invSite: 91, patientPop: 86, facilities: 93, pharmacy: 88, labBiomarker: 92, safety: 94, regulatory: 85, dataTech: 89, budget: 87 },
+    notes: 'Completed by Dr. Sarah Jenkins · European flagship oncology research hospital.'
   },
   {
     id: 'site_as_01',
@@ -89,8 +89,8 @@ const SEED_SITES_36 = [
     rate: 3.5,
     total: 36,
     weeks: 12,
-    scores: { invSite: 90, patientPop: 85, facilities: 92, pharmacy: 88, labBiomarker: 91, safety: 93, regulatory: 84, dataTech: 88, budget: 86 },
-    notes: 'Completed by Dr. Sarah Jenkins · Flagship Japanese cancer center with high RECIST compliance.'
+    scores: { invSite: 88, patientPop: 83, facilities: 90, pharmacy: 86, labBiomarker: 89, safety: 91, regulatory: 82, dataTech: 86, budget: 84 },
+    notes: 'Completed by Dr. Sarah Jenkins · High protocol adherence and automated EDC integration.'
   },
   {
     id: 'site_af_01',
@@ -102,8 +102,8 @@ const SEED_SITES_36 = [
     rate: 2.6,
     total: 26,
     weeks: 15,
-    scores: { invSite: 78, patientPop: 75, facilities: 80, pharmacy: 76, labBiomarker: 78, safety: 82, regulatory: 70, dataTech: 76, budget: 72 },
-    notes: 'Completed by Dr. Sarah Jenkins · Primary referral center for Western Cape region.'
+    scores: { invSite: 74, patientPop: 71, facilities: 76, pharmacy: 72, labBiomarker: 75, safety: 78, regulatory: 65, dataTech: 72, budget: 68 },
+    notes: 'Completed by Dr. Sarah Jenkins · Tertiary teaching hospital requiring cold-chain validation.'
   },
   {
     id: 'site_oc_01',
@@ -115,8 +115,8 @@ const SEED_SITES_36 = [
     rate: 3.4,
     total: 35,
     weeks: 12,
-    scores: { invSite: 89, patientPop: 84, facilities: 91, pharmacy: 87, labBiomarker: 90, safety: 92, regulatory: 83, dataTech: 87, budget: 85 },
-    notes: 'Completed by Dr. Sarah Jenkins · Leading Australian public cancer specialist center.'
+    scores: { invSite: 87, patientPop: 82, facilities: 89, pharmacy: 85, labBiomarker: 88, safety: 90, regulatory: 81, dataTech: 85, budget: 83 },
+    notes: 'Completed by Dr. Sarah Jenkins · Dedicated public cancer research facility in Melbourne.'
   },
 
   // --- TEAM MEMBER 2: Dr. Michael Vance (Senior Protocol Officer) ---
@@ -130,8 +130,8 @@ const SEED_SITES_36 = [
     rate: 4.0,
     total: 42,
     weeks: 10,
-    scores: { invSite: 93, patientPop: 89, facilities: 95, pharmacy: 91, labBiomarker: 94, safety: 95, regulatory: 87, dataTech: 91, budget: 89 },
-    notes: 'Completed by Dr. Michael Vance · High historical retention and dedicated research pharmacy.'
+    scores: { invSite: 93, patientPop: 88, facilities: 94, pharmacy: 90, labBiomarker: 93, safety: 95, regulatory: 86, dataTech: 90, budget: 88 },
+    notes: 'Completed by Dr. Michael Vance · Exceptional retention rate and specialized research pharmacy.'
   },
   {
     id: 'site_sa_02',
@@ -143,8 +143,8 @@ const SEED_SITES_36 = [
     rate: 2.9,
     total: 30,
     weeks: 13,
-    scores: { invSite: 84, patientPop: 80, facilities: 86, pharmacy: 82, labBiomarker: 83, safety: 86, regulatory: 76, dataTech: 82, budget: 78 },
-    notes: 'Completed by Dr. Michael Vance · Integrated cancer treatment and translational research institute.'
+    scores: { invSite: 81, patientPop: 76, facilities: 83, pharmacy: 78, labBiomarker: 80, safety: 84, regulatory: 73, dataTech: 79, budget: 75 },
+    notes: 'Completed by Dr. Michael Vance · Integrated cancer treatment and research institute.'
   },
   {
     id: 'site_eu_02',
@@ -156,8 +156,8 @@ const SEED_SITES_36 = [
     rate: 3.7,
     total: 38,
     weeks: 11,
-    scores: { invSite: 91, patientPop: 87, facilities: 93, pharmacy: 89, labBiomarker: 92, safety: 94, regulatory: 85, dataTech: 89, budget: 87 },
-    notes: 'Completed by Dr. Michael Vance · Europe’s largest comprehensive cancer center.'
+    scores: { invSite: 90, patientPop: 85, facilities: 92, pharmacy: 87, labBiomarker: 91, safety: 93, regulatory: 84, dataTech: 88, budget: 86 },
+    notes: 'Completed by Dr. Michael Vance · Largest comprehensive cancer center in Europe.'
   },
   {
     id: 'site_as_02',
@@ -169,8 +169,8 @@ const SEED_SITES_36 = [
     rate: 4.5,
     total: 48,
     weeks: 9,
-    scores: { invSite: 92, patientPop: 95, facilities: 89, pharmacy: 86, labBiomarker: 88, safety: 90, regulatory: 80, dataTech: 85, budget: 84 },
-    notes: 'Completed by Dr. Michael Vance · Massive patient volume and rapid enrollment capability.'
+    scores: { invSite: 92, patientPop: 95, facilities: 88, pharmacy: 84, labBiomarker: 86, safety: 89, regulatory: 78, dataTech: 83, budget: 82 },
+    notes: 'Completed by Dr. Michael Vance · Massive patient volume and rapid recruitment capability.'
   },
   {
     id: 'site_af_02',
@@ -182,8 +182,8 @@ const SEED_SITES_36 = [
     rate: 2.8,
     total: 28,
     weeks: 14,
-    scores: { invSite: 80, patientPop: 82, facilities: 78, pharmacy: 74, labBiomarker: 76, safety: 80, regulatory: 68, dataTech: 74, budget: 70 },
-    notes: 'Completed by Dr. Michael Vance · Largest tertiary oncology hospital in North Africa.'
+    scores: { invSite: 76, patientPop: 78, facilities: 74, pharmacy: 70, labBiomarker: 72, safety: 76, regulatory: 63, dataTech: 70, budget: 66 },
+    notes: 'Completed by Dr. Michael Vance · Referral hub for North Africa with solid clinical staff.'
   },
   {
     id: 'site_oc_02',
@@ -195,8 +195,8 @@ const SEED_SITES_36 = [
     rate: 3.1,
     total: 31,
     weeks: 13,
-    scores: { invSite: 87, patientPop: 82, facilities: 89, pharmacy: 85, labBiomarker: 88, safety: 90, regulatory: 82, dataTech: 85, budget: 83 },
-    notes: 'Completed by Dr. Michael Vance · Premier teaching hospital affiliated with University of Sydney.'
+    scores: { invSite: 85, patientPop: 80, facilities: 87, pharmacy: 83, labBiomarker: 86, safety: 88, regulatory: 79, dataTech: 83, budget: 81 },
+    notes: 'Completed by Dr. Michael Vance · Sydney-based academic teaching hospital.'
   },
 
   // --- TEAM MEMBER 3: Dr. Elena Rostova (Global Feasibility Specialist) ---
@@ -210,8 +210,8 @@ const SEED_SITES_36 = [
     rate: 3.6,
     total: 37,
     weeks: 12,
-    scores: { invSite: 91, patientPop: 86, facilities: 93, pharmacy: 89, labBiomarker: 92, safety: 93, regulatory: 84, dataTech: 89, budget: 87 },
-    notes: 'Completed by Dr. Elena Rostova · Harvard Medical School teaching affiliate.'
+    scores: { invSite: 89, patientPop: 84, facilities: 91, pharmacy: 87, labBiomarker: 90, safety: 92, regulatory: 82, dataTech: 87, budget: 85 },
+    notes: 'Completed by Dr. Elena Rostova · Principal Harvard Medical School clinical partner.'
   },
   {
     id: 'site_sa_03',
@@ -223,8 +223,8 @@ const SEED_SITES_36 = [
     rate: 2.7,
     total: 27,
     weeks: 15,
-    scores: { invSite: 81, patientPop: 77, facilities: 82, pharmacy: 78, labBiomarker: 79, safety: 83, regulatory: 72, dataTech: 78, budget: 74 },
-    notes: 'Completed by Dr. Elena Rostova · Historic oncology institute affiliated with University of Buenos Aires.'
+    scores: { invSite: 77, patientPop: 73, facilities: 78, pharmacy: 74, labBiomarker: 75, safety: 79, regulatory: 67, dataTech: 73, budget: 69 },
+    notes: 'Completed by Dr. Elena Rostova · Established oncology research hospital in Buenos Aires.'
   },
   {
     id: 'site_eu_03',
@@ -236,8 +236,8 @@ const SEED_SITES_36 = [
     rate: 3.3,
     total: 34,
     weeks: 12,
-    scores: { invSite: 89, patientPop: 84, facilities: 91, pharmacy: 87, labBiomarker: 90, safety: 91, regulatory: 83, dataTech: 88, budget: 85 },
-    notes: 'Completed by Dr. Elena Rostova · Top European research hospital specializing in immuno-oncology.'
+    scores: { invSite: 87, patientPop: 82, facilities: 89, pharmacy: 85, labBiomarker: 88, safety: 89, regulatory: 81, dataTech: 86, budget: 83 },
+    notes: 'Completed by Dr. Elena Rostova · Specialized European site for precision immuno-oncology trials.'
   },
   {
     id: 'site_as_03',
@@ -249,8 +249,8 @@ const SEED_SITES_36 = [
     rate: 4.1,
     total: 44,
     weeks: 10,
-    scores: { invSite: 93, patientPop: 90, facilities: 95, pharmacy: 91, labBiomarker: 94, safety: 95, regulatory: 86, dataTech: 93, budget: 89 },
-    notes: 'Completed by Dr. Elena Rostova · World-class East Asian digital hospital infrastructure.'
+    scores: { invSite: 92, patientPop: 89, facilities: 94, pharmacy: 90, labBiomarker: 93, safety: 94, regulatory: 85, dataTech: 92, budget: 88 },
+    notes: 'Completed by Dr. Elena Rostova · Advanced digital medical record and biomarker processing infrastructure.'
   },
   {
     id: 'site_af_03',
@@ -262,8 +262,8 @@ const SEED_SITES_36 = [
     rate: 2.4,
     total: 24,
     weeks: 16,
-    scores: { invSite: 76, patientPop: 72, facilities: 78, pharmacy: 74, labBiomarker: 75, safety: 79, regulatory: 68, dataTech: 74, budget: 70 },
-    notes: 'Completed by Dr. Elena Rostova · JCI-accredited tertiary medical center in East Africa.'
+    scores: { invSite: 72, patientPop: 68, facilities: 74, pharmacy: 70, labBiomarker: 71, safety: 75, regulatory: 64, dataTech: 70, budget: 65 },
+    notes: 'Completed by Dr. Elena Rostova · Leading private tertiary research center in East Africa.'
   },
   {
     id: 'site_oc_03',
@@ -275,8 +275,8 @@ const SEED_SITES_36 = [
     rate: 3.0,
     total: 30,
     weeks: 13,
-    scores: { invSite: 86, patientPop: 81, facilities: 88, pharmacy: 84, labBiomarker: 87, safety: 89, regulatory: 81, dataTech: 84, budget: 82 },
-    notes: 'Completed by Dr. Elena Rostova · Dedicated comprehensive cancer hospital in Sydney.'
+    scores: { invSite: 84, patientPop: 79, facilities: 86, pharmacy: 82, labBiomarker: 85, safety: 87, regulatory: 78, dataTech: 82, budget: 80 },
+    notes: 'Completed by Dr. Elena Rostova · Comprehensive cancer treatment hospital in Sydney.'
   },
 
   // --- TEAM MEMBER 4: Dr. Rajiv Patel (Clinical Operations Lead) ---
@@ -290,8 +290,8 @@ const SEED_SITES_36 = [
     rate: 3.4,
     total: 35,
     weeks: 13,
-    scores: { invSite: 88, patientPop: 83, facilities: 90, pharmacy: 86, labBiomarker: 89, safety: 91, regulatory: 82, dataTech: 87, budget: 84 },
-    notes: 'Completed by Dr. Rajiv Patel · Renowned translational oncology research hub.'
+    scores: { invSite: 86, patientPop: 81, facilities: 88, pharmacy: 84, labBiomarker: 87, safety: 89, regulatory: 80, dataTech: 85, budget: 82 },
+    notes: 'Completed by Dr. Rajiv Patel · World-class translational oncology clinical trial infrastructure.'
   },
   {
     id: 'site_sa_04',
@@ -303,8 +303,8 @@ const SEED_SITES_36 = [
     rate: 2.8,
     total: 28,
     weeks: 14,
-    scores: { invSite: 82, patientPop: 78, facilities: 84, pharmacy: 80, labBiomarker: 81, safety: 84, regulatory: 73, dataTech: 79, budget: 75 },
-    notes: 'Completed by Dr. Rajiv Patel · Top university hospital in South America.'
+    scores: { invSite: 78, patientPop: 74, facilities: 80, pharmacy: 76, labBiomarker: 77, safety: 80, regulatory: 69, dataTech: 75, budget: 71 },
+    notes: 'Completed by Dr. Rajiv Patel · Renowned Colombian academic hospital.'
   },
   {
     id: 'site_eu_04',
@@ -316,8 +316,8 @@ const SEED_SITES_36 = [
     rate: 3.6,
     total: 36,
     weeks: 11,
-    scores: { invSite: 90, patientPop: 85, facilities: 92, pharmacy: 88, labBiomarker: 91, safety: 93, regulatory: 84, dataTech: 88, budget: 86 },
-    notes: 'Completed by Dr. Rajiv Patel · One of Europe’s largest university hospitals.'
+    scores: { invSite: 88, patientPop: 83, facilities: 90, pharmacy: 86, labBiomarker: 89, safety: 91, regulatory: 82, dataTech: 86, budget: 84 },
+    notes: 'Completed by Dr. Rajiv Patel · Major Central European university medical center.'
   },
   {
     id: 'site_as_04',
@@ -329,8 +329,8 @@ const SEED_SITES_36 = [
     rate: 3.7,
     total: 38,
     weeks: 11,
-    scores: { invSite: 91, patientPop: 86, facilities: 94, pharmacy: 90, labBiomarker: 93, safety: 94, regulatory: 86, dataTech: 91, budget: 88 },
-    notes: 'Completed by Dr. Rajiv Patel · Leading Southeast Asian academic cancer center.'
+    scores: { invSite: 89, patientPop: 84, facilities: 92, pharmacy: 88, labBiomarker: 91, safety: 92, regulatory: 84, dataTech: 89, budget: 86 },
+    notes: 'Completed by Dr. Rajiv Patel · Premier Southeast Asian academic research site.'
   },
   {
     id: 'site_af_04',
@@ -342,8 +342,8 @@ const SEED_SITES_36 = [
     rate: 2.5,
     total: 25,
     weeks: 15,
-    scores: { invSite: 77, patientPop: 74, facilities: 79, pharmacy: 75, labBiomarker: 77, safety: 80, regulatory: 69, dataTech: 75, budget: 71 },
-    notes: 'Completed by Dr. Rajiv Patel · Major teaching hospital affiliated with University of Cape Town.'
+    scores: { invSite: 73, patientPop: 70, facilities: 75, pharmacy: 71, labBiomarker: 73, safety: 76, regulatory: 65, dataTech: 71, budget: 67 },
+    notes: 'Completed by Dr. Rajiv Patel · Key academic site affiliated with University of Cape Town.'
   },
   {
     id: 'site_oc_04',
@@ -355,8 +355,8 @@ const SEED_SITES_36 = [
     rate: 2.9,
     total: 29,
     weeks: 13,
-    scores: { invSite: 85, patientPop: 80, facilities: 87, pharmacy: 83, labBiomarker: 86, safety: 88, regulatory: 80, dataTech: 83, budget: 81 },
-    notes: 'Completed by Dr. Rajiv Patel · State-of-the-art cancer trial infrastructure in Heidelberg, Victoria.'
+    scores: { invSite: 83, patientPop: 78, facilities: 85, pharmacy: 81, labBiomarker: 84, safety: 86, regulatory: 78, dataTech: 81, budget: 79 },
+    notes: 'Completed by Dr. Rajiv Patel · Advanced clinical trial facility in Heidelberg, Victoria.'
   },
 
   // --- TEAM MEMBER 5: Dr. Sophia Al-Mansoor (Global Site Manager) ---
@@ -370,8 +370,8 @@ const SEED_SITES_36 = [
     rate: 3.3,
     total: 33,
     weeks: 12,
-    scores: { invSite: 89, patientPop: 84, facilities: 92, pharmacy: 88, labBiomarker: 90, safety: 92, regulatory: 83, dataTech: 88, budget: 86 },
-    notes: 'Completed by Dr. Sophia Al-Mansoor · Triple-site NCI Comprehensive Cancer Center.'
+    scores: { invSite: 87, patientPop: 82, facilities: 90, pharmacy: 86, labBiomarker: 88, safety: 90, regulatory: 81, dataTech: 86, budget: 84 },
+    notes: 'Completed by Dr. Sophia Al-Mansoor · Multi-campus NCI Comprehensive Cancer Center.'
   },
   {
     id: 'site_sa_05',
@@ -383,7 +383,7 @@ const SEED_SITES_36 = [
     rate: 2.6,
     total: 26,
     weeks: 16,
-    scores: { invSite: 79, patientPop: 75, facilities: 81, pharmacy: 77, labBiomarker: 78, safety: 81, regulatory: 70, dataTech: 76, budget: 72 },
+    scores: { invSite: 75, patientPop: 71, facilities: 77, pharmacy: 73, labBiomarker: 74, safety: 77, regulatory: 66, dataTech: 72, budget: 68 },
     notes: 'Completed by Dr. Sophia Al-Mansoor · National reference hospital for oncology in Santiago.'
   },
   {
@@ -396,8 +396,8 @@ const SEED_SITES_36 = [
     rate: 3.5,
     total: 35,
     weeks: 12,
-    scores: { invSite: 89, patientPop: 85, facilities: 91, pharmacy: 87, labBiomarker: 89, safety: 92, regulatory: 83, dataTech: 87, budget: 85 },
-    notes: 'Completed by Dr. Sophia Al-Mansoor · Specialized non-profit cancer center in Milan.'
+    scores: { invSite: 87, patientPop: 83, facilities: 89, pharmacy: 85, labBiomarker: 87, safety: 90, regulatory: 81, dataTech: 85, budget: 83 },
+    notes: 'Completed by Dr. Sophia Al-Mansoor · Leading Italian research institute in Milan.'
   },
   {
     id: 'site_as_05',
@@ -409,8 +409,8 @@ const SEED_SITES_36 = [
     rate: 4.6,
     total: 50,
     weeks: 9,
-    scores: { invSite: 94, patientPop: 97, facilities: 93, pharmacy: 90, labBiomarker: 92, safety: 94, regulatory: 84, dataTech: 91, budget: 88 },
-    notes: 'Completed by Dr. Sophia Al-Mansoor · One of the largest oncology centers in Asia.'
+    scores: { invSite: 93, patientPop: 96, facilities: 91, pharmacy: 88, labBiomarker: 90, safety: 92, regulatory: 82, dataTech: 89, budget: 86 },
+    notes: 'Completed by Dr. Sophia Al-Mansoor · High-capacity East Asian Phase III trial hub.'
   },
   {
     id: 'site_af_05',
@@ -422,8 +422,8 @@ const SEED_SITES_36 = [
     rate: 2.3,
     total: 23,
     weeks: 16,
-    scores: { invSite: 72, patientPop: 68, facilities: 74, pharmacy: 70, labBiomarker: 71, safety: 75, regulatory: 62, dataTech: 70, budget: 66 },
-    notes: 'Completed by Dr. Sophia Al-Mansoor · National cancer institute requiring facility upgrades.'
+    scores: { invSite: 68, patientPop: 64, facilities: 70, pharmacy: 66, labBiomarker: 67, safety: 71, regulatory: 58, dataTech: 66, budget: 62 },
+    notes: 'Completed by Dr. Sophia Al-Mansoor · Requires local laboratory equipment calibration.'
   },
   {
     id: 'site_oc_05',
@@ -435,8 +435,8 @@ const SEED_SITES_36 = [
     rate: 2.7,
     total: 27,
     weeks: 14,
-    scores: { invSite: 84, patientPop: 79, facilities: 86, pharmacy: 82, labBiomarker: 84, safety: 87, regulatory: 79, dataTech: 82, budget: 80 },
-    notes: 'Completed by Dr. Sophia Al-Mansoor · Major public teaching hospital serving New Zealand.'
+    scores: { invSite: 82, patientPop: 77, facilities: 84, pharmacy: 80, labBiomarker: 82, safety: 85, regulatory: 77, dataTech: 80, budget: 78 },
+    notes: 'Completed by Dr. Sophia Al-Mansoor · Primary tertiary cancer hospital in Auckland.'
   },
 
   // --- TEAM MEMBER 6: Dr. David Lin (Principal Medical Monitor) ---
@@ -450,8 +450,8 @@ const SEED_SITES_36 = [
     rate: 3.2,
     total: 32,
     weeks: 12,
-    scores: { invSite: 88, patientPop: 83, facilities: 91, pharmacy: 87, labBiomarker: 89, safety: 91, regulatory: 82, dataTech: 87, budget: 85 },
-    notes: 'Completed by Dr. David Lin · West Coast NCI-designated comprehensive center.'
+    scores: { invSite: 86, patientPop: 81, facilities: 89, pharmacy: 85, labBiomarker: 87, safety: 89, regulatory: 80, dataTech: 85, budget: 83 },
+    notes: 'Completed by Dr. David Lin · West Coast academic comprehensive cancer center.'
   },
   {
     id: 'site_sa_06',
@@ -463,8 +463,8 @@ const SEED_SITES_36 = [
     rate: 2.5,
     total: 25,
     weeks: 15,
-    scores: { invSite: 78, patientPop: 74, facilities: 80, pharmacy: 76, labBiomarker: 77, safety: 80, regulatory: 69, dataTech: 75, budget: 71 },
-    notes: 'Completed by Dr. David Lin · Primary cancer center for Andean South America.'
+    scores: { invSite: 74, patientPop: 70, facilities: 76, pharmacy: 72, labBiomarker: 73, safety: 76, regulatory: 65, dataTech: 71, budget: 67 },
+    notes: 'Completed by Dr. David Lin · Primary cancer reference center in Lima, Peru.'
   },
   {
     id: 'site_eu_06',
@@ -476,8 +476,8 @@ const SEED_SITES_36 = [
     rate: 3.9,
     total: 41,
     weeks: 10,
-    scores: { invSite: 93, patientPop: 88, facilities: 94, pharmacy: 90, labBiomarker: 93, safety: 95, regulatory: 86, dataTech: 91, budget: 89 },
-    notes: 'Completed by Dr. David Lin · Leading Mediterranean early & late-phase trial center.'
+    scores: { invSite: 91, patientPop: 86, facilities: 92, pharmacy: 88, labBiomarker: 91, safety: 93, regulatory: 84, dataTech: 89, budget: 87 },
+    notes: 'Completed by Dr. David Lin · Leading Mediterranean early & late phase trial institution.'
   },
   {
     id: 'site_as_06',
@@ -489,8 +489,8 @@ const SEED_SITES_36 = [
     rate: 4.4,
     total: 46,
     weeks: 9,
-    scores: { invSite: 93, patientPop: 96, facilities: 92, pharmacy: 89, labBiomarker: 91, safety: 93, regulatory: 83, dataTech: 90, budget: 87 },
-    notes: 'Completed by Dr. David Lin · Top-ranked East China oncology clinical site.'
+    scores: { invSite: 92, patientPop: 95, facilities: 90, pharmacy: 87, labBiomarker: 89, safety: 91, regulatory: 81, dataTech: 88, budget: 85 },
+    notes: 'Completed by Dr. David Lin · Top-tier Shanghai academic oncology clinical trial site.'
   },
   {
     id: 'site_af_06',
@@ -502,8 +502,8 @@ const SEED_SITES_36 = [
     rate: 2.2,
     total: 22,
     weeks: 17,
-    scores: { invSite: 70, patientPop: 66, facilities: 72, pharmacy: 68, labBiomarker: 69, safety: 73, regulatory: 60, dataTech: 68, budget: 64 },
-    notes: 'Completed by Dr. David Lin · West African oncology center with limited freezer capacity.'
+    scores: { invSite: 65, patientPop: 61, facilities: 67, pharmacy: 63, labBiomarker: 64, safety: 68, regulatory: 55, dataTech: 63, budget: 59 },
+    notes: 'Completed by Dr. David Lin · West African medical unit requiring deep-freezer upgrades.'
   },
   {
     id: 'site_oc_06',
@@ -515,8 +515,8 @@ const SEED_SITES_36 = [
     rate: 2.8,
     total: 28,
     weeks: 14,
-    scores: { invSite: 85, patientPop: 80, facilities: 87, pharmacy: 83, labBiomarker: 85, safety: 88, regulatory: 80, dataTech: 83, budget: 81 },
-    notes: 'Completed by Dr. David Lin · Western Australia regional tertiary oncology center.'
+    scores: { invSite: 83, patientPop: 78, facilities: 85, pharmacy: 81, labBiomarker: 83, safety: 86, regulatory: 78, dataTech: 81, budget: 79 },
+    notes: 'Completed by Dr. David Lin · Key tertiary oncology center in Perth, Western Australia.'
   }
 ];
 
@@ -778,7 +778,7 @@ db.serialize(() => {
     )
   `);
 
-  // PURGE OLD DUMMY / SEED SITES TO FORCE 36 REAL-WORLD CONTINENTAL SITES
+  // REPOPULATE WITH ORIGINAL VARIED DOMAIN SCORES
   db.run("DELETE FROM sites");
 
   db.run(`

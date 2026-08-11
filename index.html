@@ -228,6 +228,9 @@
           <button class="btn" onclick="dashApp.exportCSV()">
             <i class="fa-solid fa-download"></i> Export CSV
           </button>
+          <button class="btn" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> Print / PDF
+          </button>
           <button class="btn primary" onclick="dashApp.openModal(null)">
             <i class="fa-solid fa-plus"></i> Add site
           </button>
@@ -264,7 +267,9 @@
         <div class="card">
           <h3>Overall Composite Ranking</h3>
           <div class="card-sub">Sites ordered by weighted feasibility score across all weighted criteria.</div>
-          <svg id="rankSvg" width="100%" height="320" viewBox="0 0 320 320"></svg>
+          <div class="rank-chart-wrap">
+            <svg id="rankSvg" width="100%" height="auto" viewBox="0 0 340 1440"></svg>
+          </div>
         </div>
       </div>
 

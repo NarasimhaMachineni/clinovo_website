@@ -1752,29 +1752,33 @@
       if (!svg) return;
 
       if (!state.sites.length) {
-        svg.setAttribute('viewBox', '0 0 320 100');
-        svg.innerHTML = `<text x="160" y="50" font-size="12" fill="#8A94A3" text-anchor="middle">No clinical sites submitted yet</text>`;
+        svg.setAttribute('viewBox', '0 0 340 100');
+        svg.style.height = '100px';
+        svg.innerHTML = `<text x="170" y="50" font-size="12" fill="#8A94A3" text-anchor="middle">No clinical sites submitted yet</text>`;
         return;
       }
 
       const ranked = state.sites.map(s => ({ s, o: this.overallScore(s) })).sort((a, b) => b.o - a.o);
-      const rowH = 34, top = 16, left = 14, chartW = 230, chartMaxX = left + chartW;
-      const H = Math.max(300, top + ranked.length * rowH + 16);
+      const rowH = 40, top = 16, left = 14, chartW = 240, chartMaxX = left + chartW;
+      const H = top + ranked.length * rowH + 20;
       let s = '';
 
       ranked.forEach((r, i) => {
         const y = top + i * rowH;
         const w = (r.o / 100) * chartW;
         const color = STATUS_COLOR[r.s.status] || '#8A94A3';
-        s += `<text x="${left}" y="${y + 12}" font-size="11" font-weight="600" fill="#16233D">${r.s.name.length > 26 ? r.s.name.slice(0, 24) + '…' : r.s.name}</text>`;
-        s += `<rect x="${left}" y="${y + 16}" width="${chartW}" height="8" rx="4" fill="#EEF0F3"/>`;
-        s += `<rect x="${left}" y="${y + 16}" width="${Math.max(4, w)}" height="8" rx="4" fill="${color}"/>`;
-        s += `<text x="${chartMaxX + 10}" y="${y + 24}" font-size="11" font-family="ui-monospace,monospace" fill="#16233D">${r.o}</text>`;
+        s += `<text x="${left}" y="${y + 13}" font-size="11.5" font-weight="600" fill="#16233D">${r.s.name.length > 28 ? r.s.name.slice(0, 26) + '…' : r.s.name}</text>`;
+        s += `<rect x="${left}" y="${y + 18}" width="${chartW}" height="10" rx="5" fill="#EEF0F3"/>`;
+        s += `<rect x="${left}" y="${y + 18}" width="${Math.max(6, w)}" height="10" rx="5" fill="${color}"/>`;
+        s += `<text x="${chartMaxX + 10}" y="${y + 27}" font-size="11.5" font-weight="700" font-family="ui-monospace,monospace" fill="${color}">${r.o}</text>`;
       });
 
-      svg.setAttribute('viewBox', `0 0 320 ${H}`);
+      svg.setAttribute('viewBox', `0 0 340 ${H}`);
+      svg.style.height = `${H}px`;
       svg.innerHTML = s;
     },
+
+
 
     renderBubble() {
       const svg = document.getElementById('bubbleSvg');
