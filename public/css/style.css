@@ -383,7 +383,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 }
 
 /* -------------------------------------------------------------------------
-   2. LANDING & DYNAMIC GLASSMORPHIC ANIMATED LOGIN CARD
+   2. LANDING & DYNAMIC GLASSMORPHIC ANIMATED LOGIN CARD WITH BACKGROUND VIDEO
    ------------------------------------------------------------------------- */
 .login-viewport-container {
   min-height: calc(100vh - 64px);
@@ -446,6 +446,44 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   text-align: center;
   border-right: 1px solid rgba(255, 255, 255, 0.5);
   position: relative;
+  overflow: hidden;
+}
+
+/* ANIMATED BACKGROUND VIDEO IN LOGIN GRID LEFT PANEL */
+.panel-video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.panel-video-el {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5) contrast(1.15);
+  transform: scale(1.05);
+  transition: transform 10s ease-out;
+}
+
+.login-left-panel:hover .panel-video-el {
+  transform: scale(1.12);
+}
+
+.panel-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 27, 46, 0.5) 0%, rgba(16, 27, 46, 0.85) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.illustration-card-frame,
+.portal-left-heading,
+.portal-left-sub,
+.carousel-dots {
+  position: relative;
+  z-index: 2;
 }
 
 .illustration-card-frame {
@@ -454,21 +492,14 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 26px;
-  box-shadow: 0 16px 36px rgba(0,0,0,0.22);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.35);
   transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease-spring);
-  position: relative;
-}
-
-.illustration-card-frame::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(16, 27, 46, 0.4) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .illustration-card-frame:hover {
   transform: scale(1.03) rotate(0.5deg);
-  box-shadow: 0 22px 48px rgba(0,0,0,0.28);
+  box-shadow: 0 22px 48px rgba(0,0,0,0.45);
 }
 
 .illustration-img {
@@ -481,17 +512,19 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   font-size: 25px;
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--ink);
+  color: #ffffff;
   margin-bottom: 8px;
   letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
 }
 
 .portal-left-sub {
   font-size: 14.5px;
   font-family: var(--font-body);
-  color: var(--ink-soft);
+  color: #D6E1E8;
   max-width: 310px;
   line-height: 1.5;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
 
 .carousel-dots {
@@ -504,21 +537,21 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: rgba(148, 163, 184, 0.55);
+  background: rgba(255, 255, 255, 0.45);
   cursor: pointer;
   transition: all 0.3s var(--ease-spring);
 }
 
 .dot-item:hover {
-  background: var(--teal);
+  background: #37B7B2;
   transform: scale(1.2);
 }
 
 .dot-item.active {
-  background: var(--teal);
+  background: #37B7B2;
   width: 28px;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(11, 110, 110, 0.5);
+  box-shadow: 0 0 12px rgba(55, 183, 178, 0.6);
 }
 
 .login-right-panel {

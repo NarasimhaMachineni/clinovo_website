@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Site Comparison Dashboard · Oncology Phase III</title>
+  <title>Clinovo · Site Feasibility Portal & Analytics Dashboard</title>
   
-  <!-- Modern Google Fonts: Bookman Old Style Fallback / JetBrains Mono -->
+  <!-- Modern Google Fonts & Serifs for Bookman Old Style Fallbacks -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -79,8 +79,17 @@
       <!-- MAIN TRANSLUCENT GLASSMORPHIC LOGIN WINDOW -->
       <div class="clinovo-login-window">
         
-        <!-- LEFT PANEL -->
+        <!-- LEFT PANEL WITH ANIMATED BACKGROUND VIDEO -->
         <div class="login-left-panel">
+          
+          <!-- Background Video in Login Grid Panel -->
+          <div class="panel-video-bg">
+            <video autoplay loop muted playsinline class="panel-video-el">
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-working-in-a-science-laboratory-42721-large.mp4" type="video/mp4">
+            </video>
+            <div class="panel-video-overlay"></div>
+          </div>
+
           <div class="illustration-card-frame">
             <img src="images/illustration.jpg" alt="Clinovo Analytics Team Illustration" class="illustration-img">
           </div>
