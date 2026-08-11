@@ -2049,28 +2049,58 @@
     },
 
     exportCSV() {
-      const headers = ['Site', 'Number', 'Country', 'PI', 'Status', ...CATEGORIES.map(c => c.label), 'Overall', 'Rate/mo', 'Total enrollment', 'Activation (wks)', 'Notes'];
-      const rows = state.sites.map(s => {
-        const o = this.overallScore(s);
-        return [
-          s.name, s.number, s.country, s.pi, STATUSES.find(x => x.key === s.status)?.label || s.status,
-          ...CATEGORIES.map(c => s.scores[c.key] || 0), o, s.rate, s.total, s.weeks, (s.notes || '').replace(/\n/g, ' ')
-        ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
-      });
-
-      const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
       try {
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'site-comparison.csv';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('CSV exported');
-      } catch (e) {
+        if (!state.sites || !state.sites.length) {
+          showToast('No site data to export');
+          return;
+        }
+
+        const headers = ['Site', 'Number', 'Country', 'PI', 'Status', ...CATEGORIES.map(c => c.label), 'Overall', 'Rate/mo', 'Total enrollment', 'Activation (wks)', 'Notes'];
+        const rows = state.sites.map(s => {
+          const scores = s.scores || {};
+          const o = this.overallScore(s);
+          const statusObj = STATUSES.find(x => x.key === s.status);
+          const statusLabel = statusObj ? statusObj.label : (s.status || 'Pending');
+
+          const categoryValues = CATEGORIES.map(c => scores[c.key] !== undefined ? scores[c.key] : 0);
+
+          const rowData = [
+            s.name || 'Unnamed Site',
+            s.number || '',
+            s.country || '',
+            s.pi || '',
+            statusLabel,
+            ...categoryValues,
+            o,
+            s.rate || 0,
+            s.total || 0,
+            s.weeks || 0,
+            (s.notes || '').replace(/\r?\n|\r/g, ' ')
+          ];
+
+          return rowData.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+        });
+
+        const csvContent = [headers.map(h => `"${h}"`).join(','), ...rows].join('\r\n');
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const filename = 'site-comparison-' + new Date().toISOString().slice(0, 10) + '.csv';
+
+        if (navigator.msSaveBlob) {
+          navigator.msSaveBlob(blob, filename);
+        } else {
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+          link.setAttribute('href', url);
+          link.setAttribute('download', filename);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(url), 200);
+        }
+        showToast('CSV exported successfully ✓');
+      } catch (err) {
+        console.error('CSV Export Exception:', err);
         showToast('Could not export CSV');
       }
     }
