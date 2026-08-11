@@ -1860,3 +1860,9 @@ svg text { font-family: var(--font-body); }
 .chart-backdrop.show {
   display: block;
 }
+
+/* OVERRIDE STACKING CONTEXT ANIMATION DURING MAXIMIZE */
+#view-dashboard.bubble-maximized {
+  animation: none !important;
+  transform: none !important;
+}

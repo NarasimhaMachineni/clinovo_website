@@ -1960,10 +1960,12 @@
       const card = document.getElementById('bubblePlotCard');
       const backdrop = document.getElementById('chartBackdrop');
       const btn = document.getElementById('bubbleZoomBtn');
-      if (!card || !backdrop || !btn) return;
+      const view = document.getElementById('view-dashboard');
+      if (!card || !backdrop || !btn || !view) return;
 
       const isMax = card.classList.toggle('maximized-chart');
       backdrop.classList.toggle('show', isMax);
+      view.classList.toggle('bubble-maximized', isMax);
 
       if (isMax) {
         btn.innerHTML = `<i class="fa-solid fa-compress"></i> Minimize`;
@@ -2032,7 +2034,7 @@
         '#0284c7','#15803d','#dc2626','#92400e','#0e7490'
       ];
 
-      // ── DRAW bubbles ──────────────────────────────────────────────────
+      // ── DRAW bubbles as beautiful 5-pointed stars ─────────────────────
       poolSites.forEach(({ site, score }, idx) => {
         const cx = X(+site.rate || 0), cy = Y(score), r = Rr(+site.total || 0);
         const color = state.bubbleFilter === 'all'
@@ -2040,15 +2042,18 @@
           : rankColors[idx % rankColors.length];
         const shortName = site.name.split(' ').slice(0, 2).join(' ');
 
-        // Draw standard colored circle
-        s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.30" stroke="${color}" stroke-width="1.6" style="cursor:pointer;">
+        // Draw star polygon element
+        const scale = r / 12;
+        s += `<polygon points="0,-12 3.5,-3.5 11.4,-3.5 5,1.5 7.5,9.2 0,4.5 -7.5,9.2 -5,1.5 -11.4,-3.5 -3.5,-3.5"
+                 transform="translate(${cx}, ${cy}) scale(${scale})"
+                 fill="${color}" fill-opacity="0.65" stroke="${color}" stroke-width="1.2" style="cursor:pointer;">
           <title>${site.name}\nRank #${idx+1} | Score: ${score} | ${site.rate}/mo | ${site.total} total</title>
-        </circle>`;
+        </polygon>`;
 
-        // Rank label above circle
+        // Rank label above star
         s += `<text x="${cx}" y="${cy - r - 5}" font-size="10" text-anchor="middle" fill="${color}" font-weight="700">#${idx+1}</text>`;
-        // Site name inside/next to circle
-        s += `<text x="${cx}" y="${cy + 3}" font-size="8.5" text-anchor="middle" fill="#16233D" pointer-events="none" font-weight="600">${shortName}</text>`;
+        // Site name below star
+        s += `<text x="${cx}" y="${cy + r + 11}" font-size="8.5" text-anchor="middle" fill="#16233D" pointer-events="none" font-weight="600">${shortName}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -2063,7 +2068,7 @@
           ).join('');
         } else {
           const n = state.bubbleFilter === 'top5' ? 5 : 10;
-          legend.innerHTML = `<span style="font-size:11px;color:#4C5A73;font-weight:600;">Showing top ${n} ranked sites</span>`;
+          legend.innerHTML = `<span style="font-size:11px;color:#4C5A73;font-weight:600;">Showing top ${n} ranked sites (represented as Stars)</span>`;
         }
       }
     },
