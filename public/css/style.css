@@ -34,8 +34,8 @@
   --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
 
-  /* Apple 120Hz-165Hz High-Refresh Fluid Easing Curve */
-  --ease-120hz: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Apple 120Hz-240Hz High-Refresh Fluid Easing Curve */
+  --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after {
@@ -65,7 +65,7 @@ input, select, textarea, button {
   font-family: var(--font-body);
 }
 
-/* GPU HARDWARE ACCELERATION FOR 120HZ / 165HZ HIGH REFRESH RATE SMOOTHNESS */
+/* GPU HARDWARE ACCELERATION FOR 240HZ HIGH REFRESH RATE SMOOTHNESS */
 .view-section,
 .clinovo-login-window,
 .pharma-loader-card,
@@ -74,9 +74,10 @@ input, select, textarea, button {
 .btn-submit-exact,
 .sfq-role-tab,
 .kpi-card,
-.dash-card {
+.dash-card,
+.sfq-sidepanel {
   will-change: transform, opacity;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
 }
 
@@ -95,7 +96,7 @@ input, select, textarea, button {
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s var(--ease-120hz);
+  transition: opacity 0.3s var(--ease-fluid);
 }
 
 .pharma-loader-overlay.active {
@@ -116,7 +117,7 @@ input, select, textarea, button {
   align-items: center;
   gap: 22px;
   transform: scale(0.9) translateY(10px);
-  transition: transform 0.3s var(--ease-120hz);
+  transition: transform 0.3s var(--ease-fluid);
 }
 
 .pharma-loader-overlay.active .pharma-loader-card {
@@ -250,7 +251,7 @@ input, select, textarea, button {
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: transform 0.25s var(--ease-120hz);
+  transition: transform 0.25s var(--ease-fluid);
 }
 
 .brand-logo:hover {
@@ -301,7 +302,7 @@ input, select, textarea, button {
   align-items: center;
   gap: 8px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.22s var(--ease-120hz);
+  transition: all 0.22s var(--ease-fluid);
   position: relative;
   overflow: hidden;
 }
@@ -329,7 +330,7 @@ input, select, textarea, button {
 
 .view-section.active-view {
   display: block;
-  animation: fadeInView 0.28s var(--ease-120hz) forwards;
+  animation: fadeInView 0.28s var(--ease-fluid) forwards;
 }
 
 @keyframes fadeInView {
@@ -369,7 +370,7 @@ input, select, textarea, button {
   border-radius: var(--radius-lg);
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  transition: transform 0.3s var(--ease-120hz), box-shadow 0.3s var(--ease-120hz);
+  transition: transform 0.3s var(--ease-fluid), box-shadow 0.3s var(--ease-fluid);
 }
 
 .clinovo-login-window:hover {
@@ -396,7 +397,7 @@ input, select, textarea, button {
   overflow: hidden;
   margin-bottom: 24px;
   box-shadow: 0 14px 30px rgba(0,0,0,0.18);
-  transition: transform 0.3s var(--ease-120hz);
+  transition: transform 0.3s var(--ease-fluid);
 }
 
 .illustration-card-frame:hover {
@@ -433,7 +434,7 @@ input, select, textarea, button {
   border-radius: 50%;
   background: rgba(148, 163, 184, 0.5);
   cursor: pointer;
-  transition: all 0.25s var(--ease-120hz);
+  transition: all 0.25s var(--ease-fluid);
 }
 .dot-item.active {
   background: var(--brand-teal);
@@ -503,7 +504,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 14px;
-  transition: all 0.2s var(--ease-120hz);
+  transition: all 0.2s var(--ease-fluid);
 }
 
 .form-input-exact:focus {
@@ -563,7 +564,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
-  transition: all 0.22s var(--ease-120hz);
+  transition: all 0.22s var(--ease-fluid);
   position: relative;
   overflow: hidden;
 }
@@ -604,7 +605,7 @@ input, select, textarea, button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.22s var(--ease-120hz);
+  transition: all 0.22s var(--ease-fluid);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -647,7 +648,6 @@ input, select, textarea, button {
   transform: translateY(0) scale(0.97);
 }
 
-/* EXACT SUBMIT BUTTON ANIMATIONS INSIDE THE BUTTON */
 .btn-submit-exact {
   padding: 11px 32px;
   font-size: 14px;
@@ -657,7 +657,7 @@ input, select, textarea, button {
   color: #ffffff;
   min-width: 140px;
   justify-content: center;
-  transition: all 0.28s var(--ease-120hz);
+  transition: all 0.28s var(--ease-fluid);
 }
 
 .btn-submit-exact.submitting {
@@ -674,7 +674,7 @@ input, select, textarea, button {
 }
 
 /* -------------------------------------------------------------------------
-   4. CLIENT QUESTIONNAIRE WIDE FULL-WIDTH LAYOUT
+   4. CLIENT QUESTIONNAIRE SIDE PANEL LAYOUT & RESPONSIVE WORKSPACE
    ------------------------------------------------------------------------- */
 .sfq-topbar {
   background: #ffffff;
@@ -712,67 +712,101 @@ input, select, textarea, button {
   gap: 10px;
 }
 
-/* WIDE TOP HORIZONTAL ROLE STEPPER NAVIGATION BAR */
-.sfq-horizontal-stepper-wrap {
-  background: #ffffff;
-  border-bottom: 1px solid var(--border-light);
-  padding: 14px 36px;
+/* SIDE PANEL FLEX LAYOUT */
+.sfq-sidepanel-layout {
   display: flex;
-  align-items: center;
-  gap: 24px;
-  box-shadow: var(--shadow-sm);
+  min-height: calc(100vh - 120px);
+  background: #f8fafc;
 }
 
-.sfq-overall-progress-chip {
+/* LEFT SIDE PANEL (DESKTOP) */
+.sfq-sidepanel {
+  width: 310px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border-right: 1px solid var(--border-light);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.sfq-sidepanel-progress {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   background: #f1f5f9;
   border: 1px solid var(--border-light);
-  padding: 8px 16px;
+  padding: 14px 18px;
   border-radius: var(--radius-md);
-  flex-shrink: 0;
 }
 
-.sfq-overall-progress-chip .overall-info .lbl { font-size: 10px; font-weight: 700; color: #64748b; }
-.sfq-overall-progress-chip .overall-info .pct { font-size: 18px; font-weight: 700; color: var(--brand-teal); }
+.sfq-sidepanel-progress .overall-info .lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+}
 
-.sfq-stepper-scroll {
+.sfq-sidepanel-progress .overall-info .pct {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brand-teal);
+}
+
+.sfq-sidepanel-header {
+  padding: 0 4px;
+}
+
+.sfq-sidepanel-header .lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.06em;
+}
+
+.sfq-sidepanel-nav {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  flex: 1;
-  scrollbar-width: thin;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .sfq-role-tab {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
+  justify-content: space-between;
+  padding: 11px 16px;
   background: #ffffff;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.22s var(--ease-120hz);
-  flex-shrink: 0;
+  transition: all 0.22s var(--ease-fluid);
 }
 
 .sfq-role-tab:hover {
   background: #f8fafc;
   border-color: #cbd5e1;
-  transform: translateY(-2px);
+  transform: translateX(3px);
 }
 
 .sfq-role-tab.active {
-  background: rgba(13, 148, 136, 0.1);
+  background: rgba(13, 148, 136, 0.08);
   border-color: var(--brand-teal);
   color: var(--brand-teal);
   font-weight: 700;
-  box-shadow: 0 3px 10px rgba(13, 148, 136, 0.15);
+  box-shadow: 0 3px 12px rgba(13, 148, 136, 0.12);
+}
+
+.sfq-role-tab .tab-left-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
 }
 
 .sfq-role-tab .r-num {
@@ -780,25 +814,23 @@ input, select, textarea, button {
   font-size: 11px;
   font-weight: 700;
   color: var(--brand-teal);
+  flex-shrink: 0;
 }
 
 .sfq-role-tab .r-ttl {
   font-size: 13px;
   color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* WIDE QUESTIONNAIRE WORKSPACE & CARDS */
-.sfq-wide-workspace {
-  background: #f8fafc;
-  padding: 36px 20px 60px 20px;
-  min-height: calc(100vh - 140px);
-  display: flex;
-  justify-content: center;
-}
-
-.sfq-wide-content {
-  width: 100%;
+/* RIGHT MAIN WORKSPACE (NEAT & SPACIOUS) */
+.sfq-main-workspace {
+  flex: 1;
+  padding: 40px 48px;
   max-width: 1050px;
+  margin: 0 auto;
 }
 
 .q-card-container {
@@ -807,8 +839,8 @@ input, select, textarea, button {
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  padding: 44px;
-  animation: cardFadeIn 0.28s var(--ease-120hz) forwards;
+  padding: 48px;
+  animation: cardFadeIn 0.28s var(--ease-fluid) forwards;
 }
 
 @keyframes cardFadeIn {
@@ -816,12 +848,12 @@ input, select, textarea, button {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.section-head { margin-bottom: 30px; }
+.section-head { margin-bottom: 32px; }
 .section-head .kicker { font-size: 11px; font-weight: 700; color: var(--brand-teal); letter-spacing: 0.05em; margin-bottom: 4px; }
 .section-head h2 { font-size: 26px; color: #0f172a; margin-bottom: 6px; }
 .section-head p { font-size: 14px; color: #64748b; }
 
-.q-field { margin-bottom: 26px; }
+.q-field { margin-bottom: 28px; }
 .q-field .flabel { font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 4px; }
 .q-field .fhint { font-size: 12px; color: #64748b; margin-bottom: 8px; }
 
@@ -833,7 +865,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 14px;
-  transition: all 0.2s var(--ease-120hz);
+  transition: all 0.2s var(--ease-fluid);
 }
 
 .q-input-text:focus {
@@ -851,7 +883,7 @@ input, select, textarea, button {
   color: #0f172a;
   font-size: 14px;
   resize: vertical;
-  transition: all 0.2s var(--ease-120hz);
+  transition: all 0.2s var(--ease-fluid);
 }
 
 .q-textarea:focus {
@@ -860,7 +892,7 @@ input, select, textarea, button {
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
 
-/* PASTEL YES / NO BUTTON STYLES WITH ANIMATIONS */
+/* YES / NO TOGGLES */
 .yn-row { display: flex; align-items: center; gap: 12px; }
 .yn-btn {
   padding: 9px 24px;
@@ -871,7 +903,7 @@ input, select, textarea, button {
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.22s var(--ease-120hz);
+  transition: all 0.22s var(--ease-fluid);
 }
 
 .yn-btn:hover {
@@ -895,7 +927,7 @@ input, select, textarea, button {
   border-radius: var(--radius-sm);
   color: #0f172a;
   font-size: 13px;
-  transition: all 0.2s var(--ease-120hz);
+  transition: all 0.2s var(--ease-fluid);
 }
 
 .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -907,7 +939,7 @@ input, select, textarea, button {
   color: #475569;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.22s var(--ease-120hz);
+  transition: all 0.22s var(--ease-fluid);
 }
 
 .pill-item:hover {
@@ -919,7 +951,7 @@ input, select, textarea, button {
 
 .q-divider {
   border-top: 1px solid var(--border-light);
-  margin: 34px 0 22px 0;
+  margin: 36px 0 24px 0;
   position: relative;
 }
 .q-divider .dlabel {
@@ -937,8 +969,8 @@ input, select, textarea, button {
 .quest-foot-nav {
   display: flex;
   justify-content: space-between;
-  margin-top: 44px;
-  padding-top: 22px;
+  margin-top: 48px;
+  padding-top: 24px;
   border-top: 1px solid var(--border-light);
 }
 
@@ -978,7 +1010,7 @@ input, select, textarea, button {
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-md);
   padding: 22px;
-  transition: transform 0.22s var(--ease-120hz), box-shadow 0.22s var(--ease-120hz);
+  transition: transform 0.22s var(--ease-fluid), box-shadow 0.22s var(--ease-fluid);
 }
 
 .kpi-card:hover {
@@ -999,7 +1031,7 @@ input, select, textarea, button {
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-md);
   padding: 26px;
-  transition: transform 0.22s var(--ease-120hz), box-shadow 0.22s var(--ease-120hz);
+  transition: transform 0.22s var(--ease-fluid), box-shadow 0.22s var(--ease-fluid);
 }
 
 .dash-card:hover {
@@ -1022,7 +1054,7 @@ input, select, textarea, button {
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: transform 0.2s var(--ease-120hz);
+  transition: transform 0.2s var(--ease-fluid);
 }
 
 .radar-chip:hover {
@@ -1118,7 +1150,7 @@ input, select, textarea, button {
    6. HIGHLY RESPONSIVE BREAKPOINTS (DESKTOP, LAPTOP, TABLET, MOBILE)
    ------------------------------------------------------------------------- */
 @media (max-width: 1200px) {
-  .sfq-wide-content { max-width: 960px; }
+  .sfq-main-workspace { padding: 32px 24px; }
   .dash-container { padding: 28px 20px; }
 }
 
@@ -1127,14 +1159,37 @@ input, select, textarea, button {
   .clinovo-login-window { flex-direction: column; width: 100%; max-width: 540px; }
   .login-left-panel { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.35); padding: 32px 24px; }
   .login-right-panel { padding: 32px 24px; }
+  
+  /* RESPONSIVE FLUID CONVERSION TO TOP STEPPER ON TABLET & MOBILE */
+  .sfq-sidepanel-layout { flex-direction: column; }
+  .sfq-sidepanel { 
+    width: 100%; 
+    height: auto; 
+    position: relative; 
+    top: 0; 
+    border-right: none; 
+    border-bottom: 1px solid var(--border-light); 
+    padding: 16px 20px; 
+  }
+  .sfq-sidepanel-nav { 
+    flex-direction: row; 
+    overflow-x: auto; 
+    padding-bottom: 6px; 
+    scrollbar-width: thin;
+  }
+  .sfq-role-tab { 
+    flex-shrink: 0; 
+    white-space: nowrap; 
+  }
+
+  .sfq-main-workspace { padding: 20px 14px 40px 14px; }
+  .q-card-container { padding: 28px 20px; }
+
   .dash-grid-2 { grid-template-columns: 1fr; }
   .dash-title-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
   .dash-top-btns { width: 100%; flex-wrap: wrap; }
   .sfq-topbar { flex-direction: column; align-items: flex-start; gap: 12px; padding: 14px 20px; }
   .sfq-actions-right { width: 100%; flex-wrap: wrap; }
-  .sfq-horizontal-stepper-wrap { padding: 12px 20px; flex-direction: column; align-items: flex-start; gap: 14px; }
-  .sfq-wide-workspace { padding: 20px 12px 40px 12px; }
-  .q-card-container { padding: 28px 20px; }
 }
 
 @media (max-width: 576px) {

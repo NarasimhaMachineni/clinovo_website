@@ -624,10 +624,12 @@
         const isActive = i === this.activeSection;
         return `
           <div class="sfq-role-tab ${isActive ? 'active' : ''}" onclick="questApp.switchSection(${i})">
-            <span class="r-num">${s.num}</span>
-            <span class="r-ttl">${s.title}</span>
-            <svg width="16" height="16" viewBox="0 0 16 16">
-              ${this.ringSVG(p.pct, 16, 2.5, '#e2e8f0', p.pct === 100 ? '#0d9488' : '#d97706')}
+            <div class="tab-left-group">
+              <span class="r-num">${s.num}</span>
+              <span class="r-ttl">${s.title}</span>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18">
+              ${this.ringSVG(p.pct, 18, 2.5, '#e2e8f0', p.pct === 100 ? '#0d9488' : '#d97706')}
             </svg>
           </div>
         `;
@@ -859,7 +861,6 @@
 
       showToast(`Submitted Successfully! Overall Score: ${overallScore}/100`);
 
-      // PERSIST ONLY REAL CLIENT SUBMITTED SITES
       if (Array.isArray(returnedSites)) {
         const cleanSites = returnedSites.filter(s => !['s01', 's02', 's03'].includes(s.id));
         state.sites = cleanSites;
@@ -1454,7 +1455,6 @@
       const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
-      const a = document.getElementById('exportCsvBtn');
       const hiddenA = document.createElement('a');
       hiddenA.href = url;
       hiddenA.download = 'clinovo-site-feasibility-matrix.csv';
