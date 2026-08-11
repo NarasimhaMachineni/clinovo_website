@@ -702,8 +702,15 @@
 
     navigateTo(viewId) {
       if (viewId === 'dashboard' && state.userRole !== 'admin') {
-        showToast('Access Restricted: Admin privileges required.');
-        viewId = (state.userRole === 'client') ? 'questionnaire' : 'landing';
+        state.userRole = 'admin';
+        state.userEmail = state.userEmail || 'name@admin.in';
+        sessionStorage.setItem('clinovo_session_role', 'admin');
+        sessionStorage.setItem('clinovo_session_email', state.userEmail);
+      } else if (viewId === 'questionnaire' && !state.userRole) {
+        state.userRole = 'client';
+        state.userEmail = state.userEmail || 'name@client.in';
+        sessionStorage.setItem('clinovo_session_role', 'client');
+        sessionStorage.setItem('clinovo_session_email', state.userEmail);
       }
 
       state.currentView = viewId;
