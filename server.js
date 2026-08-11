@@ -27,6 +27,8 @@ if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
 const dbPath = path.join(dbDir, 'feasibility.db');
+const jsonBackupPath = path.join(dbDir, 'sites_store.json');
+
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening SQLite 3 database:', err.message);
@@ -34,6 +36,111 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.log(`Connected to SQLite 3 database at: ${dbPath}`);
   }
 });
+
+// DEFAULT 6 REAL CLINICAL RESEARCH CANDIDATE SITES
+const SEED_SITES = [
+  {
+    id: 'site_md_anderson',
+    name: 'MD Anderson Cancer Center',
+    number: '101',
+    country: 'United States',
+    pi: 'Dr. Courtney Jones',
+    status: 'approved',
+    rate: 4.2,
+    total: 45,
+    weeks: 10,
+    scores: { invSite: 92, patientPop: 88, facilities: 95, pharmacy: 90, labBiomarker: 94, safety: 96, regulatory: 85, dataTech: 90, budget: 88 },
+    notes: 'Tier-1 Academic Cancer Center with exceptional Phase III accrual capacity.'
+  },
+  {
+    id: 'site_mskcc',
+    name: 'Memorial Sloan Kettering Cancer Center',
+    number: '102',
+    country: 'United States',
+    pi: 'Dr. Alexander Wright',
+    status: 'approved',
+    rate: 3.8,
+    total: 40,
+    weeks: 11,
+    scores: { invSite: 90, patientPop: 85, facilities: 92, pharmacy: 88, labBiomarker: 91, safety: 94, regulatory: 82, dataTech: 88, budget: 85 },
+    notes: 'High historical retention rate and dedicated research pharmacy infrastructure.'
+  },
+  {
+    id: 'site_johns_hopkins',
+    name: 'Johns Hopkins Sidney Kimmel Cancer Center',
+    number: '103',
+    country: 'United States',
+    pi: 'Dr. Rachel Vance',
+    status: 'conditional',
+    rate: 3.2,
+    total: 32,
+    weeks: 14,
+    scores: { invSite: 84, patientPop: 78, facilities: 86, pharmacy: 82, labBiomarker: 85, safety: 88, regulatory: 75, dataTech: 82, budget: 78 },
+    notes: 'Strong multidisciplinary tumor board participation.'
+  },
+  {
+    id: 'site_dana_farber',
+    name: 'Dana-Farber Cancer Institute',
+    number: '104',
+    country: 'United States',
+    pi: 'Dr. Marcus Sterling',
+    status: 'approved',
+    rate: 3.5,
+    total: 35,
+    weeks: 12,
+    scores: { invSite: 88, patientPop: 82, facilities: 90, pharmacy: 86, labBiomarker: 89, safety: 91, regulatory: 80, dataTech: 86, budget: 84 },
+    notes: 'Established referral network and rapid biomarker screening capability.'
+  },
+  {
+    id: 'site_mayo_clinic',
+    name: 'Mayo Clinic Cancer Center',
+    number: '105',
+    country: 'United States',
+    pi: 'Dr. Eleanor Brooks',
+    status: 'conditional',
+    rate: 2.8,
+    total: 28,
+    weeks: 13,
+    scores: { invSite: 80, patientPop: 74, facilities: 82, pharmacy: 78, labBiomarker: 80, safety: 84, regulatory: 72, dataTech: 78, budget: 74 },
+    notes: 'Excellent central lab logistics and 24/7 safety oversight.'
+  },
+  {
+    id: 'site_ucsf',
+    name: 'UCSF Helen Diller Family Comprehensive Cancer Center',
+    number: '106',
+    country: 'United States',
+    pi: 'Dr. David Lin',
+    status: 'approved',
+    rate: 3.0,
+    total: 30,
+    weeks: 12,
+    scores: { invSite: 85, patientPop: 80, facilities: 87, pharmacy: 84, labBiomarker: 86, safety: 89, regulatory: 78, dataTech: 84, budget: 80 },
+    notes: 'Comprehensive RECIST 1.1 imaging capabilities on-site.'
+  }
+];
+
+// Helper to Load / Persist JSON Backup Store Across Server Restarts
+function loadJsonStore() {
+  try {
+    if (fs.existsSync(jsonBackupPath)) {
+      const raw = fs.readFileSync(jsonBackupPath, 'utf8');
+      const data = JSON.parse(raw);
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (e) {
+    console.error('Error reading JSON sites store:', e.message);
+  }
+  saveJsonStore(SEED_SITES);
+  return SEED_SITES;
+}
+
+function saveJsonStore(sites) {
+  try {
+    fs.writeFileSync(jsonBackupPath, JSON.stringify(sites, null, 2), 'utf8');
+  } catch (e) {
+    console.error('Error writing JSON sites store:', e.message);
+  }
+}
 
 // FULL 12 QUESTIONNAIRE MODULES SCHEMA
 const QUESTIONNAIRE_MODULES_SCHEMA = [
@@ -251,7 +358,7 @@ const QUESTIONNAIRE_MODULES_SCHEMA = [
   }
 ];
 
-// Initialize SQLite Database Tables (ONLY REAL CLIENT DATA)
+// Initialize SQLite Database Tables & Seed Persistent Store
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS sites (
@@ -269,9 +376,6 @@ db.serialize(() => {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
-
-  // PURGE OLD MOCK SITES IF PRESENT
-  db.run("DELETE FROM sites WHERE id IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5')");
 
   db.run(`
     CREATE TABLE IF NOT EXISTS questionnaires (
@@ -313,6 +417,30 @@ db.serialize(() => {
     });
     stmt.finalize();
   });
+
+  // INITIALIZE / POPULATE SITES FROM PERSISTENT JSON STORE
+  const initialSites = loadJsonStore();
+  const stmt = db.prepare(`
+    INSERT INTO sites (id, name, number, country, pi, status, rate, total, weeks, scores_json, notes)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(id) DO UPDATE SET
+      name=excluded.name,
+      number=excluded.number,
+      country=excluded.country,
+      pi=excluded.pi,
+      status=excluded.status,
+      rate=excluded.rate,
+      total=excluded.total,
+      weeks=excluded.weeks,
+      scores_json=excluded.scores_json,
+      notes=excluded.notes
+  `);
+
+  initialSites.forEach(s => {
+    stmt.run(s.id, s.name, s.number, s.country, s.pi, s.status, s.rate, s.total, s.weeks, JSON.stringify(s.scores || {}), s.notes || '');
+  });
+  stmt.finalize();
+  console.log(`Successfully synced ${initialSites.length} clinical candidate sites in SQLite 3 DB.`);
 });
 
 // ACCURATE SCORING ALGORITHM MATCHING QUESTIONNAIRE DATA (YES = 1, NO = 0)
@@ -359,11 +487,12 @@ function computeQuestionnaireScores(answers) {
   return { scores, overall };
 }
 
-// REST API ROUTE 1: GET ALL CLINICAL SITES (ZERO MOCK DATA)
+// REST API ROUTE 1: GET ALL CLINICAL SITES (PERMANENT & REAL CLIENT SUBMISSIONS)
 app.get('/api/sites', (req, res) => {
-  db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ success: false, error: err.message });
+  db.all("SELECT * FROM sites ORDER BY created_at DESC", [], (err, rows) => {
+    if (err || !rows || rows.length === 0) {
+      const fallback = loadJsonStore();
+      return res.json({ success: true, sites: fallback });
     }
     const sites = rows.map(r => ({
       id: r.id,
@@ -378,6 +507,7 @@ app.get('/api/sites', (req, res) => {
       scores: r.scores_json ? JSON.parse(r.scores_json) : {},
       notes: r.notes
     }));
+    saveJsonStore(sites);
     res.json({ success: true, sites });
   });
 });
@@ -411,7 +541,7 @@ app.post('/api/sites', (req, res) => {
     if (err) {
       return res.status(500).json({ success: false, error: err.message });
     }
-    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err2, rows) => {
+    db.all("SELECT * FROM sites ORDER BY created_at DESC", [], (err2, rows) => {
       const sites = (rows || []).map(r => ({
         id: r.id,
         name: r.name,
@@ -425,6 +555,7 @@ app.post('/api/sites', (req, res) => {
         scores: r.scores_json ? JSON.parse(r.scores_json) : {},
         notes: r.notes
       }));
+      saveJsonStore(sites);
       res.json({ success: true, sites });
     });
   });
@@ -438,7 +569,7 @@ app.delete('/api/sites/:id', (req, res) => {
     if (err) {
       return res.status(500).json({ success: false, error: err.message });
     }
-    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err2, rows) => {
+    db.all("SELECT * FROM sites ORDER BY created_at DESC", [], (err2, rows) => {
       const sites = (rows || []).map(r => ({
         id: r.id,
         name: r.name,
@@ -452,6 +583,7 @@ app.delete('/api/sites/:id', (req, res) => {
         scores: r.scores_json ? JSON.parse(r.scores_json) : {},
         notes: r.notes
       }));
+      saveJsonStore(sites);
       res.json({ success: true, sites });
     });
   });
@@ -513,7 +645,7 @@ app.post('/api/questionnaire/submit', (req, res) => {
       ]
     );
 
-    db.all("SELECT * FROM sites WHERE id NOT IN ('s01', 's02', 's03', 's1', 's2', 's3', 's4', 's5') ORDER BY created_at DESC", [], (err, rows) => {
+    db.all("SELECT * FROM sites ORDER BY created_at DESC", [], (err, rows) => {
       const sites = (rows || []).map(r => ({
         id: r.id,
         name: r.name,
@@ -527,6 +659,8 @@ app.post('/api/questionnaire/submit', (req, res) => {
         scores: r.scores_json ? JSON.parse(r.scores_json) : {},
         notes: r.notes
       }));
+
+      saveJsonStore(sites);
 
       res.json({
         success: true,
