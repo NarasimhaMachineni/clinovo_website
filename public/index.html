@@ -111,7 +111,7 @@
           <div class="portal-access-label">Site Feasibility Portal Access</div>
 
           <!-- Credentials entry form -->
-          <form class="login-form-content" id="loginForm" onsubmit="return app.handleSignIn(event)">
+          <form class="login-form-content" id="loginForm" action="javascript:void(0);" onsubmit="app.handleSignIn(event); return false;">
             
             <div class="form-group-field">
               <label for="usernameInput">Username or email</label>
@@ -121,6 +121,7 @@
                 class="form-input-exact" 
                 placeholder="name@client.in or name@admin.in" 
                 value="" 
+                onkeydown="if(event.key==='Enter'){app.handleSignIn(event);return false;}"
               >
             </div>
 
@@ -133,6 +134,7 @@
                   class="form-input-exact" 
                   placeholder="Enter password" 
                   value="" 
+                  onkeydown="if(event.key==='Enter'){app.handleSignIn(event);return false;}"
                 >
                 <i 
                   id="togglePasswordBtn"
@@ -151,7 +153,7 @@
               <a href="#" class="forgot-password-link" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
             </div>
 
-            <button type="submit" class="sign-in-btn-exact">
+            <button type="button" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
               Sign In
             </button>
 
