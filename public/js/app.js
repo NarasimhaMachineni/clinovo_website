@@ -655,26 +655,11 @@
     requestAnimationFrame(render);
   }
 
-  // Application Controller
+  // -------------------------------------------------------------------------
+  // APPLICATION CONTROLLER
+  // -------------------------------------------------------------------------
   window.app = {
     init() {
-      // Direct Event Listener Binding
-      const loginForm = document.getElementById('loginForm');
-      if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-          if (e) e.preventDefault();
-          this.handleSignIn(e);
-        });
-      }
-
-      const signInBtn = document.getElementById('signInBtnMain');
-      if (signInBtn) {
-        signInBtn.addEventListener('click', (e) => {
-          if (e) e.preventDefault();
-          this.handleSignIn(e);
-        });
-      }
-
       const savedRole = sessionStorage.getItem('clinovo_session_role');
       const savedView = sessionStorage.getItem('clinovo_current_view');
       const savedEmail = sessionStorage.getItem('clinovo_session_email');
@@ -682,103 +667,106 @@
       if (savedRole && savedView && savedView !== 'landing') {
         state.userRole = savedRole;
         state.userEmail = savedEmail || (savedRole === 'admin' ? 'name@admin.in' : 'name@client.in');
-        
-        let targetView = savedView;
+        let tv = savedView;
         if (savedRole === 'client' && savedView === 'dashboard') {
-          targetView = 'questionnaire';
+          tv = 'questionnaire';
           sessionStorage.setItem('clinovo_current_view', 'questionnaire');
         }
-
-        this.navigateTo(targetView);
+        window.app.navigateTo(tv);
       } else {
         document.body.classList.add('landing-active');
-        this.updateUserNav();
-        try { dashApp.fetchSites(); } catch (e) { console.error(e); }
+        window.app.activateSection('landing');
+        window.app.updateUserNav();
+        try { dashApp.fetchSites(); } catch(e) {}
       }
 
-      this.startDotCarousel();
+      window.app.startDotCarousel();
       initPharmaCanvas();
     },
 
-    showPharmaLoader(callback) {
-      if (typeof callback === 'function') callback();
+    activateSection(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => {
+        sec.classList.remove('active-view');
+        sec.style.removeProperty('display');
+      });
+      const target = document.getElementById('view-' + viewId);
+      if (target) target.classList.add('active-view');
     },
 
     navigateTo(viewId) {
-      const vLanding = document.getElementById('view-landing');
-      const vQuest = document.getElementById('view-questionnaire');
-      const vDash = document.getElementById('view-dashboard');
+      state.currentView = viewId;
+      sessionStorage.setItem('clinovo_current_view', viewId);
 
       if (viewId === 'dashboard') {
         state.userRole = 'admin';
         state.userEmail = state.userEmail || 'name@admin.in';
         sessionStorage.setItem('clinovo_session_role', 'admin');
         sessionStorage.setItem('clinovo_session_email', state.userEmail);
-        sessionStorage.setItem('clinovo_current_view', 'dashboard');
-        state.currentView = 'dashboard';
-
         document.body.classList.remove('landing-active');
-        if (vLanding) vLanding.style.display = 'none';
-        if (vQuest) vQuest.style.display = 'none';
-        if (vDash) {
-          vDash.style.display = 'block';
-          vDash.classList.add('active-view');
-        }
+        window.app.activateSection('dashboard');
+        window.app.updateUserNav();
+        try { dashApp.fetchSites(); dashApp.startAutoPoll(); } catch(e) { console.error(e); }
 
-        this.updateUserNav();
-        try {
-          dashApp.fetchSites();
-          dashApp.startAutoPoll();
-        } catch (e) {
-          console.error('Dash error:', e);
-        }
       } else if (viewId === 'questionnaire') {
-        state.userRole = 'client';
+        state.userRole = state.userRole || 'client';
         state.userEmail = state.userEmail || 'name@client.in';
-        sessionStorage.setItem('clinovo_session_role', 'client');
+        sessionStorage.setItem('clinovo_session_role', state.userRole);
         sessionStorage.setItem('clinovo_session_email', state.userEmail);
-        sessionStorage.setItem('clinovo_current_view', 'questionnaire');
-        state.currentView = 'questionnaire';
-
         document.body.classList.remove('landing-active');
-        if (vLanding) vLanding.style.display = 'none';
-        if (vDash) vDash.style.display = 'none';
-        if (vQuest) {
-          vQuest.style.display = 'block';
-          vQuest.classList.add('active-view');
-        }
+        window.app.activateSection('questionnaire');
+        window.app.updateUserNav();
+        try { dashApp.stopAutoPoll(); questApp.renderAll(); } catch(e) { console.error(e); }
 
-        this.updateUserNav();
-        try {
-          dashApp.stopAutoPoll();
-          questApp.renderAll();
-        } catch (e) {
-          console.error('Quest error:', e);
-        }
       } else {
-        state.currentView = 'landing';
-        sessionStorage.setItem('clinovo_current_view', 'landing');
-
+        state.userRole = null;
+        state.userEmail = '';
         document.body.classList.add('landing-active');
-        if (vQuest) vQuest.style.display = 'none';
-        if (vDash) vDash.style.display = 'none';
-        if (vLanding) {
-          vLanding.style.display = 'block';
-          vLanding.classList.add('active-view');
-        }
-
-        this.updateUserNav();
-        try { dashApp.stopAutoPoll(); } catch (e) { console.error(e); }
+        window.app.activateSection('landing');
+        window.app.updateUserNav();
+        try { dashApp.stopAutoPoll(); } catch(e) {}
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
+    handleSignIn(event) {
+      if (event && event.preventDefault) event.preventDefault();
+      if (event && event.stopPropagation) event.stopPropagation();
+
+      const usernameInput = document.getElementById('usernameInput');
+      const usernameVal = usernameInput ? usernameInput.value.toLowerCase().trim() : '';
+
+      const isAdmin = usernameVal.includes('admin');
+      const targetRole = isAdmin ? 'admin' : 'client';
+      const targetEmail = usernameVal || (isAdmin ? 'name@admin.in' : 'name@client.in');
+      const targetView  = isAdmin ? 'dashboard' : 'questionnaire';
+
+      state.userRole  = targetRole;
+      state.userEmail = targetEmail;
+      sessionStorage.setItem('clinovo_session_role',    targetRole);
+      sessionStorage.setItem('clinovo_session_email',   targetEmail);
+      sessionStorage.setItem('clinovo_current_view',    targetView);
+
+      showToast('Signed in as ' + (isAdmin ? 'Admin' : 'Client') + '!');
+      window.app.navigateTo(targetView);
+      return false;
+    },
+
+    logout() {
+      state.userRole  = null;
+      state.userEmail = '';
+      sessionStorage.removeItem('clinovo_session_role');
+      sessionStorage.removeItem('clinovo_session_email');
+      sessionStorage.removeItem('clinovo_current_view');
+      try { dashApp.stopAutoPoll(); } catch(e) {}
+      showToast('Signed out');
+      window.app.navigateTo('landing');
+    },
+
     togglePasswordVisibility() {
       const passInput = document.getElementById('passwordInput');
-      const eyeIcon = document.getElementById('togglePasswordBtn');
+      const eyeIcon   = document.getElementById('togglePasswordBtn');
       if (!passInput || !eyeIcon) return;
-
       if (passInput.type === 'password') {
         passInput.type = 'text';
         eyeIcon.className = 'fa-solid fa-eye-slash password-eye-icon';
@@ -791,7 +779,6 @@
     quickLogin(role) {
       const userInp = document.getElementById('usernameInput');
       const passInp = document.getElementById('passwordInput');
-
       if (role === 'admin') {
         if (userInp) userInp.value = 'name@admin.in';
         if (passInp) passInp.value = 'password123';
@@ -799,67 +786,28 @@
         if (userInp) userInp.value = 'name@client.in';
         if (passInp) passInp.value = 'password123';
       }
-
-      this.handleSignIn();
+      window.app.handleSignIn();
     },
 
-    handleSignIn(event) {
-      if (event) {
-        if (typeof event.preventDefault === 'function') event.preventDefault();
-        if (typeof event.stopPropagation === 'function') event.stopPropagation();
-      }
-
-      const usernameInput = document.getElementById('usernameInput');
-      let usernameVal = (usernameInput && usernameInput.value) ? usernameInput.value.toLowerCase().trim() : '';
-
-      const isAdmin = usernameVal.includes('admin');
-      const targetRole = isAdmin ? 'admin' : 'client';
-      const targetEmail = usernameVal || (isAdmin ? 'name@admin.in' : 'name@client.in');
-      const targetView = isAdmin ? 'dashboard' : 'questionnaire';
-
-      state.userRole = targetRole;
-      state.userEmail = targetEmail;
-      sessionStorage.setItem('clinovo_session_role', targetRole);
-      sessionStorage.setItem('clinovo_session_email', targetEmail);
-      sessionStorage.setItem('clinovo_current_view', targetView);
-
-      showToast(`Signed in as ${isAdmin ? 'Admin' : 'Client'}!`);
-      this.navigateTo(targetView);
-      return false;
-    },
-
-    logout() {
-      this.showPharmaLoader(() => {
-        state.userRole = null;
-        state.userEmail = '';
-        sessionStorage.removeItem('clinovo_session_role');
-        sessionStorage.removeItem('clinovo_session_email');
-        sessionStorage.removeItem('clinovo_current_view');
-        dashApp.stopAutoPoll();
-
-        this.updateUserNav();
-        showToast('Signed out');
-        this.navigateTo('landing');
-      });
+    showPharmaLoader(callback) {
+      if (typeof callback === 'function') callback();
     },
 
     updateUserNav() {
       const container = document.getElementById('userNavActions');
       if (!container) return;
-
+      const cv = state.currentView;
       container.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <button class="nav-access-btn ${state.currentView === 'questionnaire' ? 'active' : ''}" onclick="app.quickLogin('client')">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <button class="nav-access-btn${cv==='questionnaire'?' active':''}" onclick="window.app.quickLogin('client')">
             <i class="fa-solid fa-clipboard-list"></i> Client Portal
           </button>
-          <button class="nav-access-btn ${state.currentView === 'dashboard' ? 'active' : ''}" onclick="app.quickLogin('admin')">
+          <button class="nav-access-btn${cv==='dashboard'?' active':''}" onclick="window.app.quickLogin('admin')">
             <i class="fa-solid fa-chart-pie"></i> Admin Dashboard
           </button>
-          ${state.userRole ? `
-            <button class="btn-logout-exact" onclick="app.logout()">
-              <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </button>
-          ` : ''}
+          ${state.userRole ? `<button class="btn-logout-exact" onclick="window.app.logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>` : ''}
         </div>
       `;
     },
@@ -867,16 +815,14 @@
     startDotCarousel() {
       setInterval(() => {
         state.carouselDot = (state.carouselDot + 1) % 4;
-        this.setDot(state.carouselDot);
+        window.app.setDot(state.carouselDot);
       }, 3500);
     },
 
     setDot(idx) {
       state.carouselDot = idx;
-      const dots = document.querySelectorAll('#carouselDots .dot-item');
-      dots.forEach((dot, i) => {
-        if (i === idx) dot.classList.add('active');
-        else dot.classList.remove('active');
+      document.querySelectorAll('#carouselDots .dot-item').forEach((dot, i) => {
+        dot.classList.toggle('active', i === idx);
       });
     }
   };
