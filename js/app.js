@@ -28,7 +28,7 @@
     }
   };
 
-  // 36 REAL-WORLD CLINICAL FEASIBILITY SITES SUBMITTED BY 6 TEAM MEMBERS ACROSS 6 CONTINENTS (WIDE SPREAD SCORES: 44 TO 96)
+  // 36 REAL-WORLD CLINICAL FEASIBILITY SITES SUBMITTED BY 6 TEAM MEMBERS ACROSS 6 CONTINENTS (RANDOMIZED SCORES & RANDOM DISPLAY ORDER)
   const DEFAULT_SEED_SITES_36 = [
     // --- TEAM MEMBER 1: Dr. Sarah Jenkins (Lead CRA) ---
     {
@@ -42,7 +42,7 @@
       total: 18,
       weeks: 18,
       scores: { invSite: 52, patientPop: 48, facilities: 53, pharmacy: 50, labBiomarker: 49, safety: 54, regulatory: 45, dataTech: 51, budget: 48 },
-      notes: 'Completed by Dr. Sarah Jenkins · NCI Comprehensive Cancer Center · Requires major facility calibration.'
+      notes: 'Completed by Dr. Sarah Jenkins · NCI Comprehensive Cancer Center.'
     },
     {
       id: 'site_sa_01',
@@ -50,11 +50,11 @@
       number: '102',
       country: 'Brazil (South America)',
       pi: 'Dr. Carlos Henrique',
-      status: 'conditional',
-      rate: 2.1,
-      total: 21,
-      weeks: 16,
-      scores: { invSite: 62, patientPop: 58, facilities: 63, pharmacy: 60, labBiomarker: 59, safety: 64, regulatory: 55, dataTech: 61, budget: 58 },
+      status: 'approved',
+      rate: 2.8,
+      total: 28,
+      weeks: 14,
+      scores: { invSite: 80, patientPop: 76, facilities: 81, pharmacy: 78, labBiomarker: 77, safety: 82, regulatory: 73, dataTech: 79, budget: 76 },
       notes: 'Completed by Dr. Sarah Jenkins · Premier Latin American academic oncology facility.'
     },
     {
@@ -63,11 +63,11 @@
       number: '103',
       country: 'France (Europe)',
       pi: 'Dr. Fabrice André',
-      status: 'not_approved',
-      rate: 1.9,
-      total: 19,
-      weeks: 17,
-      scores: { invSite: 56, patientPop: 52, facilities: 57, pharmacy: 54, labBiomarker: 53, safety: 58, regulatory: 49, dataTech: 55, budget: 52 },
+      status: 'approved',
+      rate: 3.8,
+      total: 38,
+      weeks: 11,
+      scores: { invSite: 92, patientPop: 88, facilities: 93, pharmacy: 90, labBiomarker: 89, safety: 94, regulatory: 85, dataTech: 91, budget: 88 },
       notes: 'Completed by Dr. Sarah Jenkins · European flagship oncology research hospital.'
     },
     {
@@ -77,10 +77,10 @@
       country: 'Japan (Asia)',
       pi: 'Dr. Kenji Tamura',
       status: 'not_approved',
-      rate: 2.0,
-      total: 20,
-      weeks: 17,
-      scores: { invSite: 59, patientPop: 55, facilities: 60, pharmacy: 57, labBiomarker: 56, safety: 61, regulatory: 52, dataTech: 58, budget: 55 },
+      rate: 1.8,
+      total: 18,
+      weeks: 18,
+      scores: { invSite: 56, patientPop: 52, facilities: 57, pharmacy: 54, labBiomarker: 53, safety: 58, regulatory: 49, dataTech: 55, budget: 52 },
       notes: 'Completed by Dr. Sarah Jenkins · Flagship Japanese cancer center.'
     },
     {
@@ -90,10 +90,10 @@
       country: 'South Africa (Africa)',
       pi: 'Dr. Bernardo Leon',
       status: 'approved',
-      rate: 3.0,
-      total: 30,
-      weeks: 13,
-      scores: { invSite: 80, patientPop: 76, facilities: 81, pharmacy: 78, labBiomarker: 77, safety: 82, regulatory: 73, dataTech: 79, budget: 76 },
+      rate: 4.0,
+      total: 40,
+      weeks: 10,
+      scores: { invSite: 95, patientPop: 91, facilities: 96, pharmacy: 93, labBiomarker: 92, safety: 97, regulatory: 88, dataTech: 94, budget: 91 },
       notes: 'Completed by Dr. Sarah Jenkins · Western Cape reference center.'
     },
     {
@@ -102,11 +102,11 @@
       number: '106',
       country: 'Australia (Oceania)',
       pi: 'Dr. Benjamin Solomon',
-      status: 'approved',
-      rate: 3.8,
-      total: 38,
-      weeks: 11,
-      scores: { invSite: 92, patientPop: 88, facilities: 93, pharmacy: 90, labBiomarker: 89, safety: 94, regulatory: 85, dataTech: 91, budget: 88 },
+      status: 'not_approved',
+      rate: 1.6,
+      total: 16,
+      weeks: 19,
+      scores: { invSite: 49, patientPop: 45, facilities: 50, pharmacy: 47, labBiomarker: 46, safety: 51, regulatory: 42, dataTech: 48, budget: 45 },
       notes: 'Completed by Dr. Sarah Jenkins · Dedicated public cancer research facility in Melbourne.'
     },
 
@@ -118,10 +118,10 @@
       country: 'United States (North America)',
       pi: 'Dr. Alexander Wright',
       status: 'approved',
-      rate: 4.1,
-      total: 44,
-      weeks: 10,
-      scores: { invSite: 95, patientPop: 91, facilities: 96, pharmacy: 93, labBiomarker: 92, safety: 97, regulatory: 88, dataTech: 94, budget: 91 },
+      rate: 3.6,
+      total: 36,
+      weeks: 12,
+      scores: { invSite: 91, patientPop: 87, facilities: 92, pharmacy: 89, labBiomarker: 88, safety: 93, regulatory: 84, dataTech: 90, budget: 87 },
       notes: 'Completed by Dr. Michael Vance · Exceptional retention rate and research pharmacy.'
     },
     {
@@ -131,10 +131,10 @@
       country: 'Brazil (South America)',
       pi: 'Dr. Fernando de Vital',
       status: 'not_approved',
-      rate: 1.6,
-      total: 16,
-      weeks: 19,
-      scores: { invSite: 49, patientPop: 45, facilities: 50, pharmacy: 47, labBiomarker: 46, safety: 51, regulatory: 42, dataTech: 48, budget: 45 },
+      rate: 2.0,
+      total: 20,
+      weeks: 16,
+      scores: { invSite: 62, patientPop: 58, facilities: 63, pharmacy: 60, labBiomarker: 59, safety: 64, regulatory: 55, dataTech: 61, budget: 58 },
       notes: 'Completed by Dr. Michael Vance · Comprehensive treatment and research institute.'
     },
     {
@@ -143,11 +143,11 @@
       number: '203',
       country: 'United Kingdom (Europe)',
       pi: 'Dr. Johann de Bono',
-      status: 'approved',
-      rate: 3.7,
-      total: 37,
-      weeks: 11,
-      scores: { invSite: 91, patientPop: 87, facilities: 92, pharmacy: 89, labBiomarker: 88, safety: 93, regulatory: 84, dataTech: 90, budget: 87 },
+      status: 'not_approved',
+      rate: 1.9,
+      total: 19,
+      weeks: 17,
+      scores: { invSite: 59, patientPop: 55, facilities: 60, pharmacy: 57, labBiomarker: 56, safety: 61, regulatory: 52, dataTech: 58, budget: 55 },
       notes: 'Completed by Dr. Michael Vance · Largest comprehensive cancer center in Europe.'
     },
     {
@@ -169,11 +169,11 @@
       number: '205',
       country: 'Egypt (Africa)',
       pi: 'Dr. Tarek Hashem',
-      status: 'conditional',
-      rate: 2.2,
-      total: 22,
-      weeks: 16,
-      scores: { invSite: 64, patientPop: 60, facilities: 65, pharmacy: 62, labBiomarker: 61, safety: 66, regulatory: 57, dataTech: 63, budget: 60 },
+      status: 'approved',
+      rate: 3.0,
+      total: 30,
+      weeks: 13,
+      scores: { invSite: 83, patientPop: 79, facilities: 84, pharmacy: 81, labBiomarker: 80, safety: 85, regulatory: 76, dataTech: 82, budget: 79 },
       notes: 'Completed by Dr. Michael Vance · Primary referral hub for North Africa.'
     },
     {
@@ -182,11 +182,11 @@
       number: '206',
       country: 'Australia (Oceania)',
       pi: 'Dr. Michael Boyer',
-      status: 'approved',
-      rate: 2.8,
-      total: 28,
-      weeks: 14,
-      scores: { invSite: 77, patientPop: 73, facilities: 78, pharmacy: 75, labBiomarker: 74, safety: 79, regulatory: 70, dataTech: 76, budget: 73 },
+      status: 'conditional',
+      rate: 2.4,
+      total: 24,
+      weeks: 15,
+      scores: { invSite: 70, patientPop: 66, facilities: 71, pharmacy: 68, labBiomarker: 67, safety: 72, regulatory: 63, dataTech: 69, budget: 66 },
       notes: 'Completed by Dr. Michael Vance · Major academic teaching hospital.'
     },
 
@@ -223,11 +223,11 @@
       number: '303',
       country: 'Netherlands (Europe)',
       pi: 'Dr. Emile Voest',
-      status: 'approved',
-      rate: 3.1,
-      total: 31,
-      weeks: 13,
-      scores: { invSite: 83, patientPop: 79, facilities: 84, pharmacy: 81, labBiomarker: 80, safety: 85, regulatory: 76, dataTech: 82, budget: 79 },
+      status: 'conditional',
+      rate: 2.6,
+      total: 26,
+      weeks: 14,
+      scores: { invSite: 75, patientPop: 71, facilities: 76, pharmacy: 73, labBiomarker: 72, safety: 77, regulatory: 68, dataTech: 74, budget: 71 },
       notes: 'Completed by Dr. Elena Rostova · European center for precision immuno-oncology trials.'
     },
     {
@@ -236,11 +236,11 @@
       number: '304',
       country: 'South Korea (Asia)',
       pi: 'Dr. Myung-Ju Ahn',
-      status: 'conditional',
-      rate: 2.5,
-      total: 25,
-      weeks: 15,
-      scores: { invSite: 70, patientPop: 66, facilities: 71, pharmacy: 68, labBiomarker: 67, safety: 72, regulatory: 63, dataTech: 69, budget: 66 },
+      status: 'approved',
+      rate: 3.3,
+      total: 33,
+      weeks: 12,
+      scores: { invSite: 87, patientPop: 83, facilities: 88, pharmacy: 85, labBiomarker: 84, safety: 89, regulatory: 80, dataTech: 86, budget: 83 },
       notes: 'Completed by Dr. Elena Rostova · Advanced digital medical record infrastructure.'
     },
     {
@@ -249,11 +249,11 @@
       number: '305',
       country: 'Kenya (Africa)',
       pi: 'Dr. Mansoor Saleh',
-      status: 'approved',
-      rate: 4.2,
-      total: 45,
-      weeks: 10,
-      scores: { invSite: 96, patientPop: 92, facilities: 97, pharmacy: 94, labBiomarker: 93, safety: 98, regulatory: 89, dataTech: 95, budget: 92 },
+      status: 'conditional',
+      rate: 2.3,
+      total: 23,
+      weeks: 16,
+      scores: { invSite: 68, patientPop: 64, facilities: 69, pharmacy: 66, labBiomarker: 65, safety: 70, regulatory: 61, dataTech: 67, budget: 64 },
       notes: 'Completed by Dr. Elena Rostova · JCI-accredited tertiary medical facility in Nairobi.'
     },
     {
@@ -262,11 +262,11 @@
       number: '306',
       country: 'Australia (Oceania)',
       pi: 'Dr. Michael Chao',
-      status: 'not_approved',
-      rate: 1.7,
-      total: 17,
-      weeks: 18,
-      scores: { invSite: 51, patientPop: 47, facilities: 52, pharmacy: 49, labBiomarker: 48, safety: 53, regulatory: 44, dataTech: 50, budget: 47 },
+      status: 'approved',
+      rate: 2.9,
+      total: 29,
+      weeks: 13,
+      scores: { invSite: 81, patientPop: 77, facilities: 82, pharmacy: 79, labBiomarker: 78, safety: 83, regulatory: 74, dataTech: 80, budget: 77 },
       notes: 'Completed by Dr. Elena Rostova · Comprehensive cancer treatment hospital in Sydney.'
     },
 
@@ -277,11 +277,11 @@
       number: '401',
       country: 'United States (North America)',
       pi: 'Dr. Rachel Vance',
-      status: 'approved',
-      rate: 2.7,
-      total: 27,
-      weeks: 14,
-      scores: { invSite: 75, patientPop: 71, facilities: 76, pharmacy: 73, labBiomarker: 72, safety: 77, regulatory: 68, dataTech: 74, budget: 71 },
+      status: 'not_approved',
+      rate: 2.0,
+      total: 20,
+      weeks: 17,
+      scores: { invSite: 60, patientPop: 56, facilities: 61, pharmacy: 58, labBiomarker: 57, safety: 62, regulatory: 53, dataTech: 59, budget: 56 },
       notes: 'Completed by Dr. Rajiv Patel · World-class translational oncology clinical trial center.'
     },
     {
@@ -291,10 +291,10 @@
       country: 'Colombia (South America)',
       pi: 'Dr. Luis Eduardo Pino',
       status: 'approved',
-      rate: 3.5,
-      total: 35,
-      weeks: 12,
-      scores: { invSite: 87, patientPop: 83, facilities: 88, pharmacy: 85, labBiomarker: 84, safety: 89, regulatory: 80, dataTech: 86, budget: 83 },
+      rate: 3.7,
+      total: 37,
+      weeks: 11,
+      scores: { invSite: 93, patientPop: 89, facilities: 94, pharmacy: 91, labBiomarker: 90, safety: 95, regulatory: 86, dataTech: 92, budget: 89 },
       notes: 'Completed by Dr. Rajiv Patel · Premier Colombian university hospital.'
     },
     {
@@ -303,11 +303,11 @@
       number: '403',
       country: 'Germany (Europe)',
       pi: 'Dr. Ulrich Keilholz',
-      status: 'conditional',
-      rate: 2.4,
-      total: 24,
-      weeks: 15,
-      scores: { invSite: 68, patientPop: 64, facilities: 69, pharmacy: 66, labBiomarker: 65, safety: 70, regulatory: 61, dataTech: 67, budget: 64 },
+      status: 'not_approved',
+      rate: 1.5,
+      total: 15,
+      weeks: 20,
+      scores: { invSite: 48, patientPop: 44, facilities: 49, pharmacy: 46, labBiomarker: 45, safety: 50, regulatory: 41, dataTech: 47, budget: 44 },
       notes: 'Completed by Dr. Rajiv Patel · Central European university medical center.'
     },
     {
@@ -316,11 +316,11 @@
       number: '404',
       country: 'Singapore (Asia)',
       pi: 'Dr. Ross Soo',
-      status: 'approved',
-      rate: 3.0,
-      total: 30,
-      weeks: 13,
-      scores: { invSite: 81, patientPop: 77, facilities: 82, pharmacy: 79, labBiomarker: 78, safety: 83, regulatory: 74, dataTech: 80, budget: 77 },
+      status: 'conditional',
+      rate: 2.2,
+      total: 22,
+      weeks: 16,
+      scores: { invSite: 66, patientPop: 62, facilities: 67, pharmacy: 64, labBiomarker: 63, safety: 68, regulatory: 59, dataTech: 65, budget: 62 },
       notes: 'Completed by Dr. Rajiv Patel · Leading Southeast Asian academic research site.'
     },
     {
@@ -329,11 +329,11 @@
       number: '405',
       country: 'South Africa (Africa)',
       pi: 'Dr. Jeannette Parkes',
-      status: 'not_approved',
-      rate: 2.0,
-      total: 20,
-      weeks: 16,
-      scores: { invSite: 60, patientPop: 56, facilities: 61, pharmacy: 58, labBiomarker: 57, safety: 62, regulatory: 53, dataTech: 59, budget: 56 },
+      status: 'approved',
+      rate: 3.1,
+      total: 31,
+      weeks: 13,
+      scores: { invSite: 85, patientPop: 81, facilities: 86, pharmacy: 83, labBiomarker: 82, safety: 87, regulatory: 78, dataTech: 84, budget: 81 },
       notes: 'Completed by Dr. Rajiv Patel · Key teaching hospital affiliated with Univ of Cape Town.'
     },
     {
@@ -342,11 +342,11 @@
       number: '406',
       country: 'Australia (Oceania)',
       pi: 'Dr. Andrew Scott',
-      status: 'approved',
-      rate: 3.9,
-      total: 39,
-      weeks: 11,
-      scores: { invSite: 93, patientPop: 89, facilities: 94, pharmacy: 91, labBiomarker: 90, safety: 95, regulatory: 86, dataTech: 92, budget: 89 },
+      status: 'conditional',
+      rate: 2.5,
+      total: 25,
+      weeks: 15,
+      scores: { invSite: 72, patientPop: 68, facilities: 73, pharmacy: 70, labBiomarker: 69, safety: 74, regulatory: 65, dataTech: 71, budget: 68 },
       notes: 'Completed by Dr. Rajiv Patel · Advanced trial facility in Heidelberg, Victoria.'
     },
 
@@ -357,11 +357,11 @@
       number: '501',
       country: 'United States (North America)',
       pi: 'Dr. Eleanor Brooks',
-      status: 'not_approved',
-      rate: 1.6,
-      total: 16,
-      weeks: 19,
-      scores: { invSite: 48, patientPop: 44, facilities: 49, pharmacy: 46, labBiomarker: 45, safety: 50, regulatory: 41, dataTech: 47, budget: 44 },
+      status: 'approved',
+      rate: 3.5,
+      total: 35,
+      weeks: 12,
+      scores: { invSite: 89, patientPop: 85, facilities: 90, pharmacy: 87, labBiomarker: 86, safety: 91, regulatory: 82, dataTech: 88, budget: 85 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · NCI Comprehensive Cancer Center.'
     },
     {
@@ -370,11 +370,11 @@
       number: '502',
       country: 'Chile (South America)',
       pi: 'Dr. Jorge Madrid',
-      status: 'conditional',
-      rate: 2.3,
-      total: 23,
-      weeks: 16,
-      scores: { invSite: 66, patientPop: 62, facilities: 67, pharmacy: 64, labBiomarker: 63, safety: 68, regulatory: 59, dataTech: 65, budget: 62 },
+      status: 'not_approved',
+      rate: 1.9,
+      total: 19,
+      weeks: 17,
+      scores: { invSite: 58, patientPop: 54, facilities: 59, pharmacy: 56, labBiomarker: 55, safety: 60, regulatory: 51, dataTech: 57, budget: 54 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · National reference hospital for oncology in Santiago.'
     },
     {
@@ -384,10 +384,10 @@
       country: 'Italy (Europe)',
       pi: 'Dr. Giuseppe Curigliano',
       status: 'approved',
-      rate: 3.3,
-      total: 33,
-      weeks: 12,
-      scores: { invSite: 85, patientPop: 81, facilities: 86, pharmacy: 83, labBiomarker: 82, safety: 87, regulatory: 78, dataTech: 84, budget: 81 },
+      rate: 2.8,
+      total: 28,
+      weeks: 14,
+      scores: { invSite: 78, patientPop: 74, facilities: 79, pharmacy: 76, labBiomarker: 75, safety: 80, regulatory: 71, dataTech: 77, budget: 74 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Specialized non-profit cancer institute in Milan.'
     },
     {
@@ -396,11 +396,11 @@
       number: '504',
       country: 'China (Asia)',
       pi: 'Dr. Yi-Long Wu',
-      status: 'conditional',
-      rate: 2.6,
-      total: 26,
-      weeks: 14,
-      scores: { invSite: 72, patientPop: 68, facilities: 73, pharmacy: 70, labBiomarker: 69, safety: 74, regulatory: 65, dataTech: 71, budget: 68 },
+      status: 'approved',
+      rate: 3.6,
+      total: 36,
+      weeks: 12,
+      scores: { invSite: 90, patientPop: 86, facilities: 91, pharmacy: 88, labBiomarker: 87, safety: 92, regulatory: 83, dataTech: 89, budget: 86 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Massive capacity East Asian Phase III trial hub.'
     },
     {
@@ -409,11 +409,11 @@
       number: '505',
       country: 'Tunisia (Africa)',
       pi: 'Dr. Chiraz Nasr',
-      status: 'approved',
-      rate: 3.6,
-      total: 36,
-      weeks: 12,
-      scores: { invSite: 89, patientPop: 85, facilities: 90, pharmacy: 87, labBiomarker: 86, safety: 91, regulatory: 82, dataTech: 88, budget: 85 },
+      status: 'not_approved',
+      rate: 1.7,
+      total: 17,
+      weeks: 18,
+      scores: { invSite: 55, patientPop: 51, facilities: 56, pharmacy: 53, labBiomarker: 52, safety: 57, regulatory: 48, dataTech: 54, budget: 51 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Requires local laboratory equipment upgrade.'
     },
     {
@@ -422,11 +422,11 @@
       number: '506',
       country: 'New Zealand (Oceania)',
       pi: 'Dr. Mark McKeage',
-      status: 'not_approved',
-      rate: 2.0,
-      total: 20,
-      weeks: 17,
-      scores: { invSite: 58, patientPop: 54, facilities: 59, pharmacy: 56, labBiomarker: 55, safety: 60, regulatory: 51, dataTech: 57, budget: 54 },
+      status: 'approved',
+      rate: 3.0,
+      total: 30,
+      weeks: 13,
+      scores: { invSite: 84, patientPop: 80, facilities: 85, pharmacy: 82, labBiomarker: 81, safety: 86, regulatory: 77, dataTech: 83, budget: 80 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Primary tertiary cancer hospital in Auckland.'
     },
 
@@ -437,11 +437,11 @@
       number: '601',
       country: 'United States (North America)',
       pi: 'Dr. David Lin',
-      status: 'approved',
-      rate: 2.8,
-      total: 28,
-      weeks: 14,
-      scores: { invSite: 78, patientPop: 74, facilities: 79, pharmacy: 76, labBiomarker: 75, safety: 80, regulatory: 71, dataTech: 77, budget: 74 },
+      status: 'conditional',
+      rate: 2.3,
+      total: 23,
+      weeks: 15,
+      scores: { invSite: 71, patientPop: 67, facilities: 72, pharmacy: 69, labBiomarker: 68, safety: 73, regulatory: 64, dataTech: 70, budget: 67 },
       notes: 'Completed by Dr. David Lin · West Coast NCI Comprehensive Cancer Center.'
     },
     {
@@ -450,11 +450,11 @@
       number: '602',
       country: 'Peru (South America)',
       pi: 'Dr. Carlos Vallejos',
-      status: 'approved',
-      rate: 3.8,
-      total: 38,
-      weeks: 11,
-      scores: { invSite: 90, patientPop: 86, facilities: 91, pharmacy: 88, labBiomarker: 87, safety: 92, regulatory: 83, dataTech: 89, budget: 86 },
+      status: 'conditional',
+      rate: 2.5,
+      total: 25,
+      weeks: 14,
+      scores: { invSite: 73, patientPop: 69, facilities: 74, pharmacy: 71, labBiomarker: 70, safety: 75, regulatory: 66, dataTech: 72, budget: 69 },
       notes: 'Completed by Dr. David Lin · Primary cancer reference center in Lima, Peru.'
     },
     {
@@ -463,11 +463,11 @@
       number: '603',
       country: 'Spain (Europe)',
       pi: 'Dr. Josep Tabernero',
-      status: 'not_approved',
-      rate: 1.9,
-      total: 19,
-      weeks: 18,
-      scores: { invSite: 55, patientPop: 51, facilities: 56, pharmacy: 53, labBiomarker: 52, safety: 57, regulatory: 48, dataTech: 54, budget: 51 },
+      status: 'approved',
+      rate: 4.1,
+      total: 41,
+      weeks: 10,
+      scores: { invSite: 96, patientPop: 92, facilities: 97, pharmacy: 94, labBiomarker: 93, safety: 98, regulatory: 89, dataTech: 95, budget: 92 },
       notes: 'Completed by Dr. David Lin · Leading Mediterranean early & late phase trial institution.'
     },
     {
@@ -476,11 +476,11 @@
       number: '604',
       country: 'China (Asia)',
       pi: 'Dr. Jin Li',
-      status: 'approved',
-      rate: 3.2,
-      total: 32,
-      weeks: 13,
-      scores: { invSite: 84, patientPop: 80, facilities: 85, pharmacy: 82, labBiomarker: 81, safety: 86, regulatory: 77, dataTech: 83, budget: 80 },
+      status: 'not_approved',
+      rate: 1.6,
+      total: 16,
+      weeks: 19,
+      scores: { invSite: 51, patientPop: 47, facilities: 52, pharmacy: 49, labBiomarker: 48, safety: 53, regulatory: 44, dataTech: 50, budget: 47 },
       notes: 'Completed by Dr. David Lin · Top-tier Shanghai academic oncology clinical trial site.'
     },
     {
@@ -490,10 +490,10 @@
       country: 'Senegal (Africa)',
       pi: 'Dr. Macoumba Gaye',
       status: 'conditional',
-      rate: 2.5,
-      total: 25,
-      weeks: 15,
-      scores: { invSite: 71, patientPop: 67, facilities: 72, pharmacy: 69, labBiomarker: 68, safety: 73, regulatory: 64, dataTech: 70, budget: 67 },
+      rate: 2.1,
+      total: 21,
+      weeks: 16,
+      scores: { invSite: 64, patientPop: 60, facilities: 65, pharmacy: 62, labBiomarker: 61, safety: 66, regulatory: 57, dataTech: 63, budget: 60 },
       notes: 'Completed by Dr. David Lin · West African unit requiring ultralow freezer infrastructure.'
     },
     {
@@ -502,11 +502,11 @@
       number: '606',
       country: 'Australia (Oceania)',
       pi: 'Dr. Millward Michael',
-      status: 'conditional',
-      rate: 2.6,
-      total: 26,
+      status: 'approved',
+      rate: 2.7,
+      total: 27,
       weeks: 14,
-      scores: { invSite: 73, patientPop: 69, facilities: 74, pharmacy: 71, labBiomarker: 70, safety: 75, regulatory: 66, dataTech: 72, budget: 69 },
+      scores: { invSite: 77, patientPop: 73, facilities: 78, pharmacy: 75, labBiomarker: 74, safety: 79, regulatory: 70, dataTech: 76, budget: 73 },
       notes: 'Completed by Dr. David Lin · Key tertiary oncology center in Perth, Australia.'
     }
   ];
