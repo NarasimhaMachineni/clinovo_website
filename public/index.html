@@ -142,28 +142,12 @@
               </div>
             </div>
 
-            <div class="form-options-row">
-              <label class="remember-me-checkbox">
-                <input type="checkbox">
-                <span>Remember me</span>
-              </label>
-              <a href="#" class="forgot-password-link" onclick="alert('Password reset instructions sent.'); return false;">Forgot password?</a>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+            <div style="margin-top:16px;">
               <button type="button" id="signInBtnMain" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
                 Sign In
               </button>
-
-              <div style="display:flex; gap:10px; margin-top:4px;">
-                <button type="button" class="btn" style="flex:1; background:#0284c7; color:#fff; font-weight:600; padding:10px; border-radius:8px; border:none; cursor:pointer; font-size:13px;" onclick="app.navigateTo('questionnaire')">
-                  <i class="fa-solid fa-clipboard-list"></i> Client Portal
-                </button>
-                <button type="button" class="btn" style="flex:1; background:#0B6E6E; color:#fff; font-weight:600; padding:10px; border-radius:8px; border:none; cursor:pointer; font-size:13px;" onclick="app.navigateTo('dashboard')">
-                  <i class="fa-solid fa-chart-pie"></i> Admin Dashboard
-                </button>
-              </div>
             </div>
+
 
           </form>
 
@@ -306,9 +290,10 @@
             <!-- Populated dynamically by JS -->
           </div>
 
+
           <!-- TOP 5 BAR GRAPH DIRECTLY BELOW DETAILS -->
-          <div style="margin-top:10px;">
-            <svg id="sectionTop5Svg" width="100%" height="240" viewBox="0 0 440 240"></svg>
+          <div id="sectionTop5Bars" style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">
+            <!-- Populated dynamically by JS renderSectionTop5 -->
           </div>
         </div>
 

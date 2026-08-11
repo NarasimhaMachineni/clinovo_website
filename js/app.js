@@ -1525,64 +1525,99 @@
       const top5Avg = top5.length ? Math.round(top5.reduce((sum, item) => sum + item.score, 0) / top5.length) : 0;
       const passCount = allScored.filter(item => item.score >= 80).length;
 
-      // Render Selected Section Details & Analysis Summary Box
+      // -----------------------------------------------
+      // SECTION DETAILS BOX — larger, more prominent
+      // -----------------------------------------------
       const detailsEl = document.getElementById('sectionDetailsBox');
       const meta = this.SECTION_META[currentSec] || this.SECTION_META['sec01'];
       if (detailsEl) {
         detailsEl.innerHTML = `
           <div class="analysis-badge-header">
             <span class="analysis-tag">36-Site Dataset Analysis</span>
-            <span class="analysis-top-performer">Top #1: ${topSite.site.name.split(' ').slice(0, 2).join(' ')} (${topSite.score}%)</span>
+            <span class="analysis-top-performer">Top #1: ${topSite.site.name.split(' ').slice(0, 3).join(' ')} (${topSite.score}%)</span>
           </div>
-          <div class="section-details-title">${meta.title}</div>
-          <div class="section-details-desc">${meta.desc}</div>
-          <div class="analysis-stats-row">
-            <div class="astat"><span class="astat-lbl">Top 5 Avg:</span> <span class="astat-val">${top5Avg}%</span></div>
-            <div class="astat"><span class="astat-lbl">Overall Avg:</span> <span class="astat-val">${avgScore}%</span></div>
-            <div class="astat"><span class="astat-lbl">Qualified (≥80%):</span> <span class="astat-val">${passCount}/${totalCount}</span></div>
+          <div class="section-details-title" style="font-size:15px; font-weight:700; color:#16233D; margin:6px 0 4px;">${meta.title}</div>
+          <div class="section-details-desc" style="font-size:13px; color:#4B5563; line-height:1.55;">${meta.desc}</div>
+          <div class="analysis-stats-row" style="margin-top:10px; display:flex; gap:16px; flex-wrap:wrap;">
+            <div class="astat" style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:6px 12px;">
+              <span class="astat-lbl" style="font-size:11px; color:#16a34a; font-weight:600;">TOP 5 AVG</span>
+              <div class="astat-val" style="font-size:20px; font-weight:800; color:#15803d;">${top5Avg}%</div>
+            </div>
+            <div class="astat" style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:6px 12px;">
+              <span class="astat-lbl" style="font-size:11px; color:#2563eb; font-weight:600;">OVERALL AVG</span>
+              <div class="astat-val" style="font-size:20px; font-weight:800; color:#1d4ed8;">${avgScore}%</div>
+            </div>
+            <div class="astat" style="background:#fefce8; border:1px solid #fde68a; border-radius:8px; padding:6px 12px;">
+              <span class="astat-lbl" style="font-size:11px; color:#d97706; font-weight:600;">QUALIFIED ≥80%</span>
+              <div class="astat-val" style="font-size:20px; font-weight:800; color:#b45309;">${passCount}/${totalCount}</div>
+            </div>
           </div>
         `;
       }
 
-      const svg = document.getElementById('sectionTop5Svg');
-      if (!svg) return;
+      // -----------------------------------------------
+      // BEAUTIFUL HTML BAR CHART
+      // -----------------------------------------------
+      const barsContainer = document.getElementById('sectionTop5Bars');
+      if (!barsContainer) return;
 
       if (!state.sites.length) {
-        svg.setAttribute('viewBox', '0 0 440 240');
-        svg.innerHTML = `<text x="220" y="120" font-size="13" fill="#8A94A3" text-anchor="middle">No site data available</text>`;
+        barsContainer.innerHTML = `<div style="text-align:center; color:#8A94A3; padding:24px; font-size:14px;">No site data available</div>`;
         return;
       }
 
-      const rowH = 44, top = 12, left = 10;
-      const barX = 220, chartW = 160;
-      const H = 240;
-      let s = '';
+      // Gradient palettes for ranks 1–5
+      const gradients = [
+        'linear-gradient(90deg, #0B6E6E 0%, #14b8a6 100%)',
+        'linear-gradient(90deg, #1d4ed8 0%, #38bdf8 100%)',
+        'linear-gradient(90deg, #6d28d9 0%, #a78bfa 100%)',
+        'linear-gradient(90deg, #be185d 0%, #f472b6 100%)',
+        'linear-gradient(90deg, #b45309 0%, #fbbf24 100%)'
+      ];
+      const medals = ['🥇', '🥈', '🥉', '4', '5'];
+      const maxScore = top5.length ? top5[0].score : 100;
 
+      let html = '';
       top5.forEach((item, i) => {
-        const y = top + i * rowH;
-        const w = (item.score / 100) * chartW;
-        const color = STATUS_COLOR[item.site.status] || '#0B6E6E';
-        const nameParts = item.site.name.split(' ');
-        const shortName = nameParts.slice(0, 2).join(' ');
+        const pct = Math.round((item.score / 100) * 100);
+        const trackPct = Math.round((item.score / maxScore) * 100);
+        const siteName = item.site.name.split(' ').slice(0, 3).join(' ');
+        const medal = medals[i];
+        const gradient = gradients[i];
 
-        // Rank Badge (01, 02, 03, 04, 05)
-        s += `<text x="${left}" y="${y + 24}" font-size="12" font-weight="700" fill="#0B6E6E">${String(i + 1).padStart(2, '0')}</text>`;
-        
-        // Site Name
-        s += `<text x="${left + 26}" y="${y + 24}" font-size="12.5" font-weight="600" fill="#16233D" title="${item.site.name}">${shortName}</text>`;
-        
-        // Background Bar
-        s += `<rect x="${barX}" y="${y + 12}" width="${chartW}" height="14" rx="7" fill="#EEF0F3"/>`;
-        
-        // Foreground Score Bar
-        s += `<rect x="${barX}" y="${y + 12}" width="${Math.max(6, w)}" height="14" rx="7" fill="${color}"/>`;
-        
-        // Score Badge
-        s += `<text x="${barX + chartW + 12}" y="${y + 24}" font-size="12.5" font-weight="700" font-family="ui-monospace,monospace" fill="${color}">${item.score}</text>`;
+        html += `
+          <div class="top5-bar-row" style="display:flex; align-items:center; gap:10px; padding:8px 10px; background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.07); border:1px solid #f0f0f0;">
+            <!-- Rank Badge -->
+            <div style="min-width:36px; height:36px; border-radius:50%; background:${gradient}; display:flex; align-items:center; justify-content:center; font-size:${i < 3 ? '18' : '13'}px; font-weight:800; color:#fff; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+              ${medal}
+            </div>
+            <!-- Name + Bar -->
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <span style="font-size:13.5px; font-weight:700; color:#16233D; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="${item.site.name}">${siteName}</span>
+                <span style="font-size:15px; font-weight:800; color:#0B6E6E; font-variant-numeric:tabular-nums; margin-left:8px;">${item.score}</span>
+              </div>
+              <!-- Bar Track -->
+              <div style="width:100%; height:10px; background:#EEF0F3; border-radius:9999px; overflow:hidden;">
+                <div class="top5-bar-fill" style="height:100%; width:0%; background:${gradient}; border-radius:9999px; transition:width 0.9s cubic-bezier(0.34,1.56,0.64,1);" data-target="${trackPct}"></div>
+              </div>
+            </div>
+            <!-- Score label small -->
+            <div style="min-width:38px; text-align:right; font-size:11.5px; color:#6B7280; flex-shrink:0;">${pct}%</div>
+          </div>
+        `;
       });
 
-      svg.setAttribute('viewBox', `0 0 440 ${H}`);
-      svg.innerHTML = s;
+      barsContainer.innerHTML = html;
+
+      // Animate bars in after DOM paint
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          barsContainer.querySelectorAll('.top5-bar-fill').forEach(el => {
+            el.style.width = el.dataset.target + '%';
+          });
+        });
+      });
     },
 
     startAutoPoll() {
