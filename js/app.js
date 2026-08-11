@@ -47,16 +47,16 @@
   ];
 
   const STATUS_COLOR = {
-    approved: '#0d9488',
-    conditional: '#d97706',
-    pending: '#94a3b8',
-    not_approved: '#e11d48'
+    approved: '#0B6E6E',
+    conditional: '#B8842E',
+    pending: '#8FA6B8',
+    not_approved: '#B23A3A'
   };
 
-  const SITE_COLORS = ['#0d9488', '#d97706', '#0284c7', '#8b5cf6', '#10b981', '#f43f5e', '#6366f1'];
+  const SITE_COLORS = ['#0B6E6E', '#B8842E', '#0284c7', '#8b5cf6', '#10b981', '#f43f5e', '#6366f1'];
 
   function showToast(msg) {
-    const t = document.getElementById('toastMsg');
+    const t = document.getElementById('toastMsg') || document.getElementById('toast');
     if (!t) return;
     t.textContent = msg;
     t.classList.add('show');
@@ -89,7 +89,7 @@
         vy: (Math.random() - 0.5) * 0.45,
         radius: Math.random() * 3 + 1.2,
         alpha: Math.random() * 0.45 + 0.1,
-        color: Math.random() > 0.5 ? '45, 212, 191' : '59, 130, 246'
+        color: Math.random() > 0.5 ? '11, 110, 110' : '59, 130, 246'
       });
     }
 
@@ -108,7 +108,7 @@
           radius: 4,
           maxRadius: Math.random() * 25 + 35,
           alpha: 0.7,
-          color: Math.random() > 0.5 ? '45, 212, 191' : '2, 132, 199',
+          color: Math.random() > 0.5 ? '11, 110, 110' : '2, 132, 199',
           lineWidth: Math.random() * 2 + 1.2
         });
       }
@@ -352,11 +352,11 @@
   };
 
   // -------------------------------------------------------------------------
-  // 2. CLIENT QUESTIONNAIRE MODULE
+  // 2. CLIENT QUESTIONNAIRE MODULE (EXACT SPECIFICATION IMPLEMENTATION)
   // -------------------------------------------------------------------------
   const SECTIONS = [
     {
-      id: 'sec01', num: '01', title: 'Study Information', kicker: 'Header · 01 / 12',
+      id: 'sec01', num: '01', title: 'Study Information', kicker: 'Header',
       desc: 'Core protocol identifiers for this feasibility record.',
       fields: [
         { id: 'protocolNumber', type: 'text', label: 'Protocol number' },
@@ -373,7 +373,7 @@
       ]
     },
     {
-      id: 'sec02', num: '02', title: 'Site & Investigator', kicker: 'Section 1 · 02 / 12',
+      id: 'sec02', num: '02', title: 'Site & Investigator', kicker: 'Section 1',
       desc: 'Institution, PI, and study team qualifications.',
       fields: [
         { id: 'institution', type: 'text', label: 'Institution / site name and address' },
@@ -398,7 +398,7 @@
       ]
     },
     {
-      id: 'sec03', num: '03', title: 'Tumor Board', kicker: 'Section 1.2 · 03 / 12',
+      id: 'sec03', num: '03', title: 'Tumor Board', kicker: 'Section 1.2',
       desc: 'Multidisciplinary tumor board (MDT) infrastructure.',
       fields: [
         { id: 'q_mdtHeld', type: 'yesno', label: 'Does the site hold a regular multidisciplinary tumor board (surgical, medical, radiation oncology, pathology, radiology)?', hint: 'state frequency in comment' },
@@ -407,7 +407,7 @@
       ]
     },
     {
-      id: 'sec04', num: '04', title: 'Patient Population', kicker: 'Section 2 · 04 / 12',
+      id: 'sec04', num: '04', title: 'Patient Population', kicker: 'Section 2',
       desc: 'Accrual potential against the fixed comparator arm.',
       fields: [
         { id: 'newDx', type: 'text', label: 'Estimated number of new patients diagnosed with this tumor type per year at this site' },
@@ -429,7 +429,7 @@
       ]
     },
     {
-      id: 'sec05', num: '05', title: 'Facilities & Equipment', kicker: 'Section 3 · 05 / 12',
+      id: 'sec05', num: '05', title: 'Facilities & Equipment', kicker: 'Section 3',
       desc: 'Physical infrastructure to support trial conduct.',
       fields: [
         { id: 'q_consent', type: 'yesno', label: 'Does the site have adequate private space for informed consent discussions?' },
@@ -448,7 +448,7 @@
       ]
     },
     {
-      id: 'sec06', num: '06', title: 'Pharmacy & IP', kicker: 'Section 4 · 06 / 12',
+      id: 'sec06', num: '06', title: 'Pharmacy & IP', kicker: 'Section 4',
       desc: 'Investigational product handling and hazardous-drug safety.',
       fields: [
         { id: 'q_hazPharmacy', type: 'yesno', label: 'Does the site have a licensed oncology/research pharmacy with hazardous-drug (cytotoxic) handling certification?' },
@@ -462,7 +462,7 @@
       ]
     },
     {
-      id: 'sec07', num: '07', title: 'Lab, Pathology & Biomarkers', kicker: 'Section 5 · 07 / 12',
+      id: 'sec07', num: '07', title: 'Lab, Pathology & Biomarkers', kicker: 'Section 5',
       desc: 'Testing, tissue access, and specimen logistics.',
       fields: [
         { id: 'localLab', type: 'text', label: 'Local laboratory name and CLIA / accreditation number (or equivalent)' },
@@ -481,7 +481,7 @@
       ]
     },
     {
-      id: 'sec08', num: '08', title: 'Safety & Toxicity', kicker: 'Section 5A · 08 / 12',
+      id: 'sec08', num: '08', title: 'Safety & Toxicity', kicker: 'Section 5A',
       desc: 'Adverse event management and response assessment.',
       fields: [
         { id: 'q_ctcae', type: 'yesno', label: 'Is staff trained in CTCAE grading and management of study-drug-related toxicities (e.g., irAEs, infusion reactions)?' },
@@ -494,7 +494,7 @@
       ]
     },
     {
-      id: 'sec09', num: '09', title: 'Regulatory & Experience', kicker: 'Section 6 · 09 / 12',
+      id: 'sec09', num: '09', title: 'Regulatory & Experience', kicker: 'Section 6',
       desc: 'Ethics oversight and prior trial track record.',
       fields: [
         { id: 'irb', type: 'text', label: 'IRB / Independent Ethics Committee (IEC) of record' },
@@ -507,7 +507,7 @@
       ]
     },
     {
-      id: 'sec10', num: '10', title: 'Data Management & Technology', kicker: 'Section 7 · 10 / 12',
+      id: 'sec10', num: '10', title: 'Data Management & Technology', kicker: 'Section 7',
       desc: 'EDC, ePRO, and technical readiness.',
       fields: [
         { id: 'q_edc', type: 'yesno', label: 'Does the site have prior experience with electronic data capture (EDC) systems?' },
@@ -518,27 +518,27 @@
       ]
     },
     {
-      id: 'sec11', num: '11', title: 'Budget, Contracts & Timelines', kicker: 'Section 8 · 11 / 12',
+      id: 'sec11', num: '11', title: 'Budget, Contracts & Timelines', kicker: 'Section 8',
       desc: 'Administrative readiness and start-up pace.',
       fields: [
         { id: 'contractOwner', type: 'text', label: 'Institution / department responsible for contract and budget negotiation' },
         { id: 'contractTAT', type: 'text', label: 'Typical timeline for contract execution once terms are agreed' },
-        { id: 'indirectCost', type: 'text', label: 'Does the site require a separate institutional overhead / indirect cost rate?' },
+        { id: 'overhead', type: 'text', label: 'Does the site require a separate institutional overhead / indirect cost rate?' },
         { id: 'startupTimeline', type: 'text', label: 'Anticipated start-up timeline (contract execution to first patient enrolled)' },
         { id: 'q_timelines', type: 'yesno', label: "Is the site able to meet the sponsor's proposed study timelines?" },
-        { id: 'q_conflict', type: 'yesno', label: 'Are there any anticipated conflicts of interest requiring disclosure?' },
+        { id: 'q_coi', type: 'yesno', label: 'Are there any anticipated conflicts of interest requiring disclosure?' },
         { id: 'additionalComments', type: 'textarea', label: 'Additional comments' }
       ]
     },
     {
-      id: 'sec12', num: '12', title: 'Site Declaration', kicker: 'Section 9 · 12 / 12',
+      id: 'sec12', num: '12', title: 'Site Declaration', kicker: 'Section 9',
       desc: 'Sign-off and sponsor / CRO review outcome.',
       fields: [
         { id: 'declPI', type: 'text', label: 'Principal Investigator name' },
         { id: 'declSignature', type: 'text', label: 'Signature', hint: 'type name to represent signature in this draft; obtain a wet or e-signature on the final copy' },
         { id: 'declDate', type: 'text', label: 'Date' },
         { type: 'divider', label: 'For sponsor / CRO use only' },
-        { id: 'sponsorOutcome', type: 'select', label: 'Feasibility outcome', options: ['Approved', 'Approved with conditions', 'Not approved'] },
+        { id: 'outcome', type: 'select', label: 'Feasibility outcome', options: ['Approved', 'Approved with conditions', 'Not approved'] },
         { id: 'reviewedBy', type: 'text', label: 'Reviewed by' },
         { id: 'reviewDate', type: 'text', label: 'Date' }
       ]
@@ -548,7 +548,7 @@
   const questApp = {
     activeSection: 0,
     answers: {},
-    storageKey: 'clinovo-sfq-answers-v2',
+    storageKey: 'onc-phase3-sfq:answers-v1',
 
     renderAll() {
       this.loadAnswers();
@@ -561,13 +561,24 @@
       try {
         const saved = localStorage.getItem(this.storageKey);
         if (saved) this.answers = JSON.parse(saved);
-      } catch (e) {}
+        this.setStatus('Draft loaded');
+      } catch (e) {
+        this.setStatus('Starting a new draft');
+      }
     },
 
     saveAnswers() {
       try {
         localStorage.setItem(this.storageKey, JSON.stringify(this.answers));
-      } catch (e) {}
+        this.setStatus('All changes saved · ' + new Date().toLocaleTimeString());
+      } catch (e) {
+        this.setStatus('Could not save draft');
+      }
+    },
+
+    setStatus(text) {
+      const el = document.getElementById('statusLine');
+      if (el) el.textContent = text;
     },
 
     isAnswered(field, val) {
@@ -579,8 +590,12 @@
       return false;
     },
 
+    fieldsOf(sec) {
+      return sec.fields.filter(f => f.type !== 'divider');
+    },
+
     sectionProgress(sec) {
-      const fs = sec.fields.filter(f => f.type !== 'divider');
+      const fs = this.fieldsOf(sec);
       if (!fs.length) return { done: 0, total: 0, pct: 0 };
       let done = 0;
       fs.forEach(f => { if (this.isAnswered(f, this.answers[f.id])) done++; });
@@ -589,15 +604,15 @@
 
     overallProgress() {
       let done = 0, total = 0;
-      SECTIONS.forEach(sec => {
-        const p = this.sectionProgress(sec);
+      SECTIONS.forEach(s => {
+        const p = this.sectionProgress(s);
         done += p.done;
         total += p.total;
       });
       return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
     },
 
-    ringSVG(pct, size = 44, stroke = 5, trackColor = '#e2e8f0', fillColor = '#0d9488') {
+    ringSVG(pct, size, stroke, trackColor, fillColor) {
       const r = (size - stroke) / 2;
       const c = 2 * Math.PI * r;
       const offset = c * (1 - pct / 100);
@@ -605,88 +620,103 @@
       return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${trackColor}" stroke-width="${stroke}"/>
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${fillColor}" stroke-width="${stroke}"
           stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"
-          transform="rotate(-90 ${cx} ${cy})" style="transition:stroke-dashoffset .4s ease"/>`;
+          transform="rotate(-90 ${cx} ${cy})" style="transition:stroke-dashoffset .3s ease"/>`;
     },
 
     renderOverall() {
       const p = this.overallProgress();
       const ring = document.getElementById('overallRing');
-      if (ring) ring.innerHTML = this.ringSVG(p.pct, 40, 4, '#e2e8f0', '#0d9488');
+      if (ring) ring.innerHTML = this.ringSVG(p.pct, 46, 5, 'rgba(255,255,255,0.15)', '#37B7B2');
       const pct = document.getElementById('overallPct');
       if (pct) pct.textContent = p.pct + '%';
+      const cnt = document.getElementById('overallCnt');
+      if (cnt) cnt.textContent = p.done + ' / ' + p.total + ' answered';
     },
 
     renderNav() {
-      const nav = document.getElementById('questRoleTabs');
+      const nav = document.getElementById('navlist');
       if (!nav) return;
-      nav.innerHTML = SECTIONS.map((s, i) => {
+      nav.innerHTML = '';
+      SECTIONS.forEach((s, i) => {
         const p = this.sectionProgress(s);
-        const isActive = i === this.activeSection;
-        return `
-          <div class="sfq-role-tab ${isActive ? 'active' : ''}" onclick="questApp.switchSection(${i})">
-            <div class="tab-left-group">
-              <span class="r-num">${s.num}</span>
-              <span class="r-ttl">${s.title}</span>
-            </div>
-            <svg width="18" height="18" viewBox="0 0 18 18">
-              ${this.ringSVG(p.pct, 18, 2.5, '#e2e8f0', p.pct === 100 ? '#0d9488' : '#d97706')}
-            </svg>
-          </div>
+        const li = document.createElement('li');
+        li.className = 'navitem' + (i === this.activeSection ? ' active' : '');
+        li.innerHTML = `
+          <span class="num">${s.num}</span>
+          <span class="ttl">${s.title}</span>
+          <svg class="mini-ring" width="20" height="20" viewBox="0 0 20 20">
+            ${this.ringSVG(p.pct, 20, 3, 'rgba(255,255,255,0.15)', p.pct === 100 ? '#37B7B2' : '#C9A45C')}
+          </svg>
         `;
-      }).join('');
-    },
-
-    switchSection(index) {
-      this.activeSection = index;
-      this.renderNav();
-      this.renderContent();
+        li.addEventListener('click', () => {
+          this.activeSection = i;
+          this.renderAll();
+          window.scrollTo(0, 0);
+          const c = document.getElementById('content');
+          if (c) c.scrollIntoView({ block: 'start' });
+        });
+        nav.appendChild(li);
+      });
     },
 
     renderContent() {
       const s = SECTIONS[this.activeSection];
-      const c = document.getElementById('questContent');
+      const c = document.getElementById('content');
       if (!c) return;
 
       const isFinal = this.activeSection === SECTIONS.length - 1;
 
       c.innerHTML = `
-        <div class="q-card-container">
-          <div class="section-head">
-            <div class="kicker">${s.kicker}</div>
-            <h2>${s.title}</h2>
-            <p>${s.desc}</p>
-          </div>
-          ${s.fields.map(f => this.fieldTemplate(f)).join('')}
-          <div class="quest-foot-nav">
-            <button class="btn btn-secondary btn-sm" onclick="questApp.goPrev()" ${this.activeSection === 0 ? 'disabled' : ''}>&larr; Previous section</button>
-            <button id="btnSubmitFinal" class="btn btn-primary btn-sm ${isFinal ? 'btn-submit-exact' : ''}" onclick="questApp.goNext()">
-              ${isFinal ? 'Submit' : 'Next section &rarr;'}
-            </button>
-          </div>
+        <div class="section-head">
+          <div class="kicker">${s.kicker} · ${s.num} / ${String(SECTIONS.length).padStart(2, '0')}</div>
+          <h2>${s.title}</h2>
+          <p>${s.desc}</p>
+        </div>
+        ${s.fields.map(f => this.fieldTemplate(f)).join('')}
+        <div class="footer-nav">
+          <button class="btn" id="footPrev">&larr; Previous section</button>
+          <button class="btn primary ${isFinal ? 'btn-submit-exact' : ''}" id="footNext">${isFinal ? 'Submit' : 'Next section &rarr;'}</button>
         </div>
       `;
 
       this.bindFieldEvents();
+
+      const prevBtnTop = document.getElementById('prevBtn');
+      if (prevBtnTop) prevBtnTop.disabled = this.activeSection === 0;
+      const nextBtnTop = document.getElementById('nextBtn');
+      if (nextBtnTop) nextBtnTop.textContent = isFinal ? 'Finish ✓' : 'Next →';
+
+      const footPrev = document.getElementById('footPrev');
+      if (footPrev) {
+        footPrev.disabled = this.activeSection === 0;
+        footPrev.addEventListener('click', () => this.goPrev());
+      }
+
+      const footNext = document.getElementById('footNext');
+      if (footNext) {
+        footNext.addEventListener('click', () => this.goNext());
+      }
     },
 
     fieldTemplate(f) {
       const val = this.answers[f.id];
+
       if (f.type === 'divider') {
-        return `<div class="q-divider"><div class="dlabel">${f.label}</div></div>`;
+        return `<div class="divider"><div class="dlabel">${f.label}</div></div>`;
       }
 
       let body = '';
       if (f.type === 'text') {
-        body = `<input type="text" class="q-input-text" data-id="${f.id}" data-kind="text" value="${(val || '').replace(/"/g, '&quot;')}" placeholder="Type response…">`;
+        body = `<input type="text" data-id="${f.id}" data-kind="text" value="${(val || '').replace(/"/g, '&quot;')}" placeholder="Type response…">`;
       } else if (f.type === 'textarea') {
-        body = `<textarea class="q-textarea" data-id="${f.id}" data-kind="text" placeholder="Type response…">${val || ''}</textarea>`;
+        body = `<textarea data-id="${f.id}" data-kind="text" placeholder="Type response…">${val || ''}</textarea>`;
       } else if (f.type === 'yesno') {
         const v = (val && val.v) || '';
         const com = (val && val.c) || '';
         body = `
           <div class="yn-row">
-            <button type="button" class="yn-btn yes ${v === 'yes' ? 'on' : ''}" onclick="questApp.setYesNo('${f.id}', 'yes')">Yes</button>
-            <button type="button" class="yn-btn no ${v === 'no' ? 'on' : ''}" onclick="questApp.setYesNo('${f.id}', 'no')">No</button>
+            <button type="button" class="yn-btn yes ${v === 'yes' ? 'on' : ''}" data-id="${f.id}" data-set="yes">Yes</button>
+            <button type="button" class="yn-btn no ${v === 'no' ? 'on' : ''}" data-id="${f.id}" data-set="no">No</button>
             <div class="yn-comment">
               <input type="text" data-id="${f.id}" data-kind="comment" value="${com.replace(/"/g, '&quot;')}" placeholder="Comment (optional)">
             </div>
@@ -695,16 +725,16 @@
       } else if (f.type === 'multiselect') {
         const arr = Array.isArray(val) ? val : [];
         body = `<div class="pill-group">` + f.options.map(opt => `
-          <button type="button" class="pill-item ${arr.includes(opt) ? 'on' : ''}" onclick="questApp.toggleMulti('${f.id}', '${opt}')">${opt}</button>
+          <button type="button" class="pill ${arr.includes(opt) ? 'on' : ''}" data-id="${f.id}" data-kind="multiselect" data-opt="${opt}">${opt}</button>
         `).join('') + `</div>`;
       } else if (f.type === 'select') {
         body = `<div class="pill-group">` + f.options.map(opt => `
-          <button type="button" class="pill-item ${val === opt ? 'on' : ''}" onclick="questApp.setSelect('${f.id}', '${opt}')">${opt}</button>
+          <button type="button" class="pill ${val === opt ? 'on' : ''}" data-id="${f.id}" data-kind="select" data-opt="${opt}">${opt}</button>
         `).join('') + `</div>`;
       }
 
       return `
-        <div class="q-field">
+        <div class="field">
           <div class="flabel">${f.label}</div>
           ${f.hint ? `<div class="fhint">${f.hint}</div>` : ''}
           <div class="fbody">${body}</div>
@@ -721,6 +751,18 @@
           this.renderNav();
         });
       });
+      document.querySelectorAll('.yn-btn').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = el.dataset.id, setVal = el.dataset.set;
+          const cur = this.answers[id] || { v: '', c: '' };
+          cur.v = (cur.v === setVal) ? '' : setVal;
+          this.answers[id] = cur;
+          this.saveAnswers();
+          this.renderContent();
+          this.renderOverall();
+          this.renderNav();
+        });
+      });
       document.querySelectorAll('[data-kind="comment"]').forEach(el => {
         el.addEventListener('input', () => {
           const id = el.dataset.id;
@@ -730,102 +772,98 @@
           this.saveAnswers();
         });
       });
-    },
-
-    setYesNo(id, val) {
-      const cur = this.answers[id] || { v: '', c: '' };
-      cur.v = cur.v === val ? '' : val;
-      this.answers[id] = cur;
-      this.saveAnswers();
-      this.renderContent();
-      this.renderOverall();
-      this.renderNav();
-    },
-
-    toggleMulti(id, opt) {
-      const arr = Array.isArray(this.answers[id]) ? this.answers[id].slice() : [];
-      const idx = arr.indexOf(opt);
-      if (idx >= 0) arr.splice(idx, 1);
-      else arr.push(opt);
-      this.answers[id] = arr;
-      this.saveAnswers();
-      this.renderContent();
-      this.renderOverall();
-      this.renderNav();
-    },
-
-    setSelect(id, opt) {
-      this.answers[id] = this.answers[id] === opt ? '' : opt;
-      this.saveAnswers();
-      this.renderContent();
-      this.renderOverall();
-      this.renderNav();
+      document.querySelectorAll('[data-kind="multiselect"]').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = el.dataset.id, opt = el.dataset.opt;
+          const arr = Array.isArray(this.answers[id]) ? this.answers[id].slice() : [];
+          const idx = arr.indexOf(opt);
+          if (idx >= 0) arr.splice(idx, 1); else arr.push(opt);
+          this.answers[id] = arr;
+          this.saveAnswers();
+          this.renderContent();
+          this.renderOverall();
+          this.renderNav();
+        });
+      });
+      document.querySelectorAll('[data-kind="select"]').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = el.dataset.id, opt = el.dataset.opt;
+          this.answers[id] = (this.answers[id] === opt) ? '' : opt;
+          this.saveAnswers();
+          this.renderContent();
+          this.renderOverall();
+          this.renderNav();
+        });
+      });
     },
 
     goPrev() {
       if (this.activeSection > 0) {
         this.activeSection--;
-        this.renderNav();
-        this.renderContent();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        this.renderAll();
+        window.scrollTo(0, 0);
       }
     },
 
     goNext() {
       if (this.activeSection < SECTIONS.length - 1) {
         this.activeSection++;
-        this.renderNav();
-        this.renderContent();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        this.renderAll();
+        window.scrollTo(0, 0);
       } else {
         this.submitToAdmin();
       }
     },
 
     resetAnswers() {
-      if (!confirm('Clear all answers in this questionnaire draft?')) return;
+      if (!confirm('Clear all answers in this draft? This cannot be undone.')) return;
       this.answers = {};
       localStorage.removeItem(this.storageKey);
       this.renderAll();
-      showToast('All answers reset');
+      showToast('All answers cleared');
     },
 
     exportSummary() {
-      let txt = 'CLINOVO SITE FEASIBILITY QUESTIONNAIRE SUMMARY\n';
-      txt += 'Generated: ' + new Date().toLocaleString() + '\n';
-      txt += '==================================================\n\n';
-
+      const lines = [];
+      lines.push('ONCOLOGY PHASE III — SITE FEASIBILITY QUESTIONNAIRE');
+      lines.push('Generated ' + new Date().toLocaleString());
+      lines.push('='.repeat(60));
       SECTIONS.forEach(s => {
-        txt += `${s.num}. ${s.title.toUpperCase()}\n`;
-        txt += '--------------------------------------------------\n';
-        s.fields.filter(f => f.type !== 'divider').forEach(f => {
+        lines.push('');
+        lines.push(s.num + '. ' + s.title.toUpperCase());
+        lines.push('-'.repeat(40));
+        this.fieldsOf(s).forEach(f => {
           const val = this.answers[f.id];
-          let ans = '(Not Answered)';
-          if (f.type === 'text' || f.type === 'textarea') {
-            if (val && String(val).trim()) ans = String(val);
-          } else if (f.type === 'yesno') {
-            if (val && val.v) ans = val.v.toUpperCase() + (val.c ? ` (${val.c})` : '');
-          } else if (f.type === 'multiselect') {
-            if (val && val.length) ans = val.join(', ');
-          } else if (f.type === 'select') {
-            if (val) ans = val;
-          }
-          txt += `Q: ${f.label}\nA: ${ans}\n\n`;
+          let out = '(not answered)';
+          if (f.type === 'text' || f.type === 'textarea') { if (val && String(val).trim()) out = String(val); }
+          else if (f.type === 'yesno') { if (val && val.v) { out = val.v.toUpperCase() + (val.c ? ' — ' + val.c : ''); } }
+          else if (f.type === 'multiselect') { if (val && val.length) out = val.join(', '); }
+          else if (f.type === 'select') { if (val) out = val; }
+          lines.push('Q: ' + f.label);
+          lines.push('A: ' + out);
+          lines.push('');
         });
       });
 
-      const blob = new Blob([txt], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'clinovo-site-feasibility-summary.txt';
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('Summary exported to .txt file');
+      const text = lines.join('\n');
+      try {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'oncology-phase3-site-feasibility-summary.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Summary exported');
+      } catch (e) {
+        showToast('Could not export — try Print instead');
+      }
     },
 
     async submitToAdmin() {
-      const btn = document.getElementById('btnSubmitFinal');
+      const btn = document.getElementById('footNext');
       if (btn) {
         btn.disabled = true;
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
@@ -852,7 +890,7 @@
     },
 
     handleSubmissionSuccess(overallScore, returnedSites) {
-      const btn = document.getElementById('btnSubmitFinal');
+      const btn = document.getElementById('footNext');
       if (btn) {
         btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Submitted ✓`;
         btn.classList.remove('submitting');
@@ -1007,8 +1045,8 @@
       if (!state.sites.length) {
         el.innerHTML = `
           <div class="kpi-card" style="grid-column: 1 / -1; text-align: center; padding: 32px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 16px;">
-            <div style="font-size: 16px; color: #0f172a; font-weight: 700; margin-bottom: 6px;">No Questionnaire Data Submitted Yet</div>
-            <div style="font-size: 13px; color: #64748b;">Log in as a <strong>Client</strong> and fill out the Site Feasibility Questionnaire to submit your real clinical site data. Once submitted, your record will reflect here live.</div>
+            <div style="font-size: 16px; color: #16233D; font-weight: 700; margin-bottom: 6px;">No Questionnaire Data Submitted Yet</div>
+            <div style="font-size: 13px; color: #4C5A73;">Log in as a <strong>Client</strong> and fill out the Site Feasibility Questionnaire to submit your real clinical site data. Once submitted, your record will reflect here live.</div>
           </div>
         `;
         return;
@@ -1070,7 +1108,7 @@
       const el = document.getElementById('radarChips');
       if (!el) return;
       if (!state.sites.length) {
-        el.innerHTML = `<span style="font-size:12px; color:#64748b;">No client submitted sites to display in radar overlay</span>`;
+        el.innerHTML = `<span style="font-size:12px; color:#4C5A73;">No client submitted sites to display in radar overlay</span>`;
         return;
       }
       el.innerHTML = state.sites.map((s, i) => {
@@ -1125,7 +1163,7 @@
         let anchor = 'middle';
         if (Math.cos(a) > 0.3) anchor = 'start';
         else if (Math.cos(a) < -0.3) anchor = 'end';
-        s += `<text x="${lx}" y="${ly}" font-size="11" fill="#475569" text-anchor="${anchor}" dominant-baseline="middle">${CATEGORIES[i].short}</text>`;
+        s += `<text x="${lx}" y="${ly}" font-size="11" fill="#4C5A73" text-anchor="${anchor}" dominant-baseline="middle">${CATEGORIES[i].short}</text>`;
       }
 
       const selected = state.sites.filter(st => this.radarSelected.has(st.id));
@@ -1152,7 +1190,7 @@
 
       if (!state.sites.length) {
         svg.setAttribute('viewBox', '0 0 320 100');
-        svg.innerHTML = `<text x="160" y="50" font-size="12" fill="#64748b" text-anchor="middle">No client submitted sites to rank</text>`;
+        svg.innerHTML = `<text x="160" y="50" font-size="12" fill="#4C5A73" text-anchor="middle">No client submitted sites to rank</text>`;
         return;
       }
 
@@ -1164,12 +1202,12 @@
       ranked.forEach((r, i) => {
         const y = top + i * rowH;
         const w = (r.o / 100) * chartW;
-        const color = STATUS_COLOR[r.s.status] || '#94a3b8';
+        const color = STATUS_COLOR[r.s.status] || '#8FA6B8';
 
-        s += `<text x="${left}" y="${y + 14}" font-size="12" font-weight="600" fill="#0f172a">${r.s.name.length > 24 ? r.s.name.slice(0, 22) + '…' : r.s.name}</text>`;
+        s += `<text x="${left}" y="${y + 14}" font-size="12" font-weight="600" fill="#16233D">${r.s.name.length > 24 ? r.s.name.slice(0, 22) + '…' : r.s.name}</text>`;
         s += `<rect x="${left}" y="${y + 20}" width="${chartW}" height="10" rx="5" fill="#e2e8f0"/>`;
         s += `<rect x="${left}" y="${y + 20}" width="${Math.max(6, w)}" height="10" rx="5" fill="${color}"/>`;
-        s += `<text x="${left + chartW + 12}" y="${y + 29}" font-size="12" font-family="JetBrains Mono, monospace" font-weight="700" fill="#0d9488">${r.o}</text>`;
+        s += `<text x="${left + chartW + 12}" y="${y + 29}" font-size="12" font-family="ui-monospace, monospace" font-weight="700" fill="#0B6E6E">${r.o}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 320 ${H}`);
@@ -1185,7 +1223,7 @@
 
       if (!state.sites.length) {
         svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-        svg.innerHTML = `<text x="${W/2}" y="${H/2}" font-size="13" fill="#64748b" text-anchor="middle">No client site data submitted yet</text>`;
+        svg.innerHTML = `<text x="${W/2}" y="${H/2}" font-size="13" fill="#4C5A73" text-anchor="middle">No client site data submitted yet</text>`;
         return;
       }
 
@@ -1201,7 +1239,7 @@
       [0, 25, 50, 75, 100].forEach(v => {
         const y = Y(v);
         s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>`;
-        s += `<text x="${padL - 10}" y="${y + 4}" font-size="10.5" text-anchor="end" fill="#64748b">${v}</text>`;
+        s += `<text x="${padL - 10}" y="${y + 4}" font-size="10.5" text-anchor="end" fill="#4C5A73">${v}</text>`;
       });
 
       const rateTicks = 5;
@@ -1209,22 +1247,22 @@
         const v = (maxRate / rateTicks) * i;
         const x = X(v);
         s += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#f1f5f9" stroke-width="1"/>`;
-        s += `<text x="${x}" y="${H - padB + 18}" font-size="10.5" text-anchor="middle" fill="#64748b">${v.toFixed(1)}</text>`;
+        s += `<text x="${x}" y="${H - padB + 18}" font-size="10.5" text-anchor="middle" fill="#4C5A73">${v.toFixed(1)}</text>`;
       }
 
-      s += `<text x="${padL + plotW / 2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#475569">Projected Monthly Accrual (patients / month)</text>`;
-      s += `<text x="16" y="${padT + plotH / 2}" font-size="11" fill="#475569" transform="rotate(-90 16 ${padT + plotH / 2})" text-anchor="middle">Feasibility Score</text>`;
+      s += `<text x="${padL + plotW / 2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected Monthly Accrual (patients / month)</text>`;
+      s += `<text x="16" y="${padT + plotH / 2}" font-size="11" fill="#4C5A73" transform="rotate(-90 16 ${padT + plotH / 2})" text-anchor="middle">Feasibility Score</text>`;
 
       state.sites.forEach(site => {
         const o = this.overallScore(site);
         const cx = X(+site.rate || 0), cy = Y(o), r = Rr(+site.total || 0);
-        const color = STATUS_COLOR[site.status] || '#94a3b8';
+        const color = STATUS_COLOR[site.status] || '#8FA6B8';
 
         s += `
           <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.35" stroke="${color}" stroke-width="2.5" style="cursor:pointer;">
             <title>${site.name} — Overall Score: ${o}, ${site.rate} pts/mo, ${site.total} total</title>
           </circle>
-          <text x="${cx}" y="${cy + 3}" font-size="9.5" text-anchor="middle" fill="#0f172a" font-weight="600" pointer-events="none">${site.name.split(' ')[0]}</text>
+          <text x="${cx}" y="${cy + 3}" font-size="9.5" text-anchor="middle" fill="#16233D" font-weight="600" pointer-events="none">${site.name.split(' ')[0]}</text>
         `;
       });
 
@@ -1234,7 +1272,7 @@
       const legend = document.getElementById('bubbleLegend');
       if (legend) {
         legend.innerHTML = STATUSES.map(st => `
-          <span style="display:flex; align-items:center; gap:6px; color:#475569; font-size:12px;">
+          <span style="display:flex; align-items:center; gap:6px; color:#4C5A73; font-size:12px;">
             <span style="width:10px; height:10px; border-radius:50%; background:${STATUS_COLOR[st.key]}"></span>
             ${st.label}
           </span>
@@ -1243,15 +1281,15 @@
     },
 
     scoreColor(v) {
-      if (v >= 80) return 'rgba(13, 148, 136, 0.15)';
-      if (v >= 65) return 'rgba(217, 119, 6, 0.15)';
-      return 'rgba(225, 29, 72, 0.15)';
+      if (v >= 80) return 'rgba(11, 110, 110, 0.15)';
+      if (v >= 65) return 'rgba(184, 132, 46, 0.15)';
+      return 'rgba(178, 58, 58, 0.15)';
     },
 
     scoreTextColor(v) {
-      if (v >= 80) return '#0d9488';
-      if (v >= 65) return '#d97706';
-      return '#e11d48';
+      if (v >= 80) return '#0B6E6E';
+      if (v >= 65) return '#B8842E';
+      return '#B23A3A';
     },
 
     renderTable() {
@@ -1262,10 +1300,10 @@
         table.innerHTML = `
           <tbody>
             <tr>
-              <td colspan="12" style="padding: 36px; text-align: center; color: #64748b;">
-                <i class="fa-solid fa-folder-open" style="font-size: 24px; color: #94a3b8; margin-bottom: 8px; display: block;"></i>
+              <td colspan="12" style="padding: 36px; text-align: center; color: #4C5A73;">
+                <i class="fa-solid fa-folder-open" style="font-size: 24px; color: #8FA6B8; margin-bottom: 8px; display: block;"></i>
                 No candidate sites submitted by clients yet.<br>
-                <span style="font-size: 12px; color: #94a3b8;">Client filled questionnaires will automatically populate this dashboard table when submitted.</span>
+                <span style="font-size: 12px; color: #8FA6B8;">Client filled questionnaires will automatically populate this dashboard table when submitted.</span>
               </td>
             </tr>
           </tbody>

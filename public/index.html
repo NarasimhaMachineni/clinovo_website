@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clinovo Site Feasibility Portal & Dashboard</title>
+  <title>Oncology Phase III · Site Feasibility Questionnaire</title>
   
   <!-- Modern Google Fonts: Bookman Old Style Fallback / JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -162,55 +162,46 @@
   </section>
 
   <!-- ========================================================================== -->
-  <!-- VIEW 2: CLIENT SITE FEASIBILITY QUESTIONNAIRE (SIDE PANEL LAYOUT)           -->
+  <!-- VIEW 2: CLIENT SITE FEASIBILITY QUESTIONNAIRE (EXACT SPEC MATCH)            -->
   <!-- ========================================================================== -->
   <section id="view-questionnaire" class="view-section">
-    
-    <!-- Top Action Bar -->
-    <div class="sfq-topbar">
-      <div class="sfq-brand">
-        <span class="sfq-chip">SITE FEASIBILITY QUESTIONNAIRE</span>
-        <span class="sfq-title">Oncology — Phase III Registration Trial</span>
-      </div>
-      <div class="sfq-actions-right">
-        <button class="btn btn-secondary btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / PDF</button>
-        <button class="btn btn-secondary btn-sm" onclick="questApp.exportSummary()"><i class="fa-solid fa-file-export"></i> Export .txt</button>
-        <button class="btn btn-secondary btn-sm danger" onclick="questApp.resetAnswers()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-      </div>
-    </div>
+    <div class="app">
+      <nav class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="eyebrow">Site Feasibility · Interactive</div>
+          <h1>Oncology<br>Phase III</h1>
+          <div class="sub">Randomized, controlled, multi-arm registration-directed trials</div>
+        </div>
 
-    <!-- Side Panel + Main Workspace Layout Container -->
-    <div class="sfq-sidepanel-layout">
-      
-      <!-- LEFT SIDE PANEL FOR ROLES / SECTIONS -->
-      <aside class="sfq-sidepanel">
-        
-        <!-- Overall Progress Ring Card at Top of Side Panel -->
-        <div class="sfq-sidepanel-progress">
-          <div class="ring-wrap" id="overallRing"></div>
-          <div class="overall-info">
-            <div class="lbl">OVERALL COMPLETION</div>
+        <div class="overall">
+          <svg class="ring" id="overallRing" width="46" height="46" viewBox="0 0 46 46"></svg>
+          <div>
+            <div class="label">Overall</div>
             <div class="pct" id="overallPct">0%</div>
+            <div class="cnt" id="overallCnt">0 / 0 answered</div>
           </div>
         </div>
 
-        <div class="sfq-sidepanel-header">
-          <span class="lbl">QUESTIONNAIRE ROLES / SECTIONS</span>
+        <ul class="navlist" id="navlist"></ul>
+
+        <div class="sidebar-foot">
+          <button class="foot-btn" id="printBtn" onclick="window.print()">Print / Save as PDF</button>
+          <button class="foot-btn" id="exportBtn" onclick="questApp.exportSummary()">Export summary (.txt)</button>
+          <button class="foot-btn danger" id="resetBtn" onclick="questApp.resetAnswers()">Reset all answers</button>
         </div>
+      </nav>
 
-        <!-- 12 Role Tabs List -->
-        <nav class="sfq-sidepanel-nav" id="questRoleTabs">
-          <!-- Populated dynamically by JS -->
-        </nav>
-      </aside>
-
-      <!-- RIGHT MAIN WORKSPACE CONTENT AREA -->
-      <main class="sfq-main-workspace" id="questContent">
-        <!-- Rendered dynamically by JS -->
+      <main class="main">
+        <div class="topbar">
+          <div class="status" id="statusLine">Draft not yet saved</div>
+          <div class="actions">
+            <button class="btn" id="prevBtn" onclick="questApp.goPrev()">&larr; Previous</button>
+            <button class="btn primary" id="nextBtn" onclick="questApp.goNext()">Next &rarr;</button>
+          </div>
+        </div>
+        <div class="content" id="content"></div>
       </main>
-
     </div>
-
   </section>
 
   <!-- ========================================================================== -->
