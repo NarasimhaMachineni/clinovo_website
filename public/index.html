@@ -3,38 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clinovo · Site Feasibility Portal & Analytics Dashboard</title>
-  
-  <!-- Modern Google Fonts & Serifs for Bookman Old Style Fallbacks -->
+  <meta name="description" content="Clinovo Site Feasibility Portal & Comparative Analytics Dashboard - Multi-Arm Phase III Registration Trials">
+  <title>Clinovo · Site Feasibility Portal & Dashboard</title>
+
+  <!-- Google Fonts for Modern Typography & FontAwesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome Icons for High-End Medical & Dashboard UI Elements -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Core Design System & Stylesheet -->
+
+  <!-- Master Ultra-Premium Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="landing-active">
 
   <!-- ========================================================================== -->
-  <!-- HIGH REFRESH RATE CANVAS BACKGROUND (Interactive Mouse Waves & Particles)    -->
+  <!-- PHARMA DOMAIN PURE ANIMATION LOADING OVERLAY (NO MOCK TEXT)                -->
   <!-- ========================================================================== -->
-  <canvas id="smokeCanvas"></canvas>
-
-  <!-- High-Quality Cinematic Background Video Container -->
-  <div class="bg-video-container">
-    <video autoplay loop muted playsinline class="bg-video-element">
-      <source src="https://assets.mixkit.co/videos/preview/mixkit-working-in-a-science-laboratory-42721-large.mp4" type="video/mp4">
-    </video>
-    <div class="video-dark-overlay"></div>
-  </div>
-
-  <!-- ========================================================================== -->
-  <!-- PHARMA DOMAIN PURE ANIMATION LOADING OVERLAY (NO TEXT)                       -->
-  <!-- ========================================================================== -->
-  <div id="pharmaLoaderOverlay" class="pharma-loader-overlay">
+  <div class="pharma-loader-overlay" id="pharmaLoaderOverlay">
     <div class="pharma-loader-card">
       <div class="dna-spinner">
         <div class="dna-node node-1"></div>
@@ -49,13 +35,20 @@
     </div>
   </div>
 
-  <!-- Toast Notification Popup -->
-  <div id="toast" class="toast"></div>
+  <!-- 240HZ HIGH REFRESH RATE CANVAS & BACKGROUND VIDEO (LANDING VIEW ONLY) -->
+  <canvas id="smokeCanvas"></canvas>
+
+  <div class="bg-video-container">
+    <video autoplay loop muted playsinline class="bg-video-element">
+      <source src="https://assets.mixkit.co/videos/preview/mixkit-working-in-a-science-laboratory-42721-large.mp4" type="video/mp4">
+    </video>
+    <div class="video-dark-overlay"></div>
+  </div>
 
   <!-- ========================================================================== -->
   <!-- HEADER NAVIGATION BAR                                                      -->
   <!-- ========================================================================== -->
-  <header class="header-nav">
+  <header class="header-nav" id="headerNav">
     <div class="brand-logo" onclick="app.navigateTo('landing')">
       <div class="brand-icon-square">C</div>
       <span class="brand-name">Clinovo</span>
@@ -171,10 +164,12 @@
   </section>
 
   <!-- ========================================================================== -->
-  <!-- VIEW 2: CLIENT SITE FEASIBILITY QUESTIONNAIRE (EXACT SPEC MATCH)            -->
+  <!-- VIEW 2: CLIENT SITE FEASIBILITY QUESTIONNAIRE (EXACT MEDIA MATTER MATCH)   -->
   <!-- ========================================================================== -->
   <section id="view-questionnaire" class="view-section">
     <div class="app">
+      
+      <!-- DARK BLUE SIDEBAR WITH EXACT MATTER FROM MEDIA -->
       <nav class="sidebar" id="sidebar">
         <div class="brand">
           <div class="eyebrow">Site Feasibility · Interactive</div>
@@ -219,55 +214,80 @@
   <section id="view-dashboard" class="view-section">
     <div class="wrap">
 
+      <!-- DASHBOARD HEADER -->
       <div class="hdr">
         <div>
-          <div class="eyebrow">Feasibility Analytics</div>
-          <h1>Site Comparison Dashboard</h1>
-          <div class="sub">Oncology · Phase III — compare candidate sites side by side</div>
+          <div class="eyebrow">Feasibility & Site Selection · Phase III Registration</div>
+          <h1>Oncology Site Comparison Dashboard</h1>
+          <div class="sub">Multi-criteria decision support model comparing candidate clinical research sites</div>
         </div>
         <div class="hdr-actions">
-          <button class="btn" id="weightsToggle" onclick="dashApp.toggleWeights()">Adjust weights</button>
-          <button class="btn" id="csvBtn" onclick="dashApp.exportCSV()">Export CSV</button>
-          <button class="btn" id="printBtn" onclick="window.print()">Print</button>
-          <button class="btn primary" id="addBtn" onclick="dashApp.openModal()">+ Add site</button>
+          <button class="btn" onclick="dashApp.toggleWeights()">
+            <i class="fa-solid fa-sliders"></i> Weightings
+          </button>
+          <button class="btn" onclick="dashApp.exportCSV()">
+            <i class="fa-solid fa-download"></i> Export CSV
+          </button>
+          <button class="btn primary" onclick="dashApp.openModal(null)">
+            <i class="fa-solid fa-plus"></i> Add site
+          </button>
         </div>
       </div>
 
-      <div class="weights-panel" id="weightsPanel">
-        <h3 style="margin:0;font-family:var(--font-display);font-size:16px;">Category weighting</h3>
-        <div class="card-sub">Overall scores below are a weighted average. Raise a category's weight to prioritize it in the ranking.</div>
-        <div class="weights-grid" id="weightsGrid"></div>
-        <button class="btn small" id="weightsReset" style="margin-top:12px;" onclick="dashApp.resetWeights()">Reset to equal weights</button>
+      <!-- KPI METRICS ROW -->
+      <div class="kpis" id="kpiRow">
+        <!-- Rendered dynamically by JS -->
       </div>
 
-      <div class="kpis" id="kpiRow"></div>
+      <!-- WEIGHTING ADJUSTMENT SLIDERS PANEL -->
+      <div class="weights-panel" id="weightsPanel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h4 style="margin:0; font-family:var(--font-display); font-size:16px;">Category Weightings</h4>
+          <button class="btn small" onclick="dashApp.resetWeights()">Reset to equal weights (1.0×)</button>
+        </div>
+        <div class="weights-grid" id="weightsGrid">
+          <!-- Rendered dynamically by JS -->
+        </div>
+      </div>
 
+      <!-- GRID 1: RADAR OVERLAY & OVERALL RANKING -->
       <div class="grid2">
         <div class="card">
-          <h3>Category comparison</h3>
-          <div class="card-sub">Toggle sites to overlay their feasibility profile across all nine domains.</div>
-          <div class="chips" id="radarChips"></div>
-          <svg id="radarSvg" viewBox="0 0 460 420" width="100%" style="max-height:420px;"></svg>
+          <h3>Domain Balance — Multi-Site Overlay</h3>
+          <div class="card-sub">Select candidate sites below to compare capability profiles across 9 feasibility domains.</div>
+          <div class="chips" id="radarChips">
+            <!-- Chips rendered dynamically -->
+          </div>
+          <svg id="radarSvg" width="100%" height="320" viewBox="0 0 400 400"></svg>
         </div>
+
         <div class="card">
-          <h3>Overall ranking</h3>
-          <div class="card-sub">Weighted feasibility score, highest first.</div>
-          <svg id="rankSvg" viewBox="0 0 380 420" width="100%" style="max-height:420px;"></svg>
+          <h3>Overall Composite Ranking</h3>
+          <div class="card-sub">Sites ordered by weighted feasibility score across all weighted criteria.</div>
+          <svg id="rankSvg" width="100%" height="320" viewBox="0 0 320 320"></svg>
         </div>
       </div>
 
-      <div class="card" style="margin-bottom:16px;">
-        <h3>Accrual potential vs. feasibility</h3>
-        <div class="card-sub">Bubble size = total projected enrollment. Hover a bubble for site detail.</div>
-        <svg id="bubbleSvg" viewBox="0 0 900 320" width="100%" style="max-height:320px;"></svg>
-        <div class="legend" id="bubbleLegend"></div>
+      <!-- BUBBLE PLOT CHART -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3>Accrual Rate vs Overall Feasibility vs Total Target</h3>
+            <div class="card-sub" style="margin-bottom:0;">Bubble size represents total projected enrollment capacity over recruitment period.</div>
+          </div>
+          <div class="legend" id="bubbleLegend"></div>
+        </div>
+        <svg id="bubbleSvg" width="100%" height="320" viewBox="0 0 900 320" style="margin-top:14px;"></svg>
       </div>
 
+      <!-- FULL COMPARISON HEATMAP MATRIX TABLE -->
       <div class="card">
-        <h3>Full comparison matrix</h3>
-        <div class="card-sub">Click a site name to edit. Click a column header to sort.</div>
+        <h3>Full Site Comparison Matrix</h3>
+        <div class="card-sub">Click column headers to sort by domain score. Click site name to view/edit full profile.</div>
         <div class="table-wrap">
-          <table class="heat" id="heatTable"></table>
+          <table class="heat" id="heatTable">
+            <!-- Rendered dynamically by JS -->
+          </table>
         </div>
       </div>
 
@@ -275,43 +295,81 @@
   </section>
 
   <!-- ========================================================================== -->
-  <!-- SITE EDIT / ADD MODAL OVERLAY                                             -->
+  <!-- ADD / EDIT SITE MODAL OVERLAY                                              -->
   <!-- ========================================================================== -->
   <div class="overlay" id="overlay">
     <div class="modal">
       <h3 id="modalTitle">Add site</h3>
+
       <div class="form-grid2">
-        <div class="form-row"><label>Site name</label><input type="text" id="f_name"></div>
-        <div class="form-row"><label>Site number</label><input type="text" id="f_number"></div>
-        <div class="form-row"><label>Country</label><input type="text" id="f_country"></div>
-        <div class="form-row"><label>Principal Investigator</label><input type="text" id="f_pi"></div>
+        <div class="form-row">
+          <label>Site name *</label>
+          <input type="text" id="f_name" placeholder="e.g., Dana-Farber Cancer Institute">
+        </div>
+        <div class="form-row">
+          <label>Site number</label>
+          <input type="text" id="f_number" placeholder="e.g., 101">
+        </div>
       </div>
+
+      <div class="form-grid2">
+        <div class="form-row">
+          <label>Country</label>
+          <input type="text" id="f_country" placeholder="e.g., United States">
+        </div>
+        <div class="form-row">
+          <label>Principal Investigator</label>
+          <input type="text" id="f_pi" placeholder="e.g., Dr. Jane Smith">
+        </div>
+      </div>
+
+      <div class="form-grid2">
+        <div class="form-row">
+          <label>Projected monthly rate</label>
+          <input type="number" step="0.1" id="f_rate" placeholder="e.g., 3.5">
+        </div>
+        <div class="form-row">
+          <label>Total projected enrollment</label>
+          <input type="number" id="f_total" placeholder="e.g., 35">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Activation timeline (weeks from SIV to FPI)</label>
+        <input type="number" id="f_weeks" placeholder="e.g., 12">
+      </div>
+
       <div class="form-row">
         <label>Feasibility status</label>
-        <div class="status-pills" id="f_status"></div>
-      </div>
-      <div class="form-grid2">
-        <div class="form-row"><label>Projected enrollment / month</label><input type="number" id="f_rate" min="0" step="0.1"></div>
-        <div class="form-row"><label>Total projected enrollment</label><input type="number" id="f_total" min="0" step="1"></div>
-      </div>
-      <div class="form-row"><label>Estimated activation timeline (weeks, SIV → first patient in)</label><input type="number" id="f_weeks" min="0" step="1"></div>
-
-      <div class="form-row" style="margin-top:6px;">
-        <label style="margin-bottom:10px;">Category scores (0–100)</label>
-        <div id="f_scores"></div>
+        <div class="status-pills" id="f_status" data-value="pending">
+          <!-- Rendered dynamically -->
+        </div>
       </div>
 
-      <div class="form-row"><label>Notes</label><textarea id="f_notes" rows="3"></textarea></div>
+      <div class="form-row">
+        <label style="margin-top:14px;">Domain Feasibility Scores (0–100)</label>
+        <div id="f_scores">
+          <!-- Sliders rendered dynamically -->
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Notes & Assessment Comments</label>
+        <textarea id="f_notes" rows="2" placeholder="Key strengths, risks, or mitigations…"></textarea>
+      </div>
 
       <div class="modal-actions">
-        <button class="btn ghost" id="deleteBtn" style="color:var(--red);" onclick="dashApp.deleteSite()">Delete site</button>
+        <button class="btn danger" id="deleteBtn" style="display:none;" onclick="dashApp.deleteSite()">Delete site</button>
         <div class="right">
-          <button class="btn" id="cancelBtn" onclick="dashApp.closeModal()">Cancel</button>
-          <button class="btn primary" id="saveBtn" onclick="dashApp.saveModal()">Save site</button>
+          <button class="btn" onclick="dashApp.closeModal()">Cancel</button>
+          <button class="btn primary" onclick="dashApp.saveModal()">Save site</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- TOAST NOTIFICATION POPUP -->
+  <div class="toast-popup" id="toastMsg"></div>
 
   <!-- Application Logic JS -->
   <script src="js/app.js"></script>
