@@ -15,6 +15,7 @@
     userEmail: '',
     carouselDot: 0,
     sites: [],
+    bubbleFilter: 'top5',
     weights: {
       invSite: 1,
       patientPop: 1,
@@ -796,20 +797,11 @@
     updateUserNav() {
       const container = document.getElementById('userNavActions');
       if (!container) return;
-      const cv = state.currentView;
-      container.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <button class="nav-access-btn${cv==='questionnaire'?' active':''}" onclick="window.app.quickLogin('client')">
-            <i class="fa-solid fa-clipboard-list"></i> Client Portal
-          </button>
-          <button class="nav-access-btn${cv==='dashboard'?' active':''}" onclick="window.app.quickLogin('admin')">
-            <i class="fa-solid fa-chart-pie"></i> Admin Dashboard
-          </button>
-          ${state.userRole ? `<button class="btn-logout-exact" onclick="window.app.logout()">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-          </button>` : ''}
-        </div>
-      `;
+      container.innerHTML = state.userRole ? `
+        <button class="btn-logout-exact" onclick="window.app.logout()">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      ` : '';
     },
 
     startDotCarousel() {
@@ -1599,7 +1591,7 @@
               </div>
               <!-- Bar Track -->
               <div style="width:100%; height:10px; background:#EEF0F3; border-radius:9999px; overflow:hidden;">
-                <div class="top5-bar-fill" style="height:100%; width:0%; background:${gradient}; border-radius:9999px; transition:width 0.9s cubic-bezier(0.34,1.56,0.64,1);" data-target="${trackPct}"></div>
+                <div style="height:100%; width:${trackPct}%; background:${gradient}; border-radius:9999px;"></div>
               </div>
             </div>
             <!-- Score label small -->
@@ -1609,15 +1601,6 @@
       });
 
       barsContainer.innerHTML = html;
-
-      // Animate bars in after DOM paint
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          barsContainer.querySelectorAll('.top5-bar-fill').forEach(el => {
-            el.style.width = el.dataset.target + '%';
-          });
-        });
-      });
     },
 
     startAutoPoll() {
@@ -1965,6 +1948,15 @@
 
 
 
+    setBubbleFilter(filter) {
+      state.bubbleFilter = filter;
+      // Update pill active state
+      document.querySelectorAll('#bubbleFilterPills .rank-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+      });
+      this.renderBubble();
+    },
+
     renderBubble() {
       const svg = document.getElementById('bubbleSvg');
       if (!svg) return;
@@ -1978,8 +1970,22 @@
         return;
       }
 
-      const maxRate = Math.max(1, ...state.sites.map(s => +s.rate || 0)) * 1.2;
-      const maxTotal = Math.max(1, ...state.sites.map(s => +s.total || 0));
+      // Filter sites based on bubbleFilter
+      const allScored = state.sites
+        .map(s => ({ site: s, score: this.overallScore(s) }))
+        .sort((a, b) => b.score - a.score);
+
+      let displaySites;
+      if (state.bubbleFilter === 'top5') {
+        displaySites = allScored.slice(0, 5).map(x => x.site);
+      } else if (state.bubbleFilter === 'top10') {
+        displaySites = allScored.slice(0, 10).map(x => x.site);
+      } else {
+        displaySites = state.sites;
+      }
+
+      const maxRate = Math.max(1, ...displaySites.map(s => +s.rate || 0)) * 1.2;
+      const maxTotal = Math.max(1, ...displaySites.map(s => +s.total || 0));
 
       const X = (v) => padL + (v / maxRate) * plotW;
       const Y = (v) => padT + plotH - (v / 100) * plotH;
@@ -2004,14 +2010,24 @@
       s += `<text x="${padL + plotW / 2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected enrollment (patients / month)</text>`;
       s += `<text x="14" y="${padT + plotH / 2}" font-size="11" fill="#4C5A73" transform="rotate(-90 14 ${padT + plotH / 2})" text-anchor="middle">Overall score</text>`;
 
-      state.sites.forEach(site => {
+      // Color palette for ranked sites
+      const rankColors = [
+        '#0B6E6E','#1d4ed8','#6d28d9','#be185d','#b45309',
+        '#0284c7','#15803d','#dc2626','#92400e','#0e7490'
+      ];
+
+      displaySites.forEach((site, idx) => {
         const o = this.overallScore(site);
         const cx = X(+site.rate || 0), cy = Y(o), r = Rr(+site.total || 0);
-        const color = STATUS_COLOR[site.status] || '#8A94A3';
+        const color = state.bubbleFilter === 'all'
+          ? (STATUS_COLOR[site.status] || '#8A94A3')
+          : rankColors[idx % rankColors.length];
+        const shortName = site.name.split(' ').slice(0, 2).join(' ');
         s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.30" stroke="${color}" stroke-width="1.6">
-          <title>${site.name} — score ${o}, ${site.rate}/mo, ${site.total} total, ${STATUSES.find(x => x.key === site.status)?.label || site.status}</title>
+          <title>${site.name} — Rank #${idx + 1}, Score: ${o}, ${site.rate}/mo, ${site.total} total</title>
         </circle>`;
-        s += `<text x="${cx}" y="${cy + 3}" font-size="9" text-anchor="middle" fill="#16233D" pointer-events="none">${site.name.split(' ')[0]}</text>`;
+        s += `<text x="${cx}" y="${cy - r - 4}" font-size="9.5" text-anchor="middle" fill="${color}" font-weight="700">#${idx + 1}</text>`;
+        s += `<text x="${cx}" y="${cy + 3}" font-size="9" text-anchor="middle" fill="#16233D" pointer-events="none">${shortName}</text>`;
       });
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -2019,9 +2035,14 @@
 
       const legend = document.getElementById('bubbleLegend');
       if (legend) {
-        legend.innerHTML = STATUSES.map(st => `
-          <span><span class="sw" style="background:${STATUS_COLOR[st.key]}"></span>${st.label}</span>
-        `).join('');
+        if (state.bubbleFilter === 'all') {
+          legend.innerHTML = STATUSES.map(st => `
+            <span><span class="sw" style="background:${STATUS_COLOR[st.key]}"></span>${st.label}</span>
+          `).join('');
+        } else {
+          const n = state.bubbleFilter === 'top5' ? 5 : 10;
+          legend.innerHTML = `<span style="font-size:11px; color:#4C5A73; font-weight:600;">Showing top ${n} ranked sites by overall feasibility score</span>`;
+        }
       }
     },
 
