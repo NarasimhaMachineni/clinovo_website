@@ -701,42 +701,62 @@
     },
 
     navigateTo(viewId) {
-      if (viewId === 'dashboard' && state.userRole !== 'admin') {
+      const vLanding = document.getElementById('view-landing');
+      const vQuest = document.getElementById('view-questionnaire');
+      const vDash = document.getElementById('view-dashboard');
+
+      if (viewId === 'dashboard') {
         state.userRole = 'admin';
         state.userEmail = state.userEmail || 'name@admin.in';
         sessionStorage.setItem('clinovo_session_role', 'admin');
         sessionStorage.setItem('clinovo_session_email', state.userEmail);
-      } else if (viewId === 'questionnaire' && !state.userRole) {
+        sessionStorage.setItem('clinovo_current_view', 'dashboard');
+        state.currentView = 'dashboard';
+
+        document.body.classList.remove('landing-active');
+        if (vLanding) vLanding.style.display = 'none';
+        if (vQuest) vQuest.style.display = 'none';
+        if (vDash) {
+          vDash.style.display = 'block';
+          vDash.classList.add('active-view');
+        }
+
+        this.updateUserNav();
+        dashApp.fetchSites();
+        dashApp.startAutoPoll();
+      } else if (viewId === 'questionnaire') {
         state.userRole = 'client';
         state.userEmail = state.userEmail || 'name@client.in';
         sessionStorage.setItem('clinovo_session_role', 'client');
         sessionStorage.setItem('clinovo_session_email', state.userEmail);
-      }
+        sessionStorage.setItem('clinovo_current_view', 'questionnaire');
+        state.currentView = 'questionnaire';
 
-      state.currentView = viewId;
-      sessionStorage.setItem('clinovo_current_view', viewId);
-
-      if (viewId === 'landing') {
-        document.body.classList.add('landing-active');
-      } else {
         document.body.classList.remove('landing-active');
-      }
-
-      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-view'));
-      
-      const targetView = document.getElementById(`view-${viewId}`);
-      if (targetView) targetView.classList.add('active-view');
-
-      this.updateUserNav();
-
-      if (viewId === 'dashboard') {
-        dashApp.fetchSites();
-        dashApp.startAutoPoll();
-      } else {
-        dashApp.stopAutoPoll();
-        if (viewId === 'questionnaire') {
-          questApp.renderAll();
+        if (vLanding) vLanding.style.display = 'none';
+        if (vDash) vDash.style.display = 'none';
+        if (vQuest) {
+          vQuest.style.display = 'block';
+          vQuest.classList.add('active-view');
         }
+
+        this.updateUserNav();
+        dashApp.stopAutoPoll();
+        questApp.renderAll();
+      } else {
+        state.currentView = 'landing';
+        sessionStorage.setItem('clinovo_current_view', 'landing');
+
+        document.body.classList.add('landing-active');
+        if (vQuest) vQuest.style.display = 'none';
+        if (vDash) vDash.style.display = 'none';
+        if (vLanding) {
+          vLanding.style.display = 'block';
+          vLanding.classList.add('active-view');
+        }
+
+        this.updateUserNav();
+        dashApp.stopAutoPoll();
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -845,11 +865,6 @@
       dots.forEach((dot, i) => {
         if (i === idx) dot.classList.add('active');
         else dot.classList.remove('active');
-      });
-      const imgs = document.querySelectorAll('#loginCarouselSlider .carousel-img');
-      imgs.forEach((img, i) => {
-        if (i === idx) img.classList.add('active');
-        else img.classList.remove('active');
       });
     }
   };
