@@ -683,6 +683,12 @@
 
       window.app.startDotCarousel();
       initPharmaCanvas();
+
+      window.addEventListener('resize', () => {
+        if (state.currentView === 'dashboard') {
+          try { dashApp.renderBubble(); } catch(e) {}
+        }
+      });
     },
 
     activateSection(viewId) {
@@ -1978,7 +1984,12 @@
       const svg = document.getElementById('bubbleSvg');
       if (!svg) return;
 
-      const W = 900, H = 340, padL = 60, padR = 40, padT = 32, padB = 48;
+      const card = document.getElementById('bubblePlotCard');
+      const isMax = card ? card.classList.contains('maximized-chart') : false;
+      const W = isMax ? Math.max(900, window.innerWidth - 80) : 900;
+      const H = isMax ? Math.max(500, window.innerHeight - 180) : 480;
+
+      const padL = 64, padR = 48, padT = 44, padB = 60;
       const plotW = W - padL - padR, plotH = H - padT - padB;
 
       if (!state.sites.length) {
@@ -2005,7 +2016,7 @@
 
       const X  = v => padL + (v / maxRate)  * plotW;
       const Y  = v => padT + plotH - (v / 100) * plotH;
-      const Rr = v => 10 + Math.sqrt(v / maxTotal) * 20;
+      const Rr = v => 7 + Math.sqrt(v / maxTotal) * 15; // Clean medium dynamic dots
 
       let s = '';
 
@@ -2013,7 +2024,7 @@
       [0, 25, 50, 75, 100].forEach(v => {
         const y = Y(v);
         s += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#EAEEF2" stroke-width="1"/>`;
-        s += `<text x="${padL - 8}" y="${y + 4}" font-size="10.5" text-anchor="end" fill="#8A94A3">${v}</text>`;
+        s += `<text x="${padL - 10}" y="${y + 4}" font-size="10.5" text-anchor="end" fill="#8A94A3">${v}</text>`;
       });
 
       // ── X-axis ticks ──────────────────────────────────────────────────
@@ -2024,36 +2035,68 @@
         s += `<text x="${x}" y="${H - padB + 18}" font-size="10.5" text-anchor="middle" fill="#8A94A3">${v.toFixed(1)}</text>`;
       }
 
-      // ── Axis labels ───────────────────────────────────────────────────
-      s += `<text x="${padL + plotW/2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected enrollment (patients / month)</text>`;
-      s += `<text x="13" y="${padT + plotH/2}" font-size="11" fill="#4C5A73" transform="rotate(-90 13 ${padT + plotH/2})" text-anchor="middle">Overall Feasibility Score</text>`;
+      // ── Quadrant Dashed Lines (X = 3.0, Y = 70) ────────────────────────
+      const midX = X(3.0);
+      const midY = Y(70);
+      s += `<line x1="${midX}" y1="${padT}" x2="${midX}" y2="${H - padB}" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="6,4"/>`;
+      s += `<line x1="${padL}" y1="${midY}" x2="${W - padR}" y2="${midY}" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="6,4"/>`;
 
-      // Color palettes for ranked sites
-      const rankColors = [
-        '#0B6E6E','#1d4ed8','#6d28d9','#be185d','#b45309',
-        '#0284c7','#15803d','#dc2626','#92400e','#0e7490'
-      ];
+      // ── Quadrant Labels ────────────────────────────────────────────────
+      // Top-Left: Potential
+      s += `<text x="${padL + 20}" y="${padT + 25}" font-size="11" font-weight="800" fill="#16a34a" letter-spacing="0.04em">POTENTIAL</text>`;
+      s += `<text x="${padL + 20}" y="${padT + 40}" font-size="9.5" fill="#4B5563">High feasibility</text>`;
+      s += `<text x="${padL + 20}" y="${padT + 52}" font-size="9.5" fill="#4B5563">Low accrual</text>`;
 
-      // ── DRAW bubbles as clean medium circles with full name labels ───
+      // Top-Right: Priority Sites
+      s += `<text x="${W - padR - 140}" y="${padT + 25}" font-size="11" font-weight="800" fill="#0B6E6E" letter-spacing="0.04em">PRIORITY SITES</text>`;
+      s += `<text x="${W - padR - 140}" y="${padT + 40}" font-size="9.5" fill="#4B5563">High feasibility</text>`;
+      s += `<text x="${W - padR - 140}" y="${padT + 52}" font-size="9.5" fill="#4B5563">High accrual</text>`;
+
+      // Bottom-Left: Low Priority
+      s += `<text x="${padL + 20}" y="${H - padB - 55}" font-size="11" font-weight="800" fill="#dc2626" letter-spacing="0.04em">LOW PRIORITY</text>`;
+      s += `<text x="${padL + 20}" y="${H - padB - 40}" font-size="9.5" fill="#4B5563">Low feasibility</text>`;
+      s += `<text x="${padL + 20}" y="${H - padB - 28}" font-size="9.5" fill="#4B5563">Low accrual</text>`;
+
+      // Bottom-Right: Investigate
+      s += `<text x="${W - padR - 140}" y="${H - padB - 55}" font-size="11" font-weight="800" fill="#4b5563" letter-spacing="0.04em">INVESTIGATE</text>`;
+      s += `<text x="${W - padR - 140}" y="${H - padB - 40}" font-size="9.5" fill="#4B5563">Low feasibility</text>`;
+      s += `<text x="${W - padR - 140}" y="${H - padB - 28}" font-size="9.5" fill="#4B5563">High accrual</text>`;
+
+      // ── Boundary Capsule Badges ────────────────────────────────────────
+      const capW = 108, capH = 18;
+      // High Feasibility (Top)
+      s += `<rect x="${midX - capW/2}" y="${padT - 22}" width="${capW}" height="${capH}" rx="9" fill="#e6f4ea" stroke="#34a853" stroke-width="1"/>`;
+      s += `<text x="${midX}" y="${padT - 10}" font-size="8.5" font-weight="800" fill="#137333" text-anchor="middle">HIGH FEASIBILITY</text>`;
+      // Low Feasibility (Bottom)
+      s += `<rect x="${midX - capW/2}" y="${H - padB + 28}" width="${capW}" height="${capH}" rx="9" fill="#fce8e6" stroke="#ea4335" stroke-width="1"/>`;
+      s += `<text x="${midX}" y="${H - padB + 40}" font-size="8.5" font-weight="800" fill="#c5221f" text-anchor="middle">LOW FEASIBILITY</text>`;
+
+      // ── Bottom Axis Labels ─────────────────────────────────────────────
+      s += `<text x="${padL}" y="${H - padB + 42}" font-size="10.5" fill="#0B6E6E" font-weight="700">← Low Accrual</text>`;
+      s += `<text x="${W - padR}" y="${H - padB + 42}" font-size="10.5" fill="#0B6E6E" font-weight="700" text-anchor="end">High Accrual →</text>`;
+
+      // ── Axis Title Labels ──────────────────────────────────────────────
+      s += `<text x="${padL + plotW/2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected Enrollment (patients / month)</text>`;
+      s += `<text x="14" y="${padT + plotH/2}" font-size="11" fill="#4C5A73" transform="rotate(-90 14 ${padT + plotH/2})" text-anchor="middle">Overall Feasibility Score</text>`;
+
+      // ── DRAW Bubbles & Rank text ────────────────────────────────────────
       poolSites.forEach(({ site, score }, idx) => {
         const cx = X(+site.rate || 0), cy = Y(score);
-        const r = 9; // Perfect medium dot size
-        const color = state.bubbleFilter === 'all'
-          ? (STATUS_COLOR[site.status] || '#8A94A3')
-          : rankColors[idx % rankColors.length];
+        const r = Rr(+site.total || 0);
+        const color = STATUS_COLOR[site.status] || '#8A94A3';
 
         // Draw standard colored circle (medium dot)
         s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.8" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;">
           <title>${site.name}\nRank #${idx+1} | Score: ${score} | ${site.rate}/mo | ${site.total} total</title>
         </circle>`;
 
-        // Rank label above circle (with white outline for legibility)
-        s += `<text x="${cx}" y="${cy - r - 5}" font-size="10" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" pointer-events="none" font-weight="800">#${idx+1}</text>`;
-        s += `<text x="${cx}" y="${cy - r - 5}" font-size="10" text-anchor="middle" fill="${color}" pointer-events="none" font-weight="800">#${idx+1}</text>`;
-
-        // Site name below circle (with white outline for legibility)
-        s += `<text x="${cx}" y="${cy + r + 13}" font-size="9" text-anchor="middle" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" pointer-events="none" font-weight="800">${site.name}</text>`;
-        s += `<text x="${cx}" y="${cy + r + 13}" font-size="9" text-anchor="middle" fill="#111827" pointer-events="none" font-weight="800">${site.name}</text>`;
+        // Draw the rank text (like #1) next to the bubble (slightly offset to the top-right)
+        if (state.bubbleFilter !== 'all' || idx < 10) {
+          const textX = cx + r + 4;
+          const textY = cy - 4;
+          s += `<text x="${textX}" y="${textY}" font-size="10" font-weight="800" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" pointer-events="none">#${idx+1}</text>`;
+          s += `<text x="${textX}" y="${textY}" font-size="10" font-weight="800" fill="#111827" pointer-events="none">#${idx+1}</text>`;
+        }
       });
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -2062,14 +2105,9 @@
       // ── Legend ─────────────────────────────────────────────────────────
       const legend = document.getElementById('bubbleLegend');
       if (legend) {
-        if (state.bubbleFilter === 'all') {
-          legend.innerHTML = STATUSES.map(st =>
-            `<span><span class="sw" style="background:${STATUS_COLOR[st.key]}"></span>${st.label}</span>`
-          ).join('');
-        } else {
-          const n = state.bubbleFilter === 'top5' ? 5 : 10;
-          legend.innerHTML = `<span style="font-size:11px;color:#4C5A73;font-weight:600;">Showing top ${n} ranked sites (represented as Stars)</span>`;
-        }
+        legend.innerHTML = STATUSES.map(st =>
+          `<span><span class="sw" style="background:${STATUS_COLOR[st.key]}"></span>${st.label}</span>`
+        ).join('');
       }
     },
 
