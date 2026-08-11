@@ -1758,7 +1758,8 @@
         return;
       }
 
-      const ranked = state.sites.map(s => ({ s, o: this.overallScore(s) }));
+      // Sort sites by overall score descending so first 10 displayed are top 10 sites
+      const ranked = state.sites.map(s => ({ s, o: this.overallScore(s) })).sort((a, b) => b.o - a.o);
       const rowH = 42, top = 16, left = 14;
       const barX = 400, chartW = 420;
       const H = top + ranked.length * rowH + 20;
@@ -1769,12 +1770,14 @@
         const w = (r.o / 100) * chartW;
         const color = STATUS_COLOR[r.s.status] || '#8A94A3';
         const fullName = r.s.name;
+        const isTop10 = i < 10;
 
-        // Rank Number (01, 02, ... 36)
-        s += `<text x="${left}" y="${y + 24}" font-size="12" font-weight="700" fill="#7E8C9F">${String(i + 1).padStart(2, '0')}</text>`;
+        // Rank Number (01, 02, ... 10 ... 36)
+        const rankColor = isTop10 ? '#0B6E6E' : '#7E8C9F';
+        s += `<text x="${left}" y="${y + 24}" font-size="12" font-weight="700" fill="${rankColor}">${String(i + 1).padStart(2, '0')}</text>`;
         
-        // Full Site Name (Completely un-truncated with generous 370px column width)
-        s += `<text x="${left + 30}" y="${y + 24}" font-size="12.5" font-weight="600" fill="#16233D">${fullName}</text>`;
+        // Full Site Name
+        s += `<text x="${left + 30}" y="${y + 24}" font-size="12.5" font-weight="${isTop10 ? '700' : '600'}" fill="${isTop10 ? '#0B2545' : '#16233D'}">${fullName}</text>`;
         
         // Background track bar
         s += `<rect x="${barX}" y="${y + 12}" width="${chartW}" height="14" rx="7" fill="#EEF0F3"/>`;
