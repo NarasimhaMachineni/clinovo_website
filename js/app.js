@@ -1956,51 +1956,11 @@
       this.renderBubble();
     },
 
-    onBubbleRangeChange() {
-      const minSlider = document.getElementById('bubbleMinSlider');
-      const maxSlider = document.getElementById('bubbleMaxSlider');
-      const minVal    = document.getElementById('bubbleMinVal');
-      const maxVal    = document.getElementById('bubbleMaxVal');
-      if (!minSlider || !maxSlider) return;
-
-      let minV = +minSlider.value;
-      let maxV = +maxSlider.value;
-
-      // Prevent crossing
-      if (minV > maxV) {
-        if (this._lastChangedSlider === 'min') {
-          maxSlider.value = minV;
-          maxV = minV;
-        } else {
-          minSlider.value = maxV;
-          minV = maxV;
-        }
-      }
-      this._lastChangedSlider = (document.activeElement === minSlider) ? 'min' : 'max';
-
-      if (minVal) minVal.textContent = minV;
-      if (maxVal) maxVal.textContent = maxV;
-
-      this.renderBubble();
-    },
-
-    resetBubbleRange() {
-      const minSlider = document.getElementById('bubbleMinSlider');
-      const maxSlider = document.getElementById('bubbleMaxSlider');
-      const minVal    = document.getElementById('bubbleMinVal');
-      const maxVal    = document.getElementById('bubbleMaxVal');
-      if (minSlider) { minSlider.value = 0; }
-      if (maxSlider) { maxSlider.value = 100; }
-      if (minVal)    { minVal.textContent = '0'; }
-      if (maxVal)    { maxVal.textContent = '100'; }
-      this.renderBubble();
-    },
-
     renderBubble() {
       const svg = document.getElementById('bubbleSvg');
       if (!svg) return;
 
-      const W = 900, H = 340, padL = 60, padR = 40, padT = 28, padB = 48;
+      const W = 900, H = 340, padL = 60, padR = 40, padT = 32, padB = 48;
       const plotW = W - padL - padR, plotH = H - padT - padB;
 
       if (!state.sites.length) {
@@ -2009,61 +1969,27 @@
         return;
       }
 
-      // Read min/max range sliders
-      const minScore = +(document.getElementById('bubbleMinSlider')?.value ?? 0);
-      const maxScore = +(document.getElementById('bubbleMaxSlider')?.value ?? 100);
-
       // Score all sites
       const allScored = state.sites
         .map(s => ({ site: s, score: this.overallScore(s) }))
         .sort((a, b) => b.score - a.score);
 
-      // Apply top5/10 filter first
+      // Apply top5/10 filter
       let poolSites;
       if (state.bubbleFilter === 'top5')       poolSites = allScored.slice(0, 5);
       else if (state.bubbleFilter === 'top10') poolSites = allScored.slice(0, 10);
       else                                     poolSites = allScored;
 
-      // Then apply min/max score filter
-      const inRange  = poolSites.filter(x => x.score >= minScore && x.score <= maxScore);
-      const outRange = poolSites.filter(x => x.score < minScore  || x.score > maxScore);
-
-      // Update sites-shown badge
-      const countEl = document.getElementById('bubbleSiteCount');
-      if (countEl) countEl.textContent = inRange.length;
-
-      // Update min/max label display (in case sliders not touched yet)
-      const minValEl = document.getElementById('bubbleMinVal');
-      const maxValEl = document.getElementById('bubbleMaxVal');
-      if (minValEl) minValEl.textContent = minScore;
-      if (maxValEl) maxValEl.textContent = maxScore;
-
-      // Axis helpers (use all pool sites for stable axes)
+      // Axis helpers
       const allPool = poolSites.map(x => x.site);
       const maxRate  = Math.max(1, ...allPool.map(s => +s.rate  || 0)) * 1.2;
       const maxTotal = Math.max(1, ...allPool.map(s => +s.total || 0));
 
       const X  = v => padL + (v / maxRate)  * plotW;
       const Y  = v => padT + plotH - (v / 100) * plotH;
-      const Rr = v => 9 + Math.sqrt(v / maxTotal) * 22;
+      const Rr = v => 10 + Math.sqrt(v / maxTotal) * 20;
 
       let s = '';
-
-      // ── Shaded score range band ──────────────────────────────────────
-      if (minScore > 0 || maxScore < 100) {
-        const bandY1 = Y(maxScore);
-        const bandY2 = Y(minScore);
-        s += `<rect x="${padL}" y="${bandY1}" width="${plotW}" height="${bandY2 - bandY1}"
-               fill="#0B6E6E" fill-opacity="0.06" rx="4"/>`;
-        // Min threshold line
-        s += `<line x1="${padL}" y1="${bandY2}" x2="${W - padR}" y2="${bandY2}"
-               stroke="#dc2626" stroke-width="1.4" stroke-dasharray="5,3"/>`;
-        s += `<text x="${W - padR + 4}" y="${bandY2 + 4}" font-size="9" fill="#dc2626" font-weight="700">MIN ${minScore}</text>`;
-        // Max threshold line
-        s += `<line x1="${padL}" y1="${bandY1}" x2="${W - padR}" y2="${bandY1}"
-               stroke="#0B6E6E" stroke-width="1.4" stroke-dasharray="5,3"/>`;
-        s += `<text x="${W - padR + 4}" y="${bandY1 + 4}" font-size="9" fill="#0B6E6E" font-weight="700">MAX ${maxScore}</text>`;
-      }
 
       // ── Y-axis grid lines ─────────────────────────────────────────────
       [0, 25, 50, 75, 100].forEach(v => {
@@ -2084,75 +2010,28 @@
       s += `<text x="${padL + plotW/2}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#4C5A73">Projected enrollment (patients / month)</text>`;
       s += `<text x="13" y="${padT + plotH/2}" font-size="11" fill="#4C5A73" transform="rotate(-90 13 ${padT + plotH/2})" text-anchor="middle">Overall Feasibility Score</text>`;
 
-      // ── Color palettes ─────────────────────────────────────────────────
-      const rankColors = [
-        '#0B6E6E','#1d4ed8','#6d28d9','#be185d','#b45309',
-        '#0284c7','#15803d','#dc2626','#92400e','#0e7490'
-      ];
-
-      // ── DRAW OUT-OF-RANGE bubbles (greyed, behind) ─────────────────────
-      outRange.forEach(({ site, score }, idx) => {
+      // ── DRAW bubbles using Clinovo Logo image ──────────────────────────
+      poolSites.forEach(({ site, score }, idx) => {
         const cx = X(+site.rate || 0), cy = Y(score), r = Rr(+site.total || 0);
-        s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#CBD5E1" fill-opacity="0.25" stroke="#CBD5E1" stroke-width="1"/>`;
-        s += `<text x="${cx}" y="${cy + 3}" font-size="8" text-anchor="middle" fill="#CBD5E1">${site.name.split(' ')[0]}</text>`;
-      });
-
-      // ── DRAW IN-RANGE bubbles ──────────────────────────────────────────
-      // Find which are global min/max in range
-      const maxInRange = inRange.length ? inRange[0] : null;                          // sorted desc — first = max
-      const minInRange = inRange.length ? inRange[inRange.length - 1] : null;         // last = min
-
-      inRange.forEach(({ site, score }, idx) => {
-        const cx = X(+site.rate || 0), cy = Y(score), r = Rr(+site.total || 0);
-        const color = state.bubbleFilter === 'all'
-          ? (STATUS_COLOR[site.status] || '#8A94A3')
-          : rankColors[idx % rankColors.length];
         const shortName = site.name.split(' ').slice(0, 2).join(' ');
 
-        const isMax = site === maxInRange?.site;
-        const isMin = site === minInRange?.site;
+        // Scale logo based on size factor r
+        // PNG aspect ratio: 562 x 132 (approx 4.2575)
+        const h = r * 1.4;
+        const w = h * 4.2575;
+        const x = cx - w / 2;
+        const y = cy - h / 2;
 
-        // Glow ring for MIN/MAX
-        if (isMax) {
-          s += `<circle cx="${cx}" cy="${cy}" r="${r + 7}" fill="none" stroke="#0B6E6E" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>`;
-        }
-        if (isMin) {
-          s += `<circle cx="${cx}" cy="${cy}" r="${r + 7}" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>`;
-        }
-
-        // Main bubble
-        s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="${isMax || isMin ? '0.55' : '0.30'}" stroke="${color}" stroke-width="${isMax || isMin ? '2.2' : '1.6'}">
+        // Render site logo image
+        s += `<image href="img/clinovo-logo.png" x="${x}" y="${y}" width="${w}" height="${h}" pointer-events="all">
           <title>${site.name}\nRank #${idx+1} | Score: ${score} | ${site.rate}/mo | ${site.total} total</title>
-        </circle>`;
+        </image>`;
 
-        // Rank label above bubble
-        s += `<text x="${cx}" y="${cy - r - 5}" font-size="9.5" text-anchor="middle" fill="${color}" font-weight="700">#${idx+1}</text>`;
-        // Site name inside bubble
-        s += `<text x="${cx}" y="${cy + 3}" font-size="8.5" text-anchor="middle" fill="#16233D" pointer-events="none">${shortName}</text>`;
-
-        // ── MAX badge ──────────────────────────────────────────────────
-        if (isMax) {
-          const bw = 48, bh = 18, bx = cx - bw/2, by = cy - r - 26;
-          s += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="9" fill="#0B6E6E"/>`;
-          s += `<text x="${cx}" y="${by + 12.5}" font-size="9.5" text-anchor="middle" fill="#fff" font-weight="800">▲ MAX ${score}</text>`;
-          // Connector line
-          s += `<line x1="${cx}" y1="${by + bh}" x2="${cx}" y2="${cy - r - 1}" stroke="#0B6E6E" stroke-width="1.2"/>`;
-        }
-
-        // ── MIN badge ──────────────────────────────────────────────────
-        if (isMin && site !== maxInRange?.site) {
-          const bw = 48, bh = 18, bx = cx - bw/2, by = cy + r + 8;
-          s += `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="9" fill="#dc2626"/>`;
-          s += `<text x="${cx}" y="${by + 12.5}" font-size="9.5" text-anchor="middle" fill="#fff" font-weight="800">▼ MIN ${score}</text>`;
-          // Connector line
-          s += `<line x1="${cx}" y1="${cy + r + 1}" x2="${cx}" y2="${by}" stroke="#dc2626" stroke-width="1.2"/>`;
-        }
+        // Rank label above logo
+        s += `<text x="${cx}" y="${y - 4}" font-size="10" text-anchor="middle" fill="#0B6E6E" font-weight="700">#${idx+1}</text>`;
+        // Site name below logo
+        s += `<text x="${cx}" y="${y + h + 10}" font-size="9" text-anchor="middle" fill="#16233D" font-weight="600">${shortName}</text>`;
       });
-
-      // ── Empty state ────────────────────────────────────────────────────
-      if (inRange.length === 0) {
-        s += `<text x="${W/2}" y="${H/2}" font-size="13" fill="#8A94A3" text-anchor="middle">No sites match the selected score range (${minScore}–${maxScore})</text>`;
-      }
 
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       svg.innerHTML = s;
@@ -2160,14 +2039,8 @@
       // ── Legend ─────────────────────────────────────────────────────────
       const legend = document.getElementById('bubbleLegend');
       if (legend) {
-        if (state.bubbleFilter === 'all') {
-          legend.innerHTML = STATUSES.map(st =>
-            `<span><span class="sw" style="background:${STATUS_COLOR[st.key]}"></span>${st.label}</span>`
-          ).join('');
-        } else {
-          const n = state.bubbleFilter === 'top5' ? 5 : 10;
-          legend.innerHTML = `<span style="font-size:11px;color:#4C5A73;font-weight:600;">Top ${n} sites · ${inRange.length} in range</span>`;
-        }
+        const n = state.bubbleFilter === 'top5' ? 5 : (state.bubbleFilter === 'top10' ? 10 : 36);
+        legend.innerHTML = `<span style="font-size:11px;color:#4C5A73;font-weight:600;">Showing top ${n} ranked sites represented by Clinovo Logo</span>`;
       }
     },
 

@@ -51,7 +51,7 @@
   <header class="header-nav" id="headerNav">
     <div class="brand-logo" onclick="app.navigateTo('landing')" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
       <img
-        src="/img/clinovo-logo.png"
+        src="img/clinovo-logo.png"
         alt="Clinovo"
         style="height:34px; width:auto; display:block;"
         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
@@ -109,7 +109,7 @@
         <div class="login-right-panel">
           <div class="brand-right-header" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
             <img
-              src="/img/clinovo-logo.png"
+              src="img/clinovo-logo.png"
               alt="Clinovo"
               style="height:44px; width:auto; max-width:180px;"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
@@ -339,7 +339,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
           <div>
             <h3 style="margin:0 0 2px;">Accrual Rate vs Overall Feasibility vs Total Target</h3>
-            <div class="card-sub" style="margin-bottom:0;">Bubble size = total projected enrollment. Drag sliders to filter by feasibility score range.</div>
+            <div class="card-sub" style="margin-bottom:0;">Bubble size represents total projected enrollment capacity over recruitment period.</div>
           </div>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <div class="rank-filter-pills" id="bubbleFilterPills">
@@ -348,54 +348,6 @@
               <button class="rank-pill" data-filter="all" onclick="dashApp.setBubbleFilter('all')">All Sites</button>
             </div>
             <div class="legend" id="bubbleLegend"></div>
-          </div>
-        </div>
-
-        <!-- MIN / MAX RANGE CONTROLS -->
-        <div id="bubbleRangeControls" style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; background:linear-gradient(135deg,#f8faff,#edf4f4); border:1px solid #d1e8e8; border-radius:12px; padding:12px 18px; margin-bottom:14px;">
-
-          <!-- MIN control -->
-          <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:220px;">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <div style="background:#dc2626; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:20px; letter-spacing:0.06em;">MIN</div>
-              <div id="bubbleMinVal" style="font-size:20px; font-weight:900; color:#dc2626; font-variant-numeric:tabular-nums; line-height:1;">0</div>
-              <div style="font-size:9px; color:#6B7280; font-weight:600;">SCORE</div>
-            </div>
-            <div style="flex:1;">
-              <label style="font-size:11px; font-weight:700; color:#374151; display:block; margin-bottom:4px;">Minimum Feasibility Score</label>
-              <input type="range" id="bubbleMinSlider" min="0" max="100" value="0" step="1"
-                style="width:100%; accent-color:#dc2626; cursor:pointer;"
-                oninput="dashApp.onBubbleRangeChange()">
-            </div>
-          </div>
-
-          <!-- Divider -->
-          <div style="width:1px; height:40px; background:#d1e8e8; flex-shrink:0;"></div>
-
-          <!-- MAX control -->
-          <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:220px;">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <div style="background:#0B6E6E; color:#fff; font-size:10px; font-weight:800; padding:2px 8px; border-radius:20px; letter-spacing:0.06em;">MAX</div>
-              <div id="bubbleMaxVal" style="font-size:20px; font-weight:900; color:#0B6E6E; font-variant-numeric:tabular-nums; line-height:1;">100</div>
-              <div style="font-size:9px; color:#6B7280; font-weight:600;">SCORE</div>
-            </div>
-            <div style="flex:1;">
-              <label style="font-size:11px; font-weight:700; color:#374151; display:block; margin-bottom:4px;">Maximum Feasibility Score</label>
-              <input type="range" id="bubbleMaxSlider" min="0" max="100" value="100" step="1"
-                style="width:100%; accent-color:#0B6E6E; cursor:pointer;"
-                oninput="dashApp.onBubbleRangeChange()">
-            </div>
-          </div>
-
-          <!-- Reset -->
-          <button onclick="dashApp.resetBubbleRange()" style="background:#fff; border:1.5px solid #d1e8e8; border-radius:8px; padding:6px 14px; font-size:12px; font-weight:700; color:#0B6E6E; cursor:pointer; white-space:nowrap; transition:all 0.15s;">
-            ↺ Reset
-          </button>
-
-          <!-- Site count badge -->
-          <div style="text-align:center; flex-shrink:0;">
-            <div id="bubbleSiteCount" style="font-size:22px; font-weight:900; color:#16233D;">—</div>
-            <div style="font-size:9px; color:#6B7280; font-weight:600;">SITES SHOWN</div>
           </div>
         </div>
 
