@@ -267,10 +267,16 @@
 
       <!-- OVERALL COMPOSITE RANKING CARD (FULL GRID 100% WIDTH) -->
       <div class="card" style="margin-bottom:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
           <div>
-            <h3>Overall Composite Ranking</h3>
+            <h3 style="margin:0;">Overall Composite Ranking</h3>
             <div class="card-sub" style="margin-bottom:0;">Sites ordered by weighted feasibility score across all 9 feasibility criteria.</div>
+          </div>
+          <div class="rank-filter-pills" id="rankFilterPills">
+            <button class="rank-pill active" data-mode="top10" onclick="dashApp.setRankFilter('top10')">Top 10</button>
+            <button class="rank-pill" data-mode="top20" onclick="dashApp.setRankFilter('top20')">Top 20</button>
+            <button class="rank-pill" data-mode="allRanked" onclick="dashApp.setRankFilter('allRanked')">All 36 Ranked</button>
+            <button class="rank-pill" data-mode="raw" onclick="dashApp.setRankFilter('raw')">Raw Dataset</button>
           </div>
         </div>
         <div class="rank-chart-wrap" style="margin-top:16px;">

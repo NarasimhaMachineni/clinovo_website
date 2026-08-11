@@ -1464,8 +1464,17 @@
     radarSelected: new Set(),
     sortKey: null,
     sortAsc: false,
+    rankFilter: 'top10', // 'top10' | 'top20' | 'allRanked' | 'raw'
     editingId: null,
     pollTimer: null,
+
+    setRankFilter(mode) {
+      this.rankFilter = mode;
+      document.querySelectorAll('#rankFilterPills .rank-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      this.renderRank();
+    },
 
     startAutoPoll() {
       if (this.pollTimer) clearInterval(this.pollTimer);
@@ -1758,8 +1767,23 @@
         return;
       }
 
-      // Sort sites by overall score descending so first 10 displayed are top 10 sites
-      const ranked = state.sites.map(s => ({ s, o: this.overallScore(s) })).sort((a, b) => b.o - a.o);
+      let ranked = state.sites.map(s => ({ s, o: this.overallScore(s) }));
+
+      if (this.rankFilter === 'top10') {
+        ranked.sort((a, b) => b.o - a.o);
+        ranked = ranked.slice(0, 10);
+      } else if (this.rankFilter === 'top20') {
+        ranked.sort((a, b) => b.o - a.o);
+        ranked = ranked.slice(0, 20);
+      } else if (this.rankFilter === 'allRanked') {
+        ranked.sort((a, b) => b.o - a.o);
+      } else if (this.rankFilter === 'raw') {
+        // Keep raw dataset order without sorting
+      } else {
+        ranked.sort((a, b) => b.o - a.o);
+        ranked = ranked.slice(0, 10);
+      }
+
       const rowH = 42, top = 16, left = 14;
       const barX = 400, chartW = 420;
       const H = top + ranked.length * rowH + 20;
@@ -1770,7 +1794,7 @@
         const w = (r.o / 100) * chartW;
         const color = STATUS_COLOR[r.s.status] || '#8A94A3';
         const fullName = r.s.name;
-        const isTop10 = i < 10;
+        const isTop10 = i < 10 && this.rankFilter !== 'raw';
 
         // Rank Number (01, 02, ... 10 ... 36)
         const rankColor = isTop10 ? '#0B6E6E' : '#7E8C9F';

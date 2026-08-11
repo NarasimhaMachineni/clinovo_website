@@ -1371,6 +1371,40 @@ svg text { font-family: var(--font-body); }
 }
 
 
+/* OVERALL COMPOSITE RANKING FILTER PILLS */
+.rank-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sand-soft);
+  padding: 4px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.rank-pill {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rank-pill:hover {
+  color: var(--ink);
+}
+
+.rank-pill.active {
+  background: var(--teal);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(11, 110, 110, 0.3);
+}
+
 /* SCROLLABLE CONTAINER FOR OVERALL COMPOSITE RANKING CHART (FULL GRID) */
 .rank-chart-wrap {
   max-height: 420px;
