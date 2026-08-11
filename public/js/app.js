@@ -1607,11 +1607,6 @@
         return;
       }
 
-      const top5 = state.sites
-        .map(site => ({ site, score: this.getSectionScore(site, currentSec) }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 5);
-
       const rowH = 44, top = 12, left = 10;
       const barX = 220, chartW = 160;
       const H = 240;
