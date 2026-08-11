@@ -37,8 +37,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-// 36 REAL-WORLD CLINICAL FEASIBILITY SITES WITH 100% UNIQUE COMPOSITE SCORES (96 TO 58)
-const SEED_SITES_36_UNIQUE = [
+// 36 REAL-WORLD CLINICAL SITES WITH RANDOMIZED, NON-SEQUENTIAL UNIQUE SCORES
+const SEED_SITES_36_RANDOM = [
   // --- TEAM MEMBER 1: Dr. Sarah Jenkins (Lead CRA) ---
   {
     id: 'site_na_01',
@@ -47,11 +47,11 @@ const SEED_SITES_36_UNIQUE = [
     country: 'United States (North America)',
     pi: 'Dr. Courtney Jones',
     status: 'approved',
-    rate: 4.5,
-    total: 50,
-    weeks: 9,
-    scores: { invSite: 98, patientPop: 95, facilities: 98, pharmacy: 96, labBiomarker: 97, safety: 98, regulatory: 92, dataTech: 95, budget: 93 },
-    notes: 'Completed by Dr. Sarah Jenkins · NCI Comprehensive Cancer Center with top Phase III accrual.'
+    rate: 3.6,
+    total: 37,
+    weeks: 12,
+    scores: { invSite: 90, patientPop: 86, facilities: 92, pharmacy: 87, labBiomarker: 90, safety: 91, regulatory: 82, dataTech: 87, budget: 85 },
+    notes: 'Completed by Dr. Sarah Jenkins · NCI Comprehensive Cancer Center.'
   },
   {
     id: 'site_sa_01',
@@ -60,10 +60,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Brazil (South America)',
     pi: 'Dr. Carlos Henrique',
     status: 'approved',
-    rate: 2.8,
-    total: 28,
+    rate: 2.7,
+    total: 27,
     weeks: 14,
-    scores: { invSite: 79, patientPop: 74, facilities: 80, pharmacy: 76, labBiomarker: 78, safety: 80, regulatory: 73, dataTech: 77, budget: 74 },
+    scores: { invSite: 77, patientPop: 72, facilities: 78, pharmacy: 74, labBiomarker: 76, safety: 78, regulatory: 71, dataTech: 75, budget: 72 },
     notes: 'Completed by Dr. Sarah Jenkins · Premier Latin American academic oncology facility.'
   },
   {
@@ -86,10 +86,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Japan (Asia)',
     pi: 'Dr. Kenji Tamura',
     status: 'approved',
-    rate: 3.5,
-    total: 36,
+    rate: 3.3,
+    total: 33,
     weeks: 12,
-    scores: { invSite: 89, patientPop: 85, facilities: 90, pharmacy: 86, labBiomarker: 88, safety: 90, regulatory: 83, dataTech: 87, budget: 84 },
+    scores: { invSite: 86, patientPop: 81, facilities: 87, pharmacy: 83, labBiomarker: 85, safety: 87, regulatory: 80, dataTech: 84, budget: 81 },
     notes: 'Completed by Dr. Sarah Jenkins · High RECIST compliance and dedicated research staff.'
   },
   {
@@ -99,8 +99,8 @@ const SEED_SITES_36_UNIQUE = [
     country: 'South Africa (Africa)',
     pi: 'Dr. Bernardo Leon',
     status: 'conditional',
-    rate: 2.3,
-    total: 23,
+    rate: 2.2,
+    total: 22,
     weeks: 16,
     scores: { invSite: 70, patientPop: 66, facilities: 71, pharmacy: 67, labBiomarker: 69, safety: 71, regulatory: 61, dataTech: 68, budget: 63 },
     notes: 'Completed by Dr. Sarah Jenkins · Western Cape reference center requiring cold-storage verification.'
@@ -112,10 +112,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Australia (Oceania)',
     pi: 'Dr. Benjamin Solomon',
     status: 'approved',
-    rate: 3.3,
-    total: 34,
-    weeks: 12,
-    scores: { invSite: 87, patientPop: 82, facilities: 88, pharmacy: 84, labBiomarker: 86, safety: 88, regulatory: 81, dataTech: 85, budget: 82 },
+    rate: 3.7,
+    total: 38,
+    weeks: 11,
+    scores: { invSite: 91, patientPop: 86, facilities: 92, pharmacy: 88, labBiomarker: 90, safety: 93, regulatory: 84, dataTech: 89, budget: 86 },
     notes: 'Completed by Dr. Sarah Jenkins · Dedicated public cancer research facility in Melbourne.'
   },
 
@@ -140,10 +140,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Brazil (South America)',
     pi: 'Dr. Fernando de Vital',
     status: 'approved',
-    rate: 2.7,
-    total: 27,
-    weeks: 14,
-    scores: { invSite: 77, patientPop: 72, facilities: 78, pharmacy: 74, labBiomarker: 76, safety: 78, regulatory: 71, dataTech: 75, budget: 72 },
+    rate: 2.9,
+    total: 29,
+    weeks: 13,
+    scores: { invSite: 81, patientPop: 76, facilities: 82, pharmacy: 78, labBiomarker: 80, safety: 82, regulatory: 75, dataTech: 79, budget: 76 },
     notes: 'Completed by Dr. Michael Vance · Comprehensive treatment and translational research institute.'
   },
   {
@@ -192,10 +192,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Australia (Oceania)',
     pi: 'Dr. Michael Boyer',
     status: 'approved',
-    rate: 3.0,
-    total: 30,
-    weeks: 13,
-    scores: { invSite: 81, patientPop: 76, facilities: 82, pharmacy: 78, labBiomarker: 80, safety: 82, regulatory: 75, dataTech: 79, budget: 76 },
+    rate: 2.8,
+    total: 28,
+    weeks: 14,
+    scores: { invSite: 79, patientPop: 74, facilities: 80, pharmacy: 76, labBiomarker: 78, safety: 80, regulatory: 73, dataTech: 77, budget: 74 },
     notes: 'Completed by Dr. Michael Vance · Major academic teaching hospital affiliated with Sydney Uni.'
   },
 
@@ -207,10 +207,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'United States (North America)',
     pi: 'Dr. Marcus Sterling',
     status: 'approved',
-    rate: 3.6,
-    total: 37,
-    weeks: 12,
-    scores: { invSite: 90, patientPop: 86, facilities: 91, pharmacy: 87, labBiomarker: 89, safety: 91, regulatory: 84, dataTech: 88, budget: 85 },
+    rate: 4.5,
+    total: 50,
+    weeks: 9,
+    scores: { invSite: 98, patientPop: 95, facilities: 98, pharmacy: 96, labBiomarker: 97, safety: 98, regulatory: 92, dataTech: 95, budget: 93 },
     notes: 'Completed by Dr. Elena Rostova · Principal Harvard Medical School oncology partner.'
   },
   {
@@ -220,10 +220,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Argentina (South America)',
     pi: 'Dr. Matías Chacón',
     status: 'conditional',
-    rate: 2.5,
-    total: 25,
+    rate: 2.2,
+    total: 22,
     weeks: 15,
-    scores: { invSite: 72, patientPop: 67, facilities: 73, pharmacy: 69, labBiomarker: 71, safety: 73, regulatory: 66, dataTech: 70, budget: 67 },
+    scores: { invSite: 68, patientPop: 64, facilities: 69, pharmacy: 65, labBiomarker: 66, safety: 69, regulatory: 59, dataTech: 65, budget: 61 },
     notes: 'Completed by Dr. Elena Rostova · Historic oncology institute in Buenos Aires.'
   },
   {
@@ -233,10 +233,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Netherlands (Europe)',
     pi: 'Dr. Emile Voest',
     status: 'approved',
-    rate: 2.9,
-    total: 29,
+    rate: 3.1,
+    total: 31,
     weeks: 13,
-    scores: { invSite: 80, patientPop: 75, facilities: 81, pharmacy: 77, labBiomarker: 79, safety: 81, regulatory: 74, dataTech: 78, budget: 75 },
+    scores: { invSite: 83, patientPop: 78, facilities: 84, pharmacy: 80, labBiomarker: 82, safety: 84, regulatory: 77, dataTech: 81, budget: 78 },
     notes: 'Completed by Dr. Elena Rostova · European center for precision immuno-oncology trials.'
   },
   {
@@ -258,11 +258,11 @@ const SEED_SITES_36_UNIQUE = [
     number: '305',
     country: 'Kenya (Africa)',
     pi: 'Dr. Mansoor Saleh',
-    status: 'conditional',
-    rate: 2.1,
-    total: 21,
-    weeks: 16,
-    scores: { invSite: 66, patientPop: 62, facilities: 67, pharmacy: 63, labBiomarker: 64, safety: 67, regulatory: 57, dataTech: 63, budget: 59 },
+    status: 'not_approved',
+    rate: 2.0,
+    total: 20,
+    weeks: 17,
+    scores: { invSite: 64, patientPop: 60, facilities: 65, pharmacy: 61, labBiomarker: 62, safety: 65, regulatory: 55, dataTech: 61, budget: 57 },
     notes: 'Completed by Dr. Elena Rostova · JCI-accredited tertiary medical facility in Nairobi.'
   },
   {
@@ -287,10 +287,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'United States (North America)',
     pi: 'Dr. Rachel Vance',
     status: 'approved',
-    rate: 3.2,
-    total: 32,
-    weeks: 13,
-    scores: { invSite: 85, patientPop: 80, facilities: 86, pharmacy: 82, labBiomarker: 84, safety: 86, regulatory: 79, dataTech: 83, budget: 80 },
+    rate: 3.5,
+    total: 36,
+    weeks: 12,
+    scores: { invSite: 89, patientPop: 85, facilities: 90, pharmacy: 86, labBiomarker: 88, safety: 90, regulatory: 83, dataTech: 87, budget: 84 },
     notes: 'Completed by Dr. Rajiv Patel · World-class translational oncology clinical trial center.'
   },
   {
@@ -303,7 +303,7 @@ const SEED_SITES_36_UNIQUE = [
     rate: 2.6,
     total: 26,
     weeks: 14,
-    scores: { invSite: 73, patientPop: 68, facilities: 74, pharmacy: 70, labBiomarker: 72, safety: 74, regulatory: 67, dataTech: 71, budget: 68 },
+    scores: { invSite: 74, patientPop: 69, facilities: 75, pharmacy: 71, labBiomarker: 73, safety: 75, regulatory: 68, dataTech: 72, budget: 69 },
     notes: 'Completed by Dr. Rajiv Patel · Premier Colombian university hospital.'
   },
   {
@@ -313,7 +313,7 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Germany (Europe)',
     pi: 'Dr. Ulrich Keilholz',
     status: 'approved',
-    rate: 3.5,
+    rate: 3.4,
     total: 35,
     weeks: 11,
     scores: { invSite: 88, patientPop: 84, facilities: 89, pharmacy: 85, labBiomarker: 87, safety: 89, regulatory: 82, dataTech: 86, budget: 83 },
@@ -326,10 +326,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Singapore (Asia)',
     pi: 'Dr. Ross Soo',
     status: 'approved',
-    rate: 3.3,
-    total: 33,
-    weeks: 12,
-    scores: { invSite: 86, patientPop: 81, facilities: 87, pharmacy: 83, labBiomarker: 85, safety: 87, regulatory: 80, dataTech: 84, budget: 81 },
+    rate: 3.2,
+    total: 32,
+    weeks: 13,
+    scores: { invSite: 85, patientPop: 80, facilities: 86, pharmacy: 82, labBiomarker: 84, safety: 86, regulatory: 79, dataTech: 83, budget: 80 },
     notes: 'Completed by Dr. Rajiv Patel · Leading Southeast Asian academic research site.'
   },
   {
@@ -367,10 +367,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'United States (North America)',
     pi: 'Dr. Eleanor Brooks',
     status: 'approved',
-    rate: 3.1,
-    total: 31,
-    weeks: 13,
-    scores: { invSite: 83, patientPop: 78, facilities: 84, pharmacy: 80, labBiomarker: 82, safety: 84, regulatory: 77, dataTech: 81, budget: 78 },
+    rate: 3.3,
+    total: 34,
+    weeks: 12,
+    scores: { invSite: 87, patientPop: 82, facilities: 88, pharmacy: 84, labBiomarker: 86, safety: 88, regulatory: 81, dataTech: 85, budget: 82 },
     notes: 'Completed by Dr. Sophia Al-Mansoor · NCI Comprehensive Cancer Center.'
   },
   {
@@ -380,10 +380,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Chile (South America)',
     pi: 'Dr. Jorge Madrid',
     status: 'conditional',
-    rate: 2.3,
-    total: 23,
-    weeks: 16,
-    scores: { invSite: 69, patientPop: 65, facilities: 70, pharmacy: 66, labBiomarker: 67, safety: 70, regulatory: 60, dataTech: 66, budget: 62 },
+    rate: 2.5,
+    total: 25,
+    weeks: 15,
+    scores: { invSite: 72, patientPop: 67, facilities: 73, pharmacy: 69, labBiomarker: 71, safety: 73, regulatory: 66, dataTech: 70, budget: 67 },
     notes: 'Completed by Dr. Sophia Al-Mansoor · National reference hospital for oncology in Santiago.'
   },
   {
@@ -418,11 +418,11 @@ const SEED_SITES_36_UNIQUE = [
     number: '505',
     country: 'Tunisia (Africa)',
     pi: 'Dr. Chiraz Nasr',
-    status: 'not_approved',
-    rate: 2.0,
-    total: 20,
-    weeks: 17,
-    scores: { invSite: 64, patientPop: 60, facilities: 65, pharmacy: 61, labBiomarker: 62, safety: 65, regulatory: 55, dataTech: 61, budget: 57 },
+    status: 'conditional',
+    rate: 2.1,
+    total: 21,
+    weeks: 16,
+    scores: { invSite: 66, patientPop: 62, facilities: 67, pharmacy: 63, labBiomarker: 64, safety: 67, regulatory: 57, dataTech: 63, budget: 59 },
     notes: 'Completed by Dr. Sophia Al-Mansoor · Requires local laboratory equipment upgrade.'
   },
   {
@@ -431,11 +431,11 @@ const SEED_SITES_36_UNIQUE = [
     number: '506',
     country: 'New Zealand (Oceania)',
     pi: 'Dr. Mark McKeage',
-    status: 'conditional',
-    rate: 2.6,
-    total: 26,
-    weeks: 14,
-    scores: { invSite: 74, patientPop: 69, facilities: 75, pharmacy: 71, labBiomarker: 73, safety: 75, regulatory: 68, dataTech: 72, budget: 69 },
+    status: 'approved',
+    rate: 2.9,
+    total: 29,
+    weeks: 13,
+    scores: { invSite: 80, patientPop: 75, facilities: 81, pharmacy: 77, labBiomarker: 79, safety: 81, regulatory: 74, dataTech: 78, budget: 75 },
     notes: 'Completed by Dr. Sophia Al-Mansoor · Primary tertiary cancer hospital in Auckland.'
   },
 
@@ -460,10 +460,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'Peru (South America)',
     pi: 'Dr. Carlos Vallejos',
     status: 'conditional',
-    rate: 2.2,
-    total: 22,
+    rate: 2.3,
+    total: 23,
     weeks: 15,
-    scores: { invSite: 68, patientPop: 64, facilities: 69, pharmacy: 65, labBiomarker: 66, safety: 69, regulatory: 59, dataTech: 65, budget: 61 },
+    scores: { invSite: 69, patientPop: 65, facilities: 70, pharmacy: 66, labBiomarker: 67, safety: 70, regulatory: 60, dataTech: 66, budget: 62 },
     notes: 'Completed by Dr. David Lin · Primary cancer reference center in Lima, Peru.'
   },
   {
@@ -486,10 +486,10 @@ const SEED_SITES_36_UNIQUE = [
     country: 'China (Asia)',
     pi: 'Dr. Jin Li',
     status: 'approved',
-    rate: 3.7,
-    total: 37,
-    weeks: 11,
-    scores: { invSite: 91, patientPop: 96, facilities: 90, pharmacy: 88, labBiomarker: 90, safety: 92, regulatory: 83, dataTech: 89, budget: 86 },
+    rate: 2.6,
+    total: 26,
+    weeks: 14,
+    scores: { invSite: 76, patientPop: 71, facilities: 77, pharmacy: 73, labBiomarker: 75, safety: 77, regulatory: 70, dataTech: 74, budget: 71 },
     notes: 'Completed by Dr. David Lin · Top-tier Shanghai academic oncology clinical trial site.'
   },
   {
@@ -511,11 +511,11 @@ const SEED_SITES_36_UNIQUE = [
     number: '606',
     country: 'Australia (Oceania)',
     pi: 'Dr. Millward Michael',
-    status: 'approved',
-    rate: 2.7,
-    total: 27,
+    status: 'conditional',
+    rate: 2.5,
+    total: 25,
     weeks: 14,
-    scores: { invSite: 76, patientPop: 71, facilities: 77, pharmacy: 73, labBiomarker: 75, safety: 77, regulatory: 70, dataTech: 74, budget: 71 },
+    scores: { invSite: 73, patientPop: 68, facilities: 74, pharmacy: 70, labBiomarker: 72, safety: 74, regulatory: 67, dataTech: 71, budget: 68 },
     notes: 'Completed by Dr. David Lin · Key tertiary oncology center in Perth, Australia.'
   }
 ];
@@ -531,8 +531,8 @@ function loadJsonStore() {
   } catch (e) {
     console.error('Error reading JSON sites store:', e.message);
   }
-  saveJsonStore(SEED_SITES_36_UNIQUE);
-  return SEED_SITES_36_UNIQUE;
+  saveJsonStore(SEED_SITES_36_RANDOM);
+  return SEED_SITES_36_RANDOM;
 }
 
 function saveJsonStore(sites) {
@@ -824,7 +824,7 @@ db.serialize(() => {
   });
 
   // POPULATE ALL 36 REAL-WORLD SITES (6 MEMBERS x 6 CONTINENTS)
-  const initialSites = SEED_SITES_36_UNIQUE;
+  const initialSites = SEED_SITES_36_RANDOM;
   saveJsonStore(initialSites);
 
   const stmtSite = db.prepare(`
@@ -837,14 +837,12 @@ db.serialize(() => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  initialSites.forEach((s, idx) => {
+  initialSites.forEach((s) => {
     stmtSite.run(s.id, s.name, s.number, s.country, s.pi, s.status, s.rate, s.total, s.weeks, JSON.stringify(s.scores || {}), s.notes || '');
 
-    // Calculate synthetic overall score from domain scores
     const domainKeys = Object.keys(s.scores);
     const overallScore = Math.round(domainKeys.reduce((a, k) => a + s.scores[k], 0) / domainKeys.length);
 
-    // Build authentic client questionnaire response record for each site
     const mockAnswers = {
       protocolNumber: 'CLIN-2026-ONC3',
       protocolTitle: 'Phase III Randomized Study of Novel Targeted Immunotherapy in Advanced Solid Tumors',
@@ -886,7 +884,7 @@ db.serialize(() => {
 
   stmtSite.finalize();
   stmtQuest.finalize();
-  console.log(`Successfully populated ${initialSites.length} unique real-world clinical sites & questionnaire records into SQLite database.`);
+  console.log(`Successfully populated ${initialSites.length} randomized clinical sites & questionnaire records into SQLite database.`);
 });
 
 // ACCURATE SCORING ALGORITHM MATCHING QUESTIONNAIRE DATA (YES = 1, NO = 0)
