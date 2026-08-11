@@ -253,23 +253,28 @@
         </div>
       </div>
 
-      <!-- GRID 1: RADAR OVERLAY & OVERALL RANKING -->
-      <div class="grid2">
-        <div class="card">
-          <h3>Domain Balance — Multi-Site Overlay</h3>
-          <div class="card-sub">Select candidate sites below to compare capability profiles across 9 feasibility domains.</div>
-          <div class="chips" id="radarChips">
-            <!-- Chips rendered dynamically -->
-          </div>
-          <svg id="radarSvg" width="100%" height="320" viewBox="0 0 400 400"></svg>
+      <!-- RADAR OVERLAY CARD -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3>Domain Balance — Multi-Site Overlay</h3>
+        <div class="card-sub">Select candidate sites below to compare capability profiles across 9 feasibility domains.</div>
+        <div class="chips" id="radarChips">
+          <!-- Chips rendered dynamically -->
         </div>
+        <div style="text-align:center;">
+          <svg id="radarSvg" width="100%" height="340" viewBox="0 0 400 400" style="max-width:440px; margin:0 auto;"></svg>
+        </div>
+      </div>
 
-        <div class="card">
-          <h3>Overall Composite Ranking</h3>
-          <div class="card-sub">Sites ordered by weighted feasibility score across all weighted criteria.</div>
-          <div class="rank-chart-wrap">
-            <svg id="rankSvg" width="100%" height="auto" viewBox="0 0 340 1440"></svg>
+      <!-- OVERALL COMPOSITE RANKING CARD (FULL GRID 100% WIDTH) -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3>Overall Composite Ranking</h3>
+            <div class="card-sub" style="margin-bottom:0;">Sites ordered by weighted feasibility score across all 9 feasibility criteria.</div>
           </div>
+        </div>
+        <div class="rank-chart-wrap" style="margin-top:16px;">
+          <svg id="rankSvg" width="100%" height="auto" viewBox="0 0 880 1500"></svg>
         </div>
       </div>
 

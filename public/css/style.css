@@ -1371,19 +1371,19 @@ svg text { font-family: var(--font-body); }
 }
 
 
-/* SCROLLABLE CONTAINER FOR OVERALL COMPOSITE RANKING CHART */
+/* SCROLLABLE CONTAINER FOR OVERALL COMPOSITE RANKING CHART (FULL GRID) */
 .rank-chart-wrap {
-  max-height: 340px;
+  max-height: 420px;
   overflow-y: auto;
-  padding-right: 6px;
+  padding-right: 8px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(11, 110, 110, 0.35) transparent;
+  scrollbar-color: rgba(11, 110, 110, 0.4) transparent;
 }
 .rank-chart-wrap::-webkit-scrollbar {
   width: 6px;
 }
 .rank-chart-wrap::-webkit-scrollbar-thumb {
-  background: rgba(11, 110, 110, 0.35);
+  background: rgba(11, 110, 110, 0.4);
   border-radius: 3px;
 }
 
