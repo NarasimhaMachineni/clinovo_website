@@ -759,9 +759,28 @@
       }
     },
 
+    quickLogin(role) {
+      const userInp = document.getElementById('usernameInput');
+      const passInp = document.getElementById('passwordInput');
+
+      if (role === 'admin') {
+        if (userInp) userInp.value = 'name@admin.in';
+        if (passInp) passInp.value = 'password123';
+      } else {
+        if (userInp) userInp.value = 'name@client.in';
+        if (passInp) passInp.value = 'password123';
+      }
+
+      this.handleSignIn();
+    },
+
     handleSignIn(event) {
-      event.preventDefault();
-      const usernameVal = (document.getElementById('usernameInput')?.value || '').toLowerCase();
+      if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+      }
+
+      const usernameInput = document.getElementById('usernameInput');
+      const usernameVal = ((usernameInput && usernameInput.value) || 'client').toLowerCase().trim();
 
       this.showPharmaLoader(() => {
         if (usernameVal.includes('admin')) {
