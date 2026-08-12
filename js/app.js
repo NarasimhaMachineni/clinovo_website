@@ -764,6 +764,16 @@
       });
     },
 
+    handleLogoClick() {
+      if (!state.userRole) {
+        this.navigateTo('landing');
+      } else if (state.userRole === 'admin') {
+        this.navigateTo('dashboard');
+      } else if (state.userRole === 'client') {
+        this.navigateTo('questionnaire');
+      }
+    },
+
     activateSection(viewId) {
       document.querySelectorAll('.view-section').forEach(sec => {
         sec.classList.remove('active-view');
