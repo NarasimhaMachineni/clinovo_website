@@ -520,13 +520,45 @@ const SEED_SITES_36_RANDOM_ORDER = [
   }
 ];
 
+// Perturb scores to ensure diverse, unique shapes on the radar plot (fixing the parallel structure bug)
+SEED_SITES_36_RANDOM_ORDER.forEach(s => {
+  let hash = 0;
+  for (let i = 0; i < s.id.length; i++) {
+    hash = s.id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const newScores = {};
+  const keys = Object.keys(s.scores);
+  keys.forEach((key, idx) => {
+    const shift = ((Math.abs(hash + idx * 31) % 31) - 15);
+    newScores[key] = Math.max(40, Math.min(99, s.scores[key] + shift));
+  });
+  s.scores = newScores;
+});
+
 // Helper to Load / Persist JSON Backup Store Across Server Restarts
 function loadJsonStore() {
   try {
     if (fs.existsSync(jsonBackupPath)) {
       const raw = fs.readFileSync(jsonBackupPath, 'utf8');
       const data = JSON.parse(raw);
-      if (Array.isArray(data) && data.length >= 36) return data;
+      if (Array.isArray(data) && data.length >= 36) {
+        data.forEach(s => {
+          if (s.id.startsWith('site_')) {
+            let hash = 0;
+            for (let i = 0; i < s.id.length; i++) {
+              hash = s.id.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const newScores = {};
+            const keys = Object.keys(s.scores);
+            keys.forEach((key, idx) => {
+              const shift = ((Math.abs(hash + idx * 31) % 31) - 15);
+              newScores[key] = Math.max(40, Math.min(99, s.scores[key] + shift));
+            });
+            s.scores = newScores;
+          }
+        });
+        return data;
+      }
     }
   } catch (e) {
     console.error('Error reading JSON sites store:', e.message);
@@ -938,19 +970,35 @@ app.get('/api/sites', (req, res) => {
       const fallback = loadJsonStore();
       return res.json({ success: true, sites: fallback });
     }
-    const sites = rows.map(r => ({
-      id: r.id,
-      name: r.name,
-      number: r.number,
-      country: r.country,
-      pi: r.pi,
-      status: r.status,
-      rate: r.rate,
-      total: r.total,
-      weeks: r.weeks,
-      scores: r.scores_json ? JSON.parse(r.scores_json) : {},
-      notes: r.notes
-    }));
+    const sites = rows.map(r => {
+      let rawScores = r.scores_json ? JSON.parse(r.scores_json) : {};
+      if (r.id.startsWith('site_')) {
+        let hash = 0;
+        for (let i = 0; i < r.id.length; i++) {
+          hash = r.id.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const newScores = {};
+        const keys = Object.keys(rawScores);
+        keys.forEach((key, idx) => {
+          const shift = ((Math.abs(hash + idx * 31) % 31) - 15);
+          newScores[key] = Math.max(40, Math.min(99, rawScores[key] + shift));
+        });
+        rawScores = newScores;
+      }
+      return {
+        id: r.id,
+        name: r.name,
+        number: r.number,
+        country: r.country,
+        pi: r.pi,
+        status: r.status,
+        rate: r.rate,
+        total: r.total,
+        weeks: r.weeks,
+        scores: rawScores,
+        notes: r.notes
+      };
+    });
     saveJsonStore(sites);
     res.json({ success: true, sites });
   });

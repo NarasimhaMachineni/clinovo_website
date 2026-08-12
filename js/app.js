@@ -513,6 +513,21 @@
     }
   ];
 
+  // Perturb scores to ensure diverse, unique shapes on the radar plot (fixing the parallel structure bug)
+  DEFAULT_SEED_SITES_36.forEach(s => {
+    let hash = 0;
+    for (let i = 0; i < s.id.length; i++) {
+      hash = s.id.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const newScores = {};
+    const keys = Object.keys(s.scores);
+    keys.forEach((key, idx) => {
+      const shift = ((Math.abs(hash + idx * 31) % 31) - 15);
+      newScores[key] = Math.max(40, Math.min(99, s.scores[key] + shift));
+    });
+    s.scores = newScores;
+  });
+
   const CATEGORIES = [
     { key: 'invSite', label: 'Investigator & Site', short: 'Invest.' },
     { key: 'patientPop', label: 'Patient Population & Accrual', short: 'Accrual' },
@@ -1739,9 +1754,7 @@
       localStorage.setItem('onc-phase3-sfq:site-dashboard-v1', JSON.stringify({ sites: state.sites, weights: state.weights }));
       localStorage.setItem('clinovo_sites_fallback', JSON.stringify(state.sites));
 
-      if (this.radarSelected.size === 0 && state.sites.length > 0) {
-        this.radarSelected = new Set(state.sites.slice(0, Math.min(3, state.sites.length)).map(s => s.id));
-      }
+      // Do not auto-select 3 sites automatically per user request
 
       if (!silent) {
         this.renderAll();
