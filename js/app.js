@@ -765,12 +765,13 @@
     },
 
     handleLogoClick() {
-      if (!state.userRole) {
-        this.navigateTo('landing');
-      } else if (state.userRole === 'admin') {
-        this.navigateTo('dashboard');
-      } else if (state.userRole === 'client') {
-        this.navigateTo('questionnaire');
+      const role = state.userRole || sessionStorage.getItem('clinovo_session_role');
+      if (!role) {
+        window.app.navigateTo('landing');
+      } else if (role === 'admin') {
+        window.app.navigateTo('dashboard');
+      } else if (role === 'client') {
+        window.app.navigateTo('questionnaire');
       }
     },
 
@@ -2522,19 +2523,23 @@
   window.questApp = questApp;
   window.dashApp = dashApp;
 
-  // Initialize App on DOM Ready
-  document.addEventListener('DOMContentLoaded', () => {
-    app.init();
-  });
-
-  // SEAMLESS LOOPING 4K SLOW-MOTION YOUTUBE PLAYER BACKGROUND
-  // Video ID: lgWjziyinKs
-  const tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  const firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  // Bootstrapper to prevent race condition when loading YouTube Player API
+  let ytApiReady = false;
+  let domReady = false;
 
   window.onYouTubeIframeAPIReady = function() {
+    ytApiReady = true;
+    tryInitYtPlayer();
+  };
+
+  function tryInitYtPlayer() {
+    if (ytApiReady && domReady) {
+      initActualYtPlayer();
+    }
+  }
+
+  function initActualYtPlayer() {
+    if (window.ytPlayerObj) return; // Prevent duplicate instantiation
     window.ytPlayerObj = new YT.Player('ytPlayer', {
       videoId: 'lgWjziyinKs',
       playerVars: {
@@ -2543,7 +2548,7 @@
         controls: 0,
         showinfo: 0,
         rel: 0,
-        loop: 0, // Handled manually for instant seamless loop
+        loop: 0, // Loop is handled manually below for absolute seamless transitions
         iv_load_policy: 3,
         playsinline: 1,
         modestbranding: 1,
@@ -2576,7 +2581,7 @@
       }
     });
 
-    // Seamless loop tick check: Preemptively seek back 0.4 seconds before end of playback
+    // Seamless loop check: Seek back 0.4 seconds before end of playback to avoid black frame spinners
     setInterval(() => {
       if (window.ytPlayerObj && typeof window.ytPlayerObj.getCurrentTime === 'function') {
         try {
@@ -2590,6 +2595,19 @@
         } catch(e) {}
       }
     }, 200);
-  };
+  }
+
+  // Initialize App on DOM Ready
+  document.addEventListener('DOMContentLoaded', () => {
+    domReady = true;
+    tryInitYtPlayer();
+    app.init();
+  });
+
+  // Inject YouTube script dynamically
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 })();
