@@ -1942,6 +1942,16 @@ svg text { font-family: var(--font-body); }
   background: #090e18;
 }
 
+/* Vignette overlay to highlight the center card */
+.login-viewport-container.full-centered::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(9, 14, 26, 0.15) 20%, rgba(9, 14, 26, 0.82) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .tablets-full-bg {
   background: url('../images/tablets.png') no-repeat center center;
   background-size: cover;
@@ -1950,8 +1960,8 @@ svg text { font-family: var(--font-body); }
   width: 100%;
   height: 100%;
   z-index: 0;
-  transform: scale(1.04); /* Scaled slightly more to cover borders when blurred */
-  filter: blur(6px) brightness(0.65) contrast(1.15) saturate(1.05); /* Added premium depth of field blur */
+  transform: scale(1.08); /* Scaled slightly more to cover borders when blurred */
+  filter: blur(12px) brightness(0.38) contrast(1.15) saturate(1.05); /* Darkened and highly blurred to prevent background domination */
 }
 
 #smokeCanvas, #waterCanvas {
@@ -1964,26 +1974,52 @@ svg text { font-family: var(--font-body); }
 #smokeCanvas { z-index: 1; }
 #waterCanvas { z-index: 2; }
 
+.login-card-wrapper {
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  /* Floating motion on the outer wrapper to prevent keyframe transform collision */
+  animation: loginCardFloat 6s ease-in-out infinite alternate;
+}
+
 .clinovo-login-card.centered {
   width: 500px; /* Enlarge to 500px as requested */
   max-width: 90vw;
   padding: 50px 48px;
-  background: rgba(9, 17, 32, 0.48) !important; /* Extremely clean transparent dark glassy background */
-  backdrop-filter: blur(40px) !important;
-  -webkit-backdrop-filter: blur(40px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  background: rgba(9, 17, 32, 0.68) !important; /* Darker glassy background for clean high-contrast readability */
+  backdrop-filter: blur(45px) !important;
+  -webkit-backdrop-filter: blur(45px) !important;
+  border: 1.5px solid rgba(45, 189, 182, 0.35) !important; /* Glowing brand-teal border */
   border-radius: var(--radius-xl);
-  box-shadow: 0 45px 90px rgba(0, 0, 0, 0.55), 0 0 50px rgba(11, 110, 110, 0.18);
-  z-index: 10;
+  box-shadow: 0 45px 90px rgba(0, 0, 0, 0.8), 0 0 50px rgba(45, 189, 182, 0.22);
   display: flex;
   flex-direction: column;
-  animation: loginCardAppear 0.8s var(--ease-spring) forwards;
+  /* Glowing pulse border animation on the card itself */
+  animation: loginCardAppear 0.8s var(--ease-spring) forwards, 
+             cardBorderGlow 4s ease-in-out infinite alternate;
 }
 
 .clinovo-login-card.centered:hover {
-  transform: translate3d(0, -3px, 0);
-  box-shadow: 0 55px 100px rgba(0, 0, 0, 0.65), 0 0 60px rgba(11, 110, 110, 0.24);
-  border-color: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(45, 189, 182, 0.65) !important;
+  box-shadow: 0 55px 100px rgba(0, 0, 0, 0.82), 0 0 60px rgba(45, 189, 182, 0.32) !important;
+}
+
+@keyframes loginCardFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-12px); }
+}
+
+@keyframes cardBorderGlow {
+  0% {
+    border-color: rgba(45, 189, 182, 0.25);
+    box-shadow: 0 45px 90px rgba(0, 0, 0, 0.75), 0 0 35px rgba(45, 189, 182, 0.12);
+  }
+  100% {
+    border-color: rgba(45, 189, 182, 0.55);
+    box-shadow: 0 45px 90px rgba(0, 0, 0, 0.75), 0 0 55px rgba(45, 189, 182, 0.35);
+  }
 }
 
 /* Glassy form inputs overrides for landing/login only */

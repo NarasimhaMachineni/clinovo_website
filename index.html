@@ -84,65 +84,67 @@
       <div class="ambient-glow-orb orb-2"></div>
 
       <!-- MAIN TRANSLUCENT GLASSMORPHIC LOGIN WINDOW (CENTERED & LARGER) -->
-      <div class="clinovo-login-card centered" id="loginCard">
-        <div class="brand-right-header" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
-          <img
-            src="img/clinovo-logo.png"
-            alt="Clinovo"
-            style="height:44px; width:auto; max-width:180px;"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-          >
-          <div style="display:none; align-items:center; gap:8px;">
-            <div class="brand-icon-big">C</div>
-            <div class="brand-text-big">Clinovo</div>
-          </div>
-        </div>
-
-        <div class="portal-access-label" style="color:rgba(255, 255, 255, 0.95); font-family:var(--font-display);">Site Feasibility Portal Access</div>
-
-        <!-- Credentials entry form -->
-        <form class="login-form-content" id="loginForm" action="javascript:void(0);" onsubmit="app.handleSignIn(event); return false;">
-          
-          <div class="form-group-field">
-            <label for="usernameInput" style="color:rgba(255, 255, 255, 0.85);">Username or email</label>
-            <input 
-              type="text" 
-              id="usernameInput" 
-              class="form-input-exact dark-input" 
-              placeholder="name@client.in or name@admin.in" 
-              value="" 
-              onkeydown="if(event.key==='Enter'){app.handleSignIn(event);return false;}"
+      <div class="login-card-wrapper">
+        <div class="clinovo-login-card centered" id="loginCard">
+          <div class="brand-right-header" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+            <img
+              src="img/clinovo-logo.png"
+              alt="Clinovo"
+              style="height:44px; width:auto; max-width:180px;"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
             >
-          </div>
-
-          <div class="form-group-field">
-            <label for="passwordInput" style="color:rgba(255, 255, 255, 0.85);">Password</label>
-            <div class="input-password-wrapper">
-              <input 
-                type="password" 
-                id="passwordInput" 
-                class="form-input-exact dark-input" 
-                placeholder="Enter password" 
-                value="" 
-                onkeydown="if(event.key==='Enter'){app.handleSignIn(event);return false;}"
-              >
-              <i 
-                id="togglePasswordBtn"
-                class="fa-solid fa-eye password-eye-icon" 
-                style="color:rgba(255, 255, 255, 0.7);"
-                onclick="app.togglePasswordVisibility()"
-                title="Toggle Password Visibility"
-              ></i>
+            <div style="display:none; align-items:center; gap:8px;">
+              <div class="brand-icon-big">C</div>
+              <div class="brand-text-big">Clinovo</div>
             </div>
           </div>
 
-          <div style="margin-top:20px;">
-            <button type="button" id="signInBtnMain" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
-              Sign In
-            </button>
-          </div>
+          <div class="portal-access-label" style="color:rgba(255, 255, 255, 0.95); font-family:var(--font-display);">Site Feasibility Portal Access</div>
 
-        </form>
+          <!-- Credentials entry form -->
+          <form class="login-form-content" id="loginForm" action="javascript:void(0);" onsubmit="app.handleSignIn(event); return false;">
+            
+            <div class="form-group-field">
+              <label for="usernameInput" style="color:rgba(255, 255, 255, 0.85);">Username or email</label>
+              <input 
+                type="text" 
+                id="usernameInput" 
+                class="form-input-exact dark-input" 
+                placeholder="name@client.in or name@admin.in" 
+                value="" 
+                onkeydown="if(event.key==='Enter'){app.handleSignIn(event);return false;}"
+              >
+            </div>
+
+            <div class="form-group-field">
+              <label for="passwordInput" style="color:rgba(255, 255, 255, 0.85);">Password</label>
+              <div class="input-password-wrapper">
+                <input 
+                  type="password" 
+                  id="passwordInput" 
+                  class="form-input-exact dark-input" 
+                  placeholder="Enter password" 
+                  value="" 
+                  onkeydown="if(event.key==='Enter'){app.handleSignIn(event);return false;}"
+                >
+                <i 
+                  id="togglePasswordBtn"
+                  class="fa-solid fa-eye password-eye-icon" 
+                  style="color:rgba(255, 255, 255, 0.7);"
+                  onclick="app.togglePasswordVisibility()"
+                  title="Toggle Password Visibility"
+                ></i>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;">
+              <button type="button" id="signInBtnMain" class="sign-in-btn-exact" onclick="app.handleSignIn(event)">
+                Sign In
+              </button>
+            </div>
+
+          </form>
+        </div>
       </div>
     </div>
   </section>
