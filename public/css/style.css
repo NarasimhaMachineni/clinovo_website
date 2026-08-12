@@ -1960,7 +1960,7 @@ svg text { font-family: var(--font-body); }
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: #090e18;
+  background: transparent !important; /* Made transparent to let the video show through */
 }
 
 .video-bg-container {
@@ -1970,7 +1970,7 @@ svg text { font-family: var(--font-body); }
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  z-index: -1; /* Placed behind all other layouts */
+  z-index: 1; /* Positioned above body background, below smoke canvas and card */
   pointer-events: none;
   background: #090e18;
 }
