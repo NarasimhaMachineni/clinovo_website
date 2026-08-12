@@ -2517,4 +2517,69 @@
     app.init();
   });
 
+  // SEAMLESS LOOPING 4K SLOW-MOTION YOUTUBE PLAYER BACKGROUND
+  // Video ID: lgWjziyinKs
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  window.onYouTubeIframeAPIReady = function() {
+    window.ytPlayerObj = new YT.Player('ytPlayer', {
+      videoId: 'lgWjziyinKs',
+      playerVars: {
+        autoplay: 1,
+        mute: 1,
+        controls: 0,
+        showinfo: 0,
+        rel: 0,
+        loop: 0, // Handled manually for instant seamless loop
+        iv_load_policy: 3,
+        playsinline: 1,
+        modestbranding: 1,
+        wmode: 'transparent',
+        disablekb: 1,
+        fs: 0
+      },
+      events: {
+        onReady: (event) => {
+          event.target.mute();
+          event.target.playVideo();
+          try {
+            event.target.setPlaybackQuality('hd2160'); // Request 4K quality
+          } catch(e) {}
+          try {
+            event.target.setPlaybackRate(0.5); // 0.5x Slow motion speed
+          } catch(e) {}
+        },
+        onStateChange: (event) => {
+          if (event.data === YT.PlayerState.PLAYING) {
+            try {
+              event.target.setPlaybackRate(0.5);
+            } catch(e) {}
+          }
+          if (event.data === YT.PlayerState.ENDED) {
+            event.target.seekTo(0.1, true);
+            event.target.playVideo();
+          }
+        }
+      }
+    });
+
+    // Seamless loop tick check: Preemptively seek back 0.4 seconds before end of playback
+    setInterval(() => {
+      if (window.ytPlayerObj && typeof window.ytPlayerObj.getCurrentTime === 'function') {
+        try {
+          const current = window.ytPlayerObj.getCurrentTime();
+          const duration = window.ytPlayerObj.getDuration();
+          if (duration > 0 && (duration - current) < 0.4) {
+            window.ytPlayerObj.seekTo(0.1, true);
+            window.ytPlayerObj.playVideo();
+            window.ytPlayerObj.setPlaybackRate(0.5);
+          }
+        } catch(e) {}
+      }
+    }, 200);
+  };
+
 })();
