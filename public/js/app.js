@@ -550,17 +550,12 @@
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    let width = (canvas.width = canvas.parentElement ? canvas.parentElement.clientWidth : window.innerWidth * 0.45);
-    let height = (canvas.height = canvas.parentElement ? canvas.parentElement.clientHeight : window.innerHeight);
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
     window.addEventListener('resize', () => {
-      if (canvas.parentElement) {
-        width = canvas.width = canvas.parentElement.clientWidth;
-        height = canvas.height = canvas.parentElement.clientHeight;
-      } else {
-        width = canvas.width = window.innerWidth * 0.45;
-        height = canvas.height = window.innerHeight;
-      }
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     });
 
     const ambientParticles = [];
@@ -738,20 +733,19 @@
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    let width = (canvas.width = canvas.parentElement.clientWidth || window.innerWidth / 2);
-    let height = (canvas.height = canvas.parentElement.clientHeight || window.innerHeight);
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
     window.addEventListener('resize', () => {
-      if (!canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.clientWidth;
-      height = canvas.height = canvas.parentElement.clientHeight;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     });
 
     // Wavy glassy water wave parameters
     const waves = [
-      { y: height * 0.45, length: 0.003, amplitude: 35, speed: 0.015, color: 'rgba(11, 110, 110, 0.09)', phase: 0 },
-      { y: height * 0.52, length: 0.002, amplitude: 45, speed: -0.01, color: 'rgba(2, 132, 199, 0.07)', phase: Math.PI / 4 },
-      { y: height * 0.42, length: 0.004, amplitude: 25, speed: 0.02, color: 'rgba(45, 189, 182, 0.06)', phase: Math.PI / 2 }
+      { y: height * 0.72, length: 0.003, amplitude: 35, speed: 0.015, color: 'rgba(11, 110, 110, 0.08)', phase: 0 },
+      { y: height * 0.78, length: 0.002, amplitude: 45, speed: -0.01, color: 'rgba(2, 132, 199, 0.06)', phase: Math.PI / 4 },
+      { y: height * 0.7, length: 0.004, amplitude: 25, speed: 0.02, color: 'rgba(45, 189, 182, 0.05)', phase: Math.PI / 2 }
     ];
 
     let lastTime = performance.now();
@@ -785,21 +779,21 @@
         ctx.fill();
       });
 
-      // Slow drifting floating water drop highlights
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-      for (let i = 0; i < 6; i++) {
-        const bubbleX = (width * 0.2) + Math.sin(now / 2000 + i) * (width * 0.15);
-        const bubbleY = (height * 0.15) + (i * 130) + Math.cos(now / 1500 + i) * 35;
+      // Slow drifting floating water drop highlights across full width
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      for (let i = 0; i < 7; i++) {
+        const bubbleX = (width * 0.1) + (i * (width * 0.14)) + Math.sin(now / 2000 + i) * 35;
+        const bubbleY = (height * 0.15) + (i * 120) + Math.cos(now / 1500 + i) * 35;
         ctx.beginPath();
-        ctx.arc(bubbleX, bubbleY, 5 + i * 2, 0, Math.PI * 2);
+        ctx.arc(bubbleX, bubbleY, 4 + i * 1.5, 0, Math.PI * 2);
         ctx.fill();
         
         // Shiny reflection highlight inside drop
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         ctx.beginPath();
-        ctx.arc(bubbleX - 2, bubbleY - 2, 1.8, 0, Math.PI * 2);
+        ctx.arc(bubbleX - 1.5, bubbleY - 1.5, 1.2, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)'; // reset
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)'; // reset
       }
 
       requestAnimationFrame(renderWater);

@@ -1929,68 +1929,61 @@ svg text { font-family: var(--font-body); }
 }
 
 /* =========================================================================
-   SPLIT VIEWPORT LOGIN GRID (LEFT-CENTER TRANS-GLASSY CARD, RIGHT TABLETS VISUAL)
+   FULL VIEWPORT CENTERED LOGIN GRID (CENTERED TRANS-GLASSY CARD, TABLETS BG)
    ========================================================================= */
-.split-login-container {
-  display: flex;
+.login-viewport-container.full-centered {
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
-  position: relative;
-  background: #020813;
-}
-
-.split-left-pane {
-  flex: 0 0 45%;
-  background: radial-gradient(circle at center, rgba(16, 27, 46, 0.88) 0%, rgba(8, 14, 26, 0.98) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  z-index: 5;
-  box-shadow: 15px 0 40px rgba(0, 0, 0, 0.55);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: #090e18;
 }
 
-.split-right-pane {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  background: #020813;
-}
-
-.tablets-bg-image {
+.tablets-full-bg {
   background: url('../images/tablets.png') no-repeat center center;
   background-size: cover;
-  width: 100%;
-  height: 100%;
   position: absolute;
   inset: 0;
-  transform: scale(1.02);
-  filter: brightness(0.9) contrast(1.05);
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  transform: scale(1.01);
+  filter: brightness(0.72) contrast(1.1) saturate(1.05); /* Perfect brightness and contrast for readability */
 }
 
-.clinovo-login-card {
-  width: 440px;
-  max-width: 90%;
-  padding: 44px 40px;
-  background: rgba(255, 255, 255, 0.04) !important;
+#smokeCanvas, #waterCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+#smokeCanvas { z-index: 1; }
+#waterCanvas { z-index: 2; }
+
+.clinovo-login-card.centered {
+  width: 480px; /* Slightly larger grid card */
+  max-width: 90vw;
+  padding: 48px 44px;
+  background: rgba(16, 27, 46, 0.42) !important; /* Semi-transparent glassy dark theme */
   backdrop-filter: blur(40px) !important;
   -webkit-backdrop-filter: blur(40px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: var(--radius-xl);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65), 0 0 50px rgba(11, 110, 110, 0.15);
+  box-shadow: 0 45px 90px rgba(0, 0, 0, 0.55), 0 0 50px rgba(11, 110, 110, 0.18);
   z-index: 10;
   display: flex;
   flex-direction: column;
   animation: loginCardAppear 0.8s var(--ease-spring) forwards;
 }
 
-.clinovo-login-card:hover {
+.clinovo-login-card.centered:hover {
   transform: translate3d(0, -3px, 0);
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.72), 0 0 60px rgba(11, 110, 110, 0.22);
-  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 55px 100px rgba(0, 0, 0, 0.65), 0 0 60px rgba(11, 110, 110, 0.24);
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 /* Glassy form inputs overrides for landing/login only */
@@ -2000,7 +1993,7 @@ svg text { font-family: var(--font-body); }
   color: #ffffff !important;
 }
 .form-input-exact.dark-input::placeholder {
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
 }
 .form-input-exact.dark-input:focus {
   background: rgba(255, 255, 255, 0.08) !important;
@@ -2008,20 +2001,11 @@ svg text { font-family: var(--font-body); }
   box-shadow: 0 0 10px rgba(45, 189, 182, 0.25) !important;
 }
 
-/* Responsive adjustment for split screen */
-@media (max-width: 900px) {
-  .split-login-container {
-    flex-direction: column !important;
-  }
-  .split-left-pane {
-    flex: 1 !important;
+/* Extra responsive tweaks */
+@media (max-width: 640px) {
+  .clinovo-login-card.centered {
+    padding: 36px 28px !important;
     width: 100% !important;
-    border-right: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .split-right-pane {
-    height: 350px !important;
-    flex: none !important;
-    width: 100% !important;
+    margin: 16px !important;
   }
 }
