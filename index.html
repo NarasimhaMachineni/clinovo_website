@@ -247,9 +247,16 @@
 
       <!-- WEIGHTING ADJUSTMENT SLIDERS PANEL -->
       <div class="weights-panel" id="weightsPanel">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h4 style="margin:0; font-family:var(--font-display); font-size:16px;">Category Weightings</h4>
-          <button class="btn small" onclick="dashApp.resetWeights()">Reset to equal weights (1.0×)</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:8px; margin-bottom:12px;">
+          <h4 style="margin:0; font-family:var(--font-display); font-size:16px; color:var(--ink);">Category Weightings</h4>
+          <div style="display:flex; gap:8px;">
+            <button id="btnSaveWeights" class="btn small" style="background:#0B6E6E; color:#fff; font-weight:700; border:1px solid #0B6E6E; transition:all 0.2s;" onclick="dashApp.saveWeights()">
+              <i class="fa-solid fa-floppy-disk"></i> Save Weightings
+            </button>
+            <button class="btn small" style="background:#f3f4f6; color:#374151; font-weight:700; border:1px solid #d1d5db;" onclick="dashApp.resetWeights()">
+              <i class="fa-solid fa-rotate-left"></i> Reset (1.0×)
+            </button>
+          </div>
         </div>
         <div class="weights-grid" id="weightsGrid">
           <!-- Rendered dynamically by JS -->
@@ -332,29 +339,31 @@
       <!-- BUBBLE PLOT CHART -->
       <div class="card" id="bubblePlotCard" style="margin-bottom:20px; transition: all 0.25s ease-in-out;">
         <!-- Title Row -->
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
-          <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <h3 style="margin:0 0 2px;">Accrual Rate vs Overall Feasibility vs Total Target</h3>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
+          <!-- Left side: Title, Maximize, Subtitle, and horizontal pills down below -->
+          <div style="flex:1; min-width:280px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <h3 style="margin:0;">Accrual Rate vs Overall Feasibility vs Total Target</h3>
               <button id="bubbleZoomBtn" class="btn" style="background:#f3f4f6; border:1px solid #d1d5db; color:#374151; font-weight:700; padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:all 0.15s;" onclick="dashApp.toggleBubbleZoom()">
                 <i class="fa-solid fa-expand"></i> Maximize
               </button>
             </div>
-            <div class="card-sub" style="margin-bottom:0;">Bubble size represents total projected enrollment capacity over recruitment period.</div>
+            <div class="card-sub" style="margin-bottom:4px;">Bubble size represents total projected enrollment capacity over recruitment period.</div>
+            
+            <!-- Horizontal pills below subtitle in left corner -->
+            <div class="rank-filter-pills" id="bubbleFilterPills" style="display:flex; flex-direction:row; gap:6px; width:fit-content; background:#f3f4f6; padding:3px; border-radius:8px; border:1px solid #e5e7eb;">
+              <button class="rank-pill active" data-filter="top5" onclick="dashApp.setBubbleFilter('top5')" style="padding:4px 10px; font-size:11.5px; border-radius:6px;">Top 5 Sites</button>
+              <button class="rank-pill" data-filter="top10" onclick="dashApp.setBubbleFilter('top10')" style="padding:4px 10px; font-size:11.5px; border-radius:6px;">Top 10 Sites</button>
+              <button class="rank-pill" data-filter="all" onclick="dashApp.setBubbleFilter('all')" style="padding:4px 10px; font-size:11.5px; border-radius:6px;">All Sites</button>
+            </div>
           </div>
-          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-            <!-- Dropdown Focus -->
+          
+          <!-- Right side: Dropdown Focus and Legend -->
+          <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end; min-width:200px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="font-size:11.5px; font-weight:700; color:var(--ink-soft);">Focus Site:</span>
               <select id="bubbleSiteSelect" style="padding:5px 10px; border-radius:6px; font-size:12px; font-weight:700; color:#374151; background:#fff; border:1px solid #d1d5db; cursor:pointer;" onchange="dashApp.onBubbleSiteSelectChange()"></select>
             </div>
-            <!-- Vertical Pills -->
-            <div class="rank-filter-pills" id="bubbleFilterPills" style="display:flex; flex-direction:column; gap:4px; width:125px;">
-              <button class="rank-pill active" data-filter="top5" onclick="dashApp.setBubbleFilter('top5')" style="width:100%; text-align:center; box-sizing:border-box;">Top 5 Sites</button>
-              <button class="rank-pill" data-filter="top10" onclick="dashApp.setBubbleFilter('top10')" style="width:100%; text-align:center; box-sizing:border-box;">Top 10 Sites</button>
-              <button class="rank-pill" data-filter="all" onclick="dashApp.setBubbleFilter('all')" style="width:100%; text-align:center; box-sizing:border-box;">All Sites</button>
-            </div>
-            <!-- Legend -->
             <div class="legend" id="bubbleLegend" style="margin-top:2px;"></div>
           </div>
         </div>

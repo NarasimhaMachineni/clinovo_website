@@ -27,7 +27,8 @@
       regulatory: 1,
       dataTech: 1,
       budget: 1
-    }
+    },
+    tempWeights: {}
   };
 
   // 36 REAL-WORLD CLINICAL FEASIBILITY SITES SUBMITTED BY 6 TEAM MEMBERS ACROSS 6 CONTINENTS (RANDOMIZED SCORES & RANDOM DISPLAY ORDER)
@@ -1845,27 +1846,65 @@
     renderWeights() {
       const grid = document.getElementById('weightsGrid');
       if (!grid) return;
+
+      // Sync temp weights on first render
+      if (!state.tempWeights || Object.keys(state.tempWeights).length === 0) {
+        state.tempWeights = { ...state.weights };
+      }
+
       grid.innerHTML = CATEGORIES.map(c => `
         <div class="weight-row">
-          <label>${c.label} <span id="wv_${c.key}">${(state.weights[c.key] ?? 1).toFixed(1)}×</span></label>
-          <input type="range" min="0" max="3" step="0.1" value="${state.weights[c.key] ?? 1}" oninput="dashApp.updateWeight('${c.key}', this.value)">
+          <label>${c.label} <span id="wv_${c.key}">${(state.tempWeights[c.key] ?? 1).toFixed(1)}×</span></label>
+          <input type="range" min="0" max="3" step="0.1" value="${state.tempWeights[c.key] ?? 1}" oninput="dashApp.updateWeightStaged('${c.key}', this.value)">
         </div>
       `).join('');
     },
 
-    updateWeight(key, val) {
-      state.weights[key] = parseFloat(val);
+    updateWeightStaged(key, val) {
+      if (!state.tempWeights) state.tempWeights = { ...state.weights };
+      state.tempWeights[key] = parseFloat(val);
       const span = document.getElementById('wv_' + key);
       if (span) span.textContent = parseFloat(val).toFixed(1) + '×';
+
+      // Highlight the Save button to prompt the user
+      const btn = document.getElementById('btnSaveWeights');
+      if (btn) {
+        btn.classList.add('unsaved-glowing-effect');
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Weightings *`;
+      }
+    },
+
+    saveWeights() {
+      if (state.tempWeights && Object.keys(state.tempWeights).length > 0) {
+        state.weights = { ...state.tempWeights };
+      }
       this.saveState();
       this.renderAll();
+      showToast('Category weightings successfully saved and recalculated!');
+
+      const btn = document.getElementById('btnSaveWeights');
+      if (btn) {
+        btn.classList.remove('unsaved-glowing-effect');
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Weightings`;
+      }
     },
 
     resetWeights() {
-      CATEGORIES.forEach(c => state.weights[c.key] = 1);
+      CATEGORIES.forEach(c => {
+        state.weights[c.key] = 1;
+        if (!state.tempWeights) state.tempWeights = {};
+        state.tempWeights[c.key] = 1;
+      });
       this.renderWeights();
       this.saveState();
       this.renderAll();
+      showToast('Category weightings reset to equal defaults.');
+
+      const btn = document.getElementById('btnSaveWeights');
+      if (btn) {
+        btn.classList.remove('unsaved-glowing-effect');
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Weightings`;
+      }
     },
 
     renderRadarChips() {
