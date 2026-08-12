@@ -1880,3 +1880,37 @@ svg text { font-family: var(--font-body); }
   animation: none !important;
   transform: none !important;
 }
+
+/* MOBILE RESPONSIVE WRAPPER OVERRIDES */
+@media (max-width: 640px) {
+  .header-nav {
+    padding: 0 16px !important;
+  }
+  .brand-name {
+    font-size: 16px !important;
+  }
+  /* Force vertical bubble controls stacking on small screens */
+  #bubblePlotCard > div:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  #bubblePlotCard > div:first-child > div:last-child {
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+  #bubblePlotCard #bubbleFilterPills {
+    width: 100% !important;
+    flex-direction: row !important; /* Row layout on mobile is cleaner than vertical */
+    gap: 4px !important;
+  }
+  #bubblePlotCard #bubbleFilterPills button {
+    flex: 1 !important;
+    font-size: 11px !important;
+    padding: 6px 4px !important;
+  }
+  #bubblePlotCard select {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}

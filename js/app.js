@@ -43,7 +43,7 @@
       rate: 1.8,
       total: 18,
       weeks: 18,
-      scores: { invSite: 52, patientPop: 48, facilities: 53, pharmacy: 50, labBiomarker: 49, safety: 54, regulatory: 45, dataTech: 51, budget: 48 },
+      scores: { invSite: 54, patientPop: 53, facilities: 52, pharmacy: 60, labBiomarker: 55, safety: 43, regulatory: 39, dataTech: 54, budget: 42 },
       notes: 'Completed by Dr. Sarah Jenkins · NCI Comprehensive Cancer Center.'
     },
     {
@@ -56,7 +56,7 @@
       rate: 2.8,
       total: 28,
       weeks: 14,
-      scores: { invSite: 80, patientPop: 76, facilities: 81, pharmacy: 78, labBiomarker: 77, safety: 82, regulatory: 73, dataTech: 79, budget: 76 },
+      scores: { invSite: 81, patientPop: 90, facilities: 67, pharmacy: 68, labBiomarker: 88, safety: 68, regulatory: 90, dataTech: 83, budget: 76 },
       notes: 'Completed by Dr. Sarah Jenkins · Premier Latin American academic oncology facility.'
     },
     {
@@ -69,7 +69,7 @@
       rate: 3.8,
       total: 38,
       weeks: 11,
-      scores: { invSite: 92, patientPop: 88, facilities: 93, pharmacy: 90, labBiomarker: 89, safety: 94, regulatory: 85, dataTech: 91, budget: 88 },
+      scores: { invSite: 78, patientPop: 87, facilities: 98, pharmacy: 81, labBiomarker: 99, safety: 91, regulatory: 77, dataTech: 78, budget: 82 },
       notes: 'Completed by Dr. Sarah Jenkins · European flagship oncology research hospital.'
     },
     {
@@ -82,7 +82,7 @@
       rate: 1.8,
       total: 18,
       weeks: 18,
-      scores: { invSite: 56, patientPop: 52, facilities: 57, pharmacy: 54, labBiomarker: 53, safety: 58, regulatory: 49, dataTech: 55, budget: 52 },
+      scores: { invSite: 41, patientPop: 48, facilities: 45, pharmacy: 46, labBiomarker: 55, safety: 54, regulatory: 62, dataTech: 65, budget: 42 },
       notes: 'Completed by Dr. Sarah Jenkins · Flagship Japanese cancer center.'
     },
     {
@@ -95,7 +95,7 @@
       rate: 4.0,
       total: 40,
       weeks: 10,
-      scores: { invSite: 95, patientPop: 91, facilities: 96, pharmacy: 93, labBiomarker: 92, safety: 97, regulatory: 88, dataTech: 94, budget: 91 },
+      scores: { invSite: 99, patientPop: 88, facilities: 99, pharmacy: 82, labBiomarker: 81, safety: 99, regulatory: 84, dataTech: 86, budget: 83 },
       notes: 'Completed by Dr. Sarah Jenkins · Western Cape reference center.'
     },
     {
@@ -108,7 +108,7 @@
       rate: 1.6,
       total: 16,
       weeks: 19,
-      scores: { invSite: 49, patientPop: 45, facilities: 50, pharmacy: 47, labBiomarker: 46, safety: 51, regulatory: 42, dataTech: 48, budget: 45 },
+      scores: { invSite: 40, patientPop: 53, facilities: 38, pharmacy: 54, labBiomarker: 59, safety: 56, regulatory: 43, dataTech: 40, budget: 48 },
       notes: 'Completed by Dr. Sarah Jenkins · Dedicated public cancer research facility in Melbourne.'
     },
 
@@ -123,7 +123,7 @@
       rate: 3.6,
       total: 36,
       weeks: 12,
-      scores: { invSite: 91, patientPop: 87, facilities: 92, pharmacy: 89, labBiomarker: 88, safety: 93, regulatory: 84, dataTech: 90, budget: 87 },
+      scores: { invSite: 81, patientPop: 99, facilities: 86, pharmacy: 99, labBiomarker: 90, safety: 81, regulatory: 85, dataTech: 86, budget: 99 },
       notes: 'Completed by Dr. Michael Vance · Exceptional retention rate and research pharmacy.'
     },
     {
@@ -136,7 +136,7 @@
       rate: 2.0,
       total: 20,
       weeks: 16,
-      scores: { invSite: 62, patientPop: 58, facilities: 63, pharmacy: 60, labBiomarker: 59, safety: 64, regulatory: 55, dataTech: 61, budget: 58 },
+      scores: { invSite: 52, patientPop: 66, facilities: 70, pharmacy: 58, labBiomarker: 58, safety: 49, regulatory: 51, dataTech: 73, budget: 58 },
       notes: 'Completed by Dr. Michael Vance · Comprehensive treatment and research institute.'
     },
     {
@@ -149,7 +149,7 @@
       rate: 1.9,
       total: 19,
       weeks: 17,
-      scores: { invSite: 59, patientPop: 55, facilities: 60, pharmacy: 57, labBiomarker: 56, safety: 61, regulatory: 52, dataTech: 58, budget: 55 },
+      scores: { invSite: 55, patientPop: 56, facilities: 49, pharmacy: 66, labBiomarker: 57, safety: 44, regulatory: 61, dataTech: 47, budget: 63 },
       notes: 'Completed by Dr. Michael Vance · Largest comprehensive cancer center in Europe.'
     },
     {
@@ -162,7 +162,7 @@
       rate: 1.5,
       total: 15,
       weeks: 20,
-      scores: { invSite: 46, patientPop: 42, facilities: 47, pharmacy: 44, labBiomarker: 43, safety: 48, regulatory: 39, dataTech: 45, budget: 42 },
+      scores: { invSite: 35, patientPop: 40, facilities: 35, pharmacy: 53, labBiomarker: 50, safety: 53, regulatory: 48, dataTech: 38, budget: 35 },
       notes: 'Completed by Dr. Michael Vance · High patient volume center.'
     },
     {
@@ -175,7 +175,7 @@
       rate: 3.0,
       total: 30,
       weeks: 13,
-      scores: { invSite: 83, patientPop: 79, facilities: 84, pharmacy: 81, labBiomarker: 80, safety: 85, regulatory: 76, dataTech: 82, budget: 79 },
+      scores: { invSite: 78, patientPop: 88, facilities: 80, pharmacy: 86, labBiomarker: 89, safety: 89, regulatory: 70, dataTech: 73, budget: 90 },
       notes: 'Completed by Dr. Michael Vance · Primary referral hub for North Africa.'
     },
     {
@@ -188,7 +188,7 @@
       rate: 2.4,
       total: 24,
       weeks: 15,
-      scores: { invSite: 70, patientPop: 66, facilities: 71, pharmacy: 68, labBiomarker: 67, safety: 72, regulatory: 63, dataTech: 69, budget: 66 },
+      scores: { invSite: 65, patientPop: 66, facilities: 69, pharmacy: 80, labBiomarker: 72, safety: 62, regulatory: 68, dataTech: 80, budget: 70 },
       notes: 'Completed by Dr. Michael Vance · Major academic teaching hospital.'
     },
 
@@ -203,7 +203,7 @@
       rate: 4.5,
       total: 50,
       weeks: 9,
-      scores: { invSite: 98, patientPop: 94, facilities: 99, pharmacy: 96, labBiomarker: 95, safety: 99, regulatory: 91, dataTech: 97, budget: 95 },
+      scores: { invSite: 88, patientPop: 94, facilities: 99, pharmacy: 87, labBiomarker: 85, safety: 93, regulatory: 99, dataTech: 94, budget: 97 },
       notes: 'Completed by Dr. Elena Rostova · Principal Harvard Medical School oncology partner.'
     },
     {
@@ -216,7 +216,7 @@
       rate: 1.8,
       total: 18,
       weeks: 18,
-      scores: { invSite: 54, patientPop: 50, facilities: 55, pharmacy: 52, labBiomarker: 51, safety: 56, regulatory: 47, dataTech: 53, budget: 50 },
+      scores: { invSite: 59, patientPop: 60, facilities: 46, pharmacy: 42, labBiomarker: 46, safety: 63, regulatory: 42, dataTech: 53, budget: 53 },
       notes: 'Completed by Dr. Elena Rostova · Historic oncology institute in Buenos Aires.'
     },
     {
@@ -229,7 +229,7 @@
       rate: 2.6,
       total: 26,
       weeks: 14,
-      scores: { invSite: 75, patientPop: 71, facilities: 76, pharmacy: 73, labBiomarker: 72, safety: 77, regulatory: 68, dataTech: 74, budget: 71 },
+      scores: { invSite: 73, patientPop: 62, facilities: 73, pharmacy: 81, labBiomarker: 74, safety: 67, regulatory: 73, dataTech: 75, budget: 69 },
       notes: 'Completed by Dr. Elena Rostova · European center for precision immuno-oncology trials.'
     },
     {
@@ -242,7 +242,7 @@
       rate: 3.3,
       total: 33,
       weeks: 12,
-      scores: { invSite: 87, patientPop: 83, facilities: 88, pharmacy: 85, labBiomarker: 84, safety: 89, regulatory: 80, dataTech: 86, budget: 83 },
+      scores: { invSite: 82, patientPop: 78, facilities: 86, pharmacy: 86, labBiomarker: 90, safety: 78, regulatory: 97, dataTech: 82, budget: 88 },
       notes: 'Completed by Dr. Elena Rostova · Advanced digital medical record infrastructure.'
     },
     {
@@ -255,7 +255,7 @@
       rate: 2.3,
       total: 23,
       weeks: 16,
-      scores: { invSite: 68, patientPop: 64, facilities: 69, pharmacy: 66, labBiomarker: 65, safety: 70, regulatory: 61, dataTech: 67, budget: 64 },
+      scores: { invSite: 73, patientPop: 64, facilities: 67, pharmacy: 60, labBiomarker: 70, safety: 65, regulatory: 72, dataTech: 56, budget: 67 },
       notes: 'Completed by Dr. Elena Rostova · JCI-accredited tertiary medical facility in Nairobi.'
     },
     {
@@ -268,7 +268,7 @@
       rate: 2.9,
       total: 29,
       weeks: 13,
-      scores: { invSite: 81, patientPop: 77, facilities: 82, pharmacy: 79, labBiomarker: 78, safety: 83, regulatory: 74, dataTech: 80, budget: 77 },
+      scores: { invSite: 85, patientPop: 67, facilities: 75, pharmacy: 72, labBiomarker: 78, safety: 83, regulatory: 86, dataTech: 77, budget: 89 },
       notes: 'Completed by Dr. Elena Rostova · Comprehensive cancer treatment hospital in Sydney.'
     },
 
@@ -283,7 +283,7 @@
       rate: 2.0,
       total: 20,
       weeks: 17,
-      scores: { invSite: 60, patientPop: 56, facilities: 61, pharmacy: 58, labBiomarker: 57, safety: 62, regulatory: 53, dataTech: 59, budget: 56 },
+      scores: { invSite: 51, patientPop: 50, facilities: 55, pharmacy: 61, labBiomarker: 71, safety: 70, regulatory: 63, dataTech: 68, budget: 62 },
       notes: 'Completed by Dr. Rajiv Patel · World-class translational oncology clinical trial center.'
     },
     {
@@ -296,7 +296,7 @@
       rate: 3.7,
       total: 37,
       weeks: 11,
-      scores: { invSite: 93, patientPop: 89, facilities: 94, pharmacy: 91, labBiomarker: 90, safety: 95, regulatory: 86, dataTech: 92, budget: 89 },
+      scores: { invSite: 97, patientPop: 83, facilities: 80, pharmacy: 99, labBiomarker: 80, safety: 84, regulatory: 89, dataTech: 84, budget: 79 },
       notes: 'Completed by Dr. Rajiv Patel · Premier Colombian university hospital.'
     },
     {
@@ -309,7 +309,7 @@
       rate: 1.5,
       total: 15,
       weeks: 20,
-      scores: { invSite: 48, patientPop: 44, facilities: 49, pharmacy: 46, labBiomarker: 45, safety: 50, regulatory: 41, dataTech: 47, budget: 44 },
+      scores: { invSite: 35, patientPop: 57, facilities: 49, pharmacy: 51, labBiomarker: 46, safety: 52, regulatory: 48, dataTech: 58, budget: 48 },
       notes: 'Completed by Dr. Rajiv Patel · Central European university medical center.'
     },
     {
@@ -322,7 +322,7 @@
       rate: 2.2,
       total: 22,
       weeks: 16,
-      scores: { invSite: 66, patientPop: 62, facilities: 67, pharmacy: 64, labBiomarker: 63, safety: 68, regulatory: 59, dataTech: 65, budget: 62 },
+      scores: { invSite: 69, patientPop: 67, facilities: 51, pharmacy: 54, labBiomarker: 73, safety: 72, regulatory: 74, dataTech: 52, budget: 72 },
       notes: 'Completed by Dr. Rajiv Patel · Leading Southeast Asian academic research site.'
     },
     {
@@ -335,7 +335,7 @@
       rate: 3.1,
       total: 31,
       weeks: 13,
-      scores: { invSite: 85, patientPop: 81, facilities: 86, pharmacy: 83, labBiomarker: 82, safety: 87, regulatory: 78, dataTech: 84, budget: 81 },
+      scores: { invSite: 87, patientPop: 74, facilities: 92, pharmacy: 90, labBiomarker: 92, safety: 93, regulatory: 75, dataTech: 92, budget: 85 },
       notes: 'Completed by Dr. Rajiv Patel · Key teaching hospital affiliated with Univ of Cape Town.'
     },
     {
@@ -348,7 +348,7 @@
       rate: 2.5,
       total: 25,
       weeks: 15,
-      scores: { invSite: 72, patientPop: 68, facilities: 73, pharmacy: 70, labBiomarker: 69, safety: 74, regulatory: 65, dataTech: 71, budget: 68 },
+      scores: { invSite: 83, patientPop: 80, facilities: 73, pharmacy: 62, labBiomarker: 69, safety: 80, regulatory: 65, dataTech: 67, budget: 72 },
       notes: 'Completed by Dr. Rajiv Patel · Advanced trial facility in Heidelberg, Victoria.'
     },
 
@@ -363,7 +363,7 @@
       rate: 3.5,
       total: 35,
       weeks: 12,
-      scores: { invSite: 89, patientPop: 85, facilities: 90, pharmacy: 87, labBiomarker: 86, safety: 91, regulatory: 82, dataTech: 88, budget: 85 },
+      scores: { invSite: 96, patientPop: 99, facilities: 85, pharmacy: 82, labBiomarker: 99, safety: 89, regulatory: 80, dataTech: 89, budget: 90 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · NCI Comprehensive Cancer Center.'
     },
     {
@@ -376,7 +376,7 @@
       rate: 1.9,
       total: 19,
       weeks: 17,
-      scores: { invSite: 58, patientPop: 54, facilities: 59, pharmacy: 56, labBiomarker: 55, safety: 60, regulatory: 51, dataTech: 57, budget: 54 },
+      scores: { invSite: 61, patientPop: 51, facilities: 58, pharmacy: 49, labBiomarker: 60, safety: 54, regulatory: 47, dataTech: 60, budget: 58 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · National reference hospital for oncology in Santiago.'
     },
     {
@@ -389,7 +389,7 @@
       rate: 2.8,
       total: 28,
       weeks: 14,
-      scores: { invSite: 78, patientPop: 74, facilities: 79, pharmacy: 76, labBiomarker: 75, safety: 80, regulatory: 71, dataTech: 77, budget: 74 },
+      scores: { invSite: 83, patientPop: 85, facilities: 87, pharmacy: 81, labBiomarker: 66, safety: 76, regulatory: 66, dataTech: 77, budget: 74 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Specialized non-profit cancer institute in Milan.'
     },
     {
@@ -402,7 +402,7 @@
       rate: 3.6,
       total: 36,
       weeks: 12,
-      scores: { invSite: 90, patientPop: 86, facilities: 91, pharmacy: 88, labBiomarker: 87, safety: 92, regulatory: 83, dataTech: 89, budget: 86 },
+      scores: { invSite: 98, patientPop: 91, facilities: 97, pharmacy: 84, labBiomarker: 83, safety: 87, regulatory: 75, dataTech: 76, budget: 99 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Massive capacity East Asian Phase III trial hub.'
     },
     {
@@ -415,7 +415,7 @@
       rate: 1.7,
       total: 17,
       weeks: 18,
-      scores: { invSite: 55, patientPop: 51, facilities: 56, pharmacy: 53, labBiomarker: 52, safety: 57, regulatory: 48, dataTech: 54, budget: 51 },
+      scores: { invSite: 48, patientPop: 47, facilities: 55, pharmacy: 48, labBiomarker: 63, safety: 52, regulatory: 49, dataTech: 66, budget: 64 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Requires local laboratory equipment upgrade.'
     },
     {
@@ -428,7 +428,7 @@
       rate: 3.0,
       total: 30,
       weeks: 13,
-      scores: { invSite: 84, patientPop: 80, facilities: 85, pharmacy: 82, labBiomarker: 81, safety: 86, regulatory: 77, dataTech: 83, budget: 80 },
+      scores: { invSite: 91, patientPop: 74, facilities: 93, pharmacy: 74, labBiomarker: 90, safety: 88, regulatory: 92, dataTech: 94, budget: 79 },
       notes: 'Completed by Dr. Sophia Al-Mansoor · Primary tertiary cancer hospital in Auckland.'
     },
 
@@ -443,7 +443,7 @@
       rate: 2.3,
       total: 23,
       weeks: 15,
-      scores: { invSite: 71, patientPop: 67, facilities: 72, pharmacy: 69, labBiomarker: 68, safety: 73, regulatory: 64, dataTech: 70, budget: 67 },
+      scores: { invSite: 68, patientPop: 73, facilities: 73, pharmacy: 77, labBiomarker: 74, safety: 78, regulatory: 58, dataTech: 59, budget: 75 },
       notes: 'Completed by Dr. David Lin · West Coast NCI Comprehensive Cancer Center.'
     },
     {
@@ -456,7 +456,7 @@
       rate: 2.5,
       total: 25,
       weeks: 14,
-      scores: { invSite: 73, patientPop: 69, facilities: 74, pharmacy: 71, labBiomarker: 70, safety: 75, regulatory: 66, dataTech: 72, budget: 69 },
+      scores: { invSite: 79, patientPop: 66, facilities: 82, pharmacy: 63, labBiomarker: 65, safety: 77, regulatory: 69, dataTech: 68, budget: 76 },
       notes: 'Completed by Dr. David Lin · Primary cancer reference center in Lima, Peru.'
     },
     {
@@ -469,7 +469,7 @@
       rate: 4.1,
       total: 41,
       weeks: 10,
-      scores: { invSite: 96, patientPop: 92, facilities: 97, pharmacy: 94, labBiomarker: 93, safety: 98, regulatory: 89, dataTech: 95, budget: 92 },
+      scores: { invSite: 84, patientPop: 99, facilities: 96, pharmacy: 96, labBiomarker: 85, safety: 81, regulatory: 99, dataTech: 88, budget: 81 },
       notes: 'Completed by Dr. David Lin · Leading Mediterranean early & late phase trial institution.'
     },
     {
@@ -482,7 +482,7 @@
       rate: 1.6,
       total: 16,
       weeks: 19,
-      scores: { invSite: 51, patientPop: 47, facilities: 52, pharmacy: 49, labBiomarker: 48, safety: 53, regulatory: 44, dataTech: 50, budget: 47 },
+      scores: { invSite: 54, patientPop: 49, facilities: 45, pharmacy: 48, labBiomarker: 55, safety: 50, regulatory: 50, dataTech: 57, budget: 45 },
       notes: 'Completed by Dr. David Lin · Top-tier Shanghai academic oncology clinical trial site.'
     },
     {
@@ -495,7 +495,7 @@
       rate: 2.1,
       total: 21,
       weeks: 16,
-      scores: { invSite: 64, patientPop: 60, facilities: 65, pharmacy: 62, labBiomarker: 61, safety: 66, regulatory: 57, dataTech: 63, budget: 60 },
+      scores: { invSite: 71, patientPop: 70, facilities: 66, pharmacy: 52, labBiomarker: 73, safety: 62, regulatory: 71, dataTech: 56, budget: 61 },
       notes: 'Completed by Dr. David Lin · West African unit requiring ultralow freezer infrastructure.'
     },
     {
@@ -508,25 +508,10 @@
       rate: 2.7,
       total: 27,
       weeks: 14,
-      scores: { invSite: 77, patientPop: 73, facilities: 78, pharmacy: 75, labBiomarker: 74, safety: 79, regulatory: 70, dataTech: 76, budget: 73 },
+      scores: { invSite: 85, patientPop: 72, facilities: 72, pharmacy: 79, labBiomarker: 74, safety: 84, regulatory: 73, dataTech: 62, budget: 62 },
       notes: 'Completed by Dr. David Lin · Key tertiary oncology center in Perth, Australia.'
     }
   ];
-
-  // Perturb scores to ensure diverse, unique shapes on the radar plot (fixing the parallel structure bug)
-  DEFAULT_SEED_SITES_36.forEach(s => {
-    let hash = 0;
-    for (let i = 0; i < s.id.length; i++) {
-      hash = s.id.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const newScores = {};
-    const keys = Object.keys(s.scores);
-    keys.forEach((key, idx) => {
-      const shift = ((Math.abs(hash + idx * 31) % 31) - 15);
-      newScores[key] = Math.max(40, Math.min(99, s.scores[key] + shift));
-    });
-    s.scores = newScores;
-  });
 
   const CATEGORIES = [
     { key: 'invSite', label: 'Investigator & Site', short: 'Invest.' },
