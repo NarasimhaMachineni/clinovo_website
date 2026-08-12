@@ -2564,7 +2564,7 @@
           event.target.mute();
           event.target.playVideo();
           try {
-            event.target.setPlaybackQuality('hd2160'); // Request 4K quality
+            event.target.setPlaybackQuality('hd1080'); // Request 1080p high definition (smooth, avoids 4K buffering stutter)
           } catch(e) {}
           try {
             event.target.setPlaybackRate(1.0); // 1.0x Normal speed
@@ -2584,20 +2584,28 @@
       }
     });
 
-    // Seamless loop check: Seek back 0.4 seconds before end of playback to avoid black frame spinners
+    // Seamless loop check: Seek back 0.5 seconds before end of playback to avoid black frame spinners
+    let isLooping = false;
     setInterval(() => {
       if (window.ytPlayerObj && typeof window.ytPlayerObj.getCurrentTime === 'function') {
         try {
           const current = window.ytPlayerObj.getCurrentTime();
           const duration = window.ytPlayerObj.getDuration();
-          if (duration > 0 && (duration - current) < 0.4) {
-            window.ytPlayerObj.seekTo(0.1, true);
-            window.ytPlayerObj.playVideo();
-            window.ytPlayerObj.setPlaybackRate(1.0);
+          if (duration > 0 && (duration - current) < 0.5) {
+            if (!isLooping) {
+              isLooping = true;
+              window.ytPlayerObj.seekTo(0.1, true);
+              window.ytPlayerObj.playVideo();
+              window.ytPlayerObj.setPlaybackRate(1.0);
+              // Hold loop lock for 1 second to let player seek and avoid duplicate calls
+              setTimeout(() => {
+                isLooping = false;
+              }, 1000);
+            }
           }
         } catch(e) {}
       }
-    }, 200);
+    }, 250);
   }
 
   // Initialize App on DOM Ready
