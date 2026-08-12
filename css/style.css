@@ -1950,8 +1950,8 @@ svg text { font-family: var(--font-body); }
   width: 100%;
   height: 100%;
   z-index: 0;
-  transform: scale(1.01);
-  filter: brightness(0.72) contrast(1.1) saturate(1.05); /* Perfect brightness and contrast for readability */
+  transform: scale(1.04); /* Scaled slightly more to cover borders when blurred */
+  filter: blur(6px) brightness(0.65) contrast(1.15) saturate(1.05); /* Added premium depth of field blur */
 }
 
 #smokeCanvas, #waterCanvas {
@@ -1965,13 +1965,13 @@ svg text { font-family: var(--font-body); }
 #waterCanvas { z-index: 2; }
 
 .clinovo-login-card.centered {
-  width: 480px; /* Slightly larger grid card */
+  width: 500px; /* Enlarge to 500px as requested */
   max-width: 90vw;
-  padding: 48px 44px;
-  background: rgba(16, 27, 46, 0.42) !important; /* Semi-transparent glassy dark theme */
+  padding: 50px 48px;
+  background: rgba(9, 17, 32, 0.48) !important; /* Extremely clean transparent dark glassy background */
   backdrop-filter: blur(40px) !important;
   -webkit-backdrop-filter: blur(40px) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   border-radius: var(--radius-xl);
   box-shadow: 0 45px 90px rgba(0, 0, 0, 0.55), 0 0 50px rgba(11, 110, 110, 0.18);
   z-index: 10;
