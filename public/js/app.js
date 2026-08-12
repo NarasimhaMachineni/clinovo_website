@@ -2567,13 +2567,13 @@
             event.target.setPlaybackQuality('hd2160'); // Request 4K quality
           } catch(e) {}
           try {
-            event.target.setPlaybackRate(0.5); // 0.5x Slow motion speed
+            event.target.setPlaybackRate(1.0); // 1.0x Normal speed
           } catch(e) {}
         },
         onStateChange: (event) => {
           if (event.data === YT.PlayerState.PLAYING) {
             try {
-              event.target.setPlaybackRate(0.5);
+              event.target.setPlaybackRate(1.0);
             } catch(e) {}
           }
           if (event.data === YT.PlayerState.ENDED) {
@@ -2593,7 +2593,7 @@
           if (duration > 0 && (duration - current) < 0.4) {
             window.ytPlayerObj.seekTo(0.1, true);
             window.ytPlayerObj.playVideo();
-            window.ytPlayerObj.setPlaybackRate(0.5);
+            window.ytPlayerObj.setPlaybackRate(1.0);
           }
         } catch(e) {}
       }
