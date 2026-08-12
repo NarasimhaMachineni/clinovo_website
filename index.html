@@ -77,7 +77,6 @@
       
       <!-- Full-screen animated canvases for background motion -->
       <canvas id="smokeCanvas"></canvas>
-      <canvas id="waterCanvas"></canvas>
       
       <!-- Glowing Ambient Background Orbs -->
       <div class="ambient-glow-orb orb-1"></div>
@@ -99,13 +98,13 @@
             </div>
           </div>
 
-          <div class="portal-access-label" style="color:rgba(255, 255, 255, 0.95); font-family:var(--font-display);">Site Feasibility Portal Access</div>
+          <div class="portal-access-label" style="color:#0f172a; font-family:var(--font-display); font-weight:700; font-size:16px;">Site Feasibility Portal Access</div>
 
           <!-- Credentials entry form -->
           <form class="login-form-content" id="loginForm" action="javascript:void(0);" onsubmit="app.handleSignIn(event); return false;">
             
             <div class="form-group-field">
-              <label for="usernameInput" style="color:rgba(255, 255, 255, 0.85);">Username or email</label>
+              <label for="usernameInput" style="color:#334155; font-weight:600;">Username or email</label>
               <input 
                 type="text" 
                 id="usernameInput" 
@@ -117,7 +116,7 @@
             </div>
 
             <div class="form-group-field">
-              <label for="passwordInput" style="color:rgba(255, 255, 255, 0.85);">Password</label>
+              <label for="passwordInput" style="color:#334155; font-weight:600;">Password</label>
               <div class="input-password-wrapper">
                 <input 
                   type="password" 
@@ -130,7 +129,7 @@
                 <i 
                   id="togglePasswordBtn"
                   class="fa-solid fa-eye password-eye-icon" 
-                  style="color:rgba(255, 255, 255, 0.7);"
+                  style="color:#64748b;"
                   onclick="app.togglePasswordVisibility()"
                   title="Toggle Password Visibility"
                 ></i>

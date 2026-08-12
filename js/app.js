@@ -727,80 +727,7 @@
     requestAnimationFrame(render);
   }
 
-  // 240HZ LIQUID WAVE GLASSY WATER THEME OVERLAY FOR SHOWCASE PANEL
-  function initWaterCanvas() {
-    const canvas = document.getElementById('waterCanvas');
-    if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-
-    // Wavy glassy water wave parameters
-    const waves = [
-      { y: height * 0.72, length: 0.003, amplitude: 35, speed: 0.015, color: 'rgba(11, 110, 110, 0.08)', phase: 0 },
-      { y: height * 0.78, length: 0.002, amplitude: 45, speed: -0.01, color: 'rgba(2, 132, 199, 0.06)', phase: Math.PI / 4 },
-      { y: height * 0.7, length: 0.004, amplitude: 25, speed: 0.02, color: 'rgba(45, 189, 182, 0.05)', phase: Math.PI / 2 }
-    ];
-
-    let lastTime = performance.now();
-
-    function renderWater(now) {
-      if (state.currentView !== 'landing') {
-        requestAnimationFrame(renderWater);
-        return;
-      }
-      
-      const dt = Math.min((now - lastTime) / 1000, 0.08);
-      lastTime = now;
-
-      ctx.clearRect(0, 0, width, height);
-
-      // Render overlay water refraction effect (horizontal sine waves with transparency)
-      waves.forEach(w => {
-        w.phase += w.speed * (dt * 60);
-
-        ctx.fillStyle = w.color;
-        ctx.beginPath();
-        ctx.moveTo(0, height);
-
-        for (let x = 0; x < width; x++) {
-          const y = w.y + Math.sin(x * w.length + w.phase) * w.amplitude;
-          ctx.lineTo(x, y);
-        }
-
-        ctx.lineTo(width, height);
-        ctx.closePath();
-        ctx.fill();
-      });
-
-      // Slow drifting floating water drop highlights across full width
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-      for (let i = 0; i < 7; i++) {
-        const bubbleX = (width * 0.1) + (i * (width * 0.14)) + Math.sin(now / 2000 + i) * 35;
-        const bubbleY = (height * 0.15) + (i * 120) + Math.cos(now / 1500 + i) * 35;
-        ctx.beginPath();
-        ctx.arc(bubbleX, bubbleY, 4 + i * 1.5, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Shiny reflection highlight inside drop
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.beginPath();
-        ctx.arc(bubbleX - 1.5, bubbleY - 1.5, 1.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)'; // reset
-      }
-
-      requestAnimationFrame(renderWater);
-    }
-
-    requestAnimationFrame(renderWater);
-  }
 
   // -------------------------------------------------------------------------
   // APPLICATION CONTROLLER
@@ -829,7 +756,6 @@
 
       window.app.startDotCarousel();
       initPharmaCanvas();
-      initWaterCanvas();
 
       window.addEventListener('resize', () => {
         if (state.currentView === 'dashboard') {

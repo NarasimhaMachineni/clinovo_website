@@ -1942,12 +1942,12 @@ svg text { font-family: var(--font-body); }
   background: #090e18;
 }
 
-/* Vignette overlay to highlight the center card */
+/* Vignette overlay to highlight the center card - Softened for light theme attractiveness */
 .login-viewport-container.full-centered::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, rgba(9, 14, 26, 0.15) 20%, rgba(9, 14, 26, 0.82) 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 30%, rgba(255, 255, 255, 0.3) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -1960,19 +1960,18 @@ svg text { font-family: var(--font-body); }
   width: 100%;
   height: 100%;
   z-index: 0;
-  transform: scale(1.08); /* Scaled slightly more to cover borders when blurred */
-  filter: blur(12px) brightness(0.38) contrast(1.15) saturate(1.05); /* Darkened and highly blurred to prevent background domination */
+  transform: scale(1.02);
+  filter: blur(4px) brightness(0.85) contrast(1.08); /* Reduced blur and increased brightness so it is somewhat visible, vibrant, and clean! */
 }
 
-#smokeCanvas, #waterCanvas {
+#smokeCanvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 2;
 }
-#smokeCanvas { z-index: 1; }
-#waterCanvas { z-index: 2; }
 
 .login-card-wrapper {
   z-index: 10;
@@ -1988,12 +1987,12 @@ svg text { font-family: var(--font-body); }
   width: 500px; /* Enlarge to 500px as requested */
   max-width: 90vw;
   padding: 50px 48px;
-  background: rgba(9, 17, 32, 0.68) !important; /* Darker glassy background for clean high-contrast readability */
-  backdrop-filter: blur(45px) !important;
-  -webkit-backdrop-filter: blur(45px) !important;
-  border: 1.5px solid rgba(45, 189, 182, 0.35) !important; /* Glowing brand-teal border */
+  background: rgba(255, 255, 255, 0.75) !important; /* Premium light-frosted glassmorphism (vibrant, attractive, not dull) */
+  backdrop-filter: blur(35px) !important;
+  -webkit-backdrop-filter: blur(35px) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.85) !important; /* Elegant clean white border edge */
   border-radius: var(--radius-xl);
-  box-shadow: 0 45px 90px rgba(0, 0, 0, 0.8), 0 0 50px rgba(45, 189, 182, 0.22);
+  box-shadow: 0 35px 80px rgba(9, 31, 64, 0.18), 0 0 50px rgba(45, 189, 182, 0.08);
   display: flex;
   flex-direction: column;
   /* Glowing pulse border animation on the card itself */
@@ -2002,8 +2001,8 @@ svg text { font-family: var(--font-body); }
 }
 
 .clinovo-login-card.centered:hover {
-  border-color: rgba(45, 189, 182, 0.65) !important;
-  box-shadow: 0 55px 100px rgba(0, 0, 0, 0.82), 0 0 60px rgba(45, 189, 182, 0.32) !important;
+  border-color: rgba(45, 189, 182, 0.55) !important;
+  box-shadow: 0 45px 90px rgba(9, 31, 64, 0.22), 0 0 60px rgba(45, 189, 182, 0.18) !important;
 }
 
 @keyframes loginCardFloat {
@@ -2013,28 +2012,28 @@ svg text { font-family: var(--font-body); }
 
 @keyframes cardBorderGlow {
   0% {
-    border-color: rgba(45, 189, 182, 0.25);
-    box-shadow: 0 45px 90px rgba(0, 0, 0, 0.75), 0 0 35px rgba(45, 189, 182, 0.12);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 35px 80px rgba(9, 31, 64, 0.18), 0 0 30px rgba(45, 189, 182, 0.04) !important;
   }
   100% {
-    border-color: rgba(45, 189, 182, 0.55);
-    box-shadow: 0 45px 90px rgba(0, 0, 0, 0.75), 0 0 55px rgba(45, 189, 182, 0.35);
+    border-color: rgba(45, 189, 182, 0.45); /* Soft teal breathing border highlight */
+    box-shadow: 0 35px 80px rgba(9, 31, 64, 0.22), 0 0 45px rgba(45, 189, 182, 0.15) !important;
   }
 }
 
-/* Glassy form inputs overrides for landing/login only */
+/* Glassy form inputs overrides for landing/login only - Styled for light theme glass contrast */
 .form-input-exact.dark-input {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(11, 110, 110, 0.16) !important;
+  color: #1e293b !important;
 }
 .form-input-exact.dark-input::placeholder {
-  color: rgba(255, 255, 255, 0.45) !important;
+  color: #94a3b8 !important;
 }
 .form-input-exact.dark-input:focus {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: var(--brand-teal-light) !important;
-  box-shadow: 0 0 10px rgba(45, 189, 182, 0.25) !important;
+  background: #ffffff !important;
+  border-color: var(--brand-teal) !important;
+  box-shadow: 0 0 10px rgba(11, 110, 110, 0.18) !important;
 }
 
 /* Extra responsive tweaks */
