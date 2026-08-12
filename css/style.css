@@ -281,10 +281,31 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 }
 
 .landing-active .header-nav {
-  background: rgba(16, 27, 46, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Glassy background for Clinovo brand logo to highlight it on transparent header */
+.landing-active .brand-logo {
+  background: rgba(255, 255, 255, 0.75) !important;
+  padding: 6px 14px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.brand-logo img {
+  filter: drop-shadow(0 0 6px rgba(45, 189, 182, 0.45)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  transition: filter 0.3s ease;
+}
+
+.brand-logo:hover img {
+  filter: drop-shadow(0 0 12px rgba(45, 189, 182, 0.85)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
 }
 
 .brand-logo {
@@ -1942,26 +1963,38 @@ svg text { font-family: var(--font-body); }
   background: #090e18;
 }
 
-/* Vignette overlay to highlight the center card - Softened for light theme attractiveness */
-.login-viewport-container.full-centered::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 30%, rgba(255, 255, 255, 0.3) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.tablets-full-bg {
-  background: url('../images/tablets.png') no-repeat center center;
-  background-size: cover;
+.video-bg-container {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   z-index: 0;
-  transform: scale(1.02);
-  filter: blur(4px) brightness(0.85) contrast(1.08); /* Reduced blur and increased brightness so it is somewhat visible, vibrant, and clean! */
+  pointer-events: none;
+  background: #090e18;
+}
+
+.video-bg-iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 ratio */
+  min-height: 100vh;
+  min-width: 177.77vh; /* 16:9 ratio */
+  transform: translate(-50%, -50%) scale(1.22); /* Scaled slightly more to crop player controls, watermarks, duration bars and YouTube logo completely */
+  pointer-events: none;
+  /* Blurred slightly and dimmed as requested to keep background clean and highlight login card */
+  filter: blur(5px) brightness(0.68) contrast(1.1);
+  will-change: transform;
+}
+
+.video-bg-overlay {
+  position: absolute;
+  inset: 0;
+  /* Soft lighting vignette overlay for background depth */
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 30%, rgba(255, 255, 255, 0.25) 100%);
+  z-index: 1;
 }
 
 #smokeCanvas {
