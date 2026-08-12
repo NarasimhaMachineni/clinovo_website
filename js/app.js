@@ -2533,13 +2533,15 @@
   };
 
   function tryInitYtPlayer() {
-    if (ytApiReady && domReady) {
+    if ((ytApiReady || (window.YT && window.YT.Player)) && domReady) {
       initActualYtPlayer();
     }
   }
 
   function initActualYtPlayer() {
     if (window.ytPlayerObj) return; // Prevent duplicate instantiation
+    const container = document.getElementById('ytPlayer');
+    if (!container) return; // Guard to make sure element is built
     window.ytPlayerObj = new YT.Player('ytPlayer', {
       videoId: 'lgWjziyinKs',
       playerVars: {
@@ -2554,7 +2556,8 @@
         modestbranding: 1,
         wmode: 'transparent',
         disablekb: 1,
-        fs: 0
+        fs: 0,
+        origin: window.location.origin
       },
       events: {
         onReady: (event) => {

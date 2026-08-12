@@ -1975,7 +1975,7 @@ svg text { font-family: var(--font-body); }
   background: #090e18;
 }
 
-.video-bg-iframe, #ytPlayer, .video-bg-container iframe {
+.video-bg-iframe, .video-bg-container iframe {
   position: absolute;
   top: 50%;
   left: 50%;
